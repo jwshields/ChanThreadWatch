@@ -123,9 +123,19 @@ namespace JDP {
             set { SetBool("InterBoardAutoFollow", value); }
         }
 
-        public static bool? SaveThumbnails {
-            get { return GetBool("SaveThumbnails"); }
-            set { SetBool("SaveThumbnails", value); }
+        public static int? SaveThumbnails {
+            get { return GetInt("SaveThumbnails"); }
+            set { SetInt("SaveThumbnails", value); }
+        }
+
+        public static bool? SaveThumbnailsInnerHTML {
+            get { return GetBool("SaveThumbnailsHTML"); }
+            set { SetBool("SaveThumbnailsHTML", value); }
+        }
+
+        public static bool? SaveThumbnailsInnerThumb {
+            get { return GetBool("SaveThumbnailsThumb"); }
+            set { SetBool("SaveThumbnailsThumb", value); }
         }
 
         public static bool? UseOriginalFileNames {

@@ -672,7 +672,7 @@ namespace JDP {
                             pageParser = new HTMLParser(content);
                             pageInfo.CacheTime = lastModifiedTime;
                             pageInfo.Encoding = encoding;
-                            pageInfo.ReplaceList = (Settings.SaveThumbnails != false) ? new List<ReplaceInfo>() : null;
+                            pageInfo.ReplaceList = (Settings.SaveThumbnails != 0) ? new List<ReplaceInfo>() : null;
                         }
                         downloadEndEvent.Set();
                     };
@@ -855,61 +855,63 @@ namespace JDP {
                     }
                 }
 
-                if (Settings.SaveThumbnails != false) {
-                    if (pendingThumbs.Count != 0 && !IsStopping) {
-                        if (!Directory.Exists(thumbDir)) {
-                            try {
-                                Directory.CreateDirectory(thumbDir);
-                            }
-                            catch (Exception ex) {
-                                Stop(StopReason.IOError);
-                                Logger.Log(ex.ToString());
-                            }
-                        }
-
-                        List<ManualResetEvent> downloadEndEvents = new List<ManualResetEvent>();
-                        int completedThumbCount = 0;
-                        foreach (KeyValuePair<string, DownloadInfo> item in _completedThumbs) {
-                            if (!item.Value.Skipped) completedThumbCount++;
-                        }
-                        int totalThumbCount = completedThumbCount + pendingThumbs.Count;
-                        OnDownloadStatus(new DownloadStatusEventArgs(DownloadType.Thumbnail, completedThumbCount, totalThumbCount));
-                        while (pendingThumbs.Count != 0 && !IsStopping) {
-                            ThumbnailInfo thumb = pendingThumbs.Dequeue();
-                            string savePath = Path.Combine(thumbDir, thumb.FileName);
-
-                            ManualResetEvent downloadEndEvent = new ManualResetEvent(false);
-                            DownloadFileEndCallback onDownloadEnd = (result) => {
-                                if (result == DownloadResult.Completed || result == DownloadResult.Skipped) {
-                                    lock (_completedThumbs) {
-                                        _completedThumbs[thumb.FileName] = new DownloadInfo {
-                                            FileName = thumb.FileName,
-                                            Skipped = (result == DownloadResult.Skipped)
-                                        };
-                                        if (result != DownloadResult.Skipped) {
-                                            completedThumbCount++;
-                                        }
-                                        else {
-                                            totalThumbCount--;
-                                        }
-                                        OnDownloadStatus(new DownloadStatusEventArgs(DownloadType.Thumbnail, completedThumbCount, totalThumbCount));
-                                    }
+                if (Settings.SaveThumbnails != 0) {
+                    if (Settings.SaveThumbnailsInnerThumb == true) {
+                        if (pendingThumbs.Count != 0 && !IsStopping) {
+                            if (!Directory.Exists(thumbDir)) {
+                                try {
+                                    Directory.CreateDirectory(thumbDir);
                                 }
-                                downloadEndEvent.Set();
-                            };
-                            downloadEndEvents.Add(downloadEndEvent);
-                            DownloadFileAsync(savePath, thumb.URL, PageAuth, thumb.Referer, HashType.None, null, onDownloadEnd);
-                        }
-                        foreach (ManualResetEvent downloadEndEvent in downloadEndEvents) {
-                            downloadEndEvent.WaitOne();
-                            downloadEndEvent.Close();
+                                catch (Exception ex) {
+                                    Stop(StopReason.IOError);
+                                    Logger.Log(ex.ToString());
+                                }
+                            }
+
+                            List<ManualResetEvent> downloadEndEvents = new List<ManualResetEvent>();
+                            int completedThumbCount = 0;
+                            foreach (KeyValuePair<string, DownloadInfo> item in _completedThumbs) {
+                                if (!item.Value.Skipped) completedThumbCount++;
+                            }
+                            int totalThumbCount = completedThumbCount + pendingThumbs.Count;
+                            OnDownloadStatus(new DownloadStatusEventArgs(DownloadType.Thumbnail, completedThumbCount, totalThumbCount));
+                            while (pendingThumbs.Count != 0 && !IsStopping) {
+                                ThumbnailInfo thumb = pendingThumbs.Dequeue();
+                                string savePath = Path.Combine(thumbDir, thumb.FileName);
+
+                                ManualResetEvent downloadEndEvent = new ManualResetEvent(false);
+                                DownloadFileEndCallback onDownloadEnd = (result) => {
+                                    if (result == DownloadResult.Completed || result == DownloadResult.Skipped) {
+                                        lock (_completedThumbs) {
+                                            _completedThumbs[thumb.FileName] = new DownloadInfo {
+                                                FileName = thumb.FileName,
+                                                Skipped = (result == DownloadResult.Skipped)
+                                            };
+                                            if (result != DownloadResult.Skipped) { completedThumbCount++; }
+                                            else { totalThumbCount--; }
+                                            OnDownloadStatus(new DownloadStatusEventArgs(DownloadType.Thumbnail, completedThumbCount, totalThumbCount));
+                                        }
+                                    }
+                                    downloadEndEvent.Set();
+                                };
+                                downloadEndEvents.Add(downloadEndEvent);
+                                DownloadFileAsync(savePath, thumb.URL, PageAuth, thumb.Referer, HashType.None, null, onDownloadEnd);
+                            }
+                            foreach (ManualResetEvent downloadEndEvent in downloadEndEvents) {
+                                downloadEndEvent.WaitOne();
+                                downloadEndEvent.Close();
+                            }
                         }
                     }
 
-                    if (!IsStopping || StopReason != StopReason.IOError) {
-                        foreach (PageInfo pageInfo in _pageList) {
-                            if (pageInfo.IsFresh) {
-                                Process(pageInfo, siteHelper, threadDir, imageDir, thumbDir, _completedImages, _completedThumbs);
+                    if (Settings.SaveThumbnailsInnerHTML != false) {
+                        if (!IsStopping || StopReason != StopReason.IOError) {
+                            foreach (PageInfo pageInfo in _pageList) {
+                                if (pageInfo.IsFresh) {
+                                    _completedThumbs = (Settings.SaveThumbnailsInnerThumb == true) ? _completedThumbs : _completedImages;
+                                    thumbDir = (Settings.SaveThumbnailsInnerThumb == true) ? thumbDir : imageDir;
+                                    Process(pageInfo, siteHelper, threadDir, imageDir, thumbDir, _completedImages, _completedThumbs);
+                                }
                             }
                         }
                     }

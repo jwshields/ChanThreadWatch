@@ -54,6 +54,8 @@
             this.pnlParentThreadDescriptionFormat = new System.Windows.Forms.Panel();
             this.grpNamingStructure = new System.Windows.Forms.GroupBox();
             this.grpGeneral = new System.Windows.Forms.GroupBox();
+            this.chkSaveThumbInnerHTML = new System.Windows.Forms.CheckBox();
+            this.chkSaveThumbInnerThumbs = new System.Windows.Forms.CheckBox();
             this.txtMaximumKilobytesPerSecond = new System.Windows.Forms.TextBox();
             this.lblMaximumKilobytesPerSecond = new System.Windows.Forms.Label();
             this.chkBlacklistWildcards = new System.Windows.Forms.CheckBox();
@@ -239,12 +241,17 @@
             // chkSaveThumbnails
             // 
             this.chkSaveThumbnails.AutoSize = true;
+            this.chkSaveThumbnails.Checked = true;
+            this.chkSaveThumbnails.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSaveThumbnails.Location = new System.Drawing.Point(6, 19);
             this.chkSaveThumbnails.Name = "chkSaveThumbnails";
             this.chkSaveThumbnails.Size = new System.Drawing.Size(221, 17);
             this.chkSaveThumbnails.TabIndex = 6;
             this.chkSaveThumbnails.Text = "Save thumbnails and post-process HTML";
+            this.chkSaveThumbnails.ThreeState = true;
             this.chkSaveThumbnails.UseVisualStyleBackColor = true;
+            this.chkSaveThumbnails.CheckedChanged += new System.EventHandler(this.chkSaveThumbnails_CheckedChanged);
+            this.chkSaveThumbnails.CheckStateChanged += new System.EventHandler(this.chkSaveThumbnails_CheckedChanged);
             // 
             // chkRenameDownloadFolderWithDescription
             // 
@@ -405,6 +412,8 @@
             // 
             // grpGeneral
             // 
+            this.grpGeneral.Controls.Add(this.chkSaveThumbInnerHTML);
+            this.grpGeneral.Controls.Add(this.chkSaveThumbInnerThumbs);
             this.grpGeneral.Controls.Add(this.txtMaximumKilobytesPerSecond);
             this.grpGeneral.Controls.Add(this.lblMaximumKilobytesPerSecond);
             this.grpGeneral.Controls.Add(this.chkBlacklistWildcards);
@@ -420,6 +429,32 @@
             this.grpGeneral.TabIndex = 26;
             this.grpGeneral.TabStop = false;
             this.grpGeneral.Text = "General";
+            // 
+            // chkSaveThumbInnerHTML
+            // 
+            this.chkSaveThumbInnerHTML.AutoSize = true;
+            this.chkSaveThumbInnerHTML.Enabled = false;
+            this.chkSaveThumbInnerHTML.Location = new System.Drawing.Point(319, 19);
+            this.chkSaveThumbInnerHTML.Name = "chkSaveThumbInnerHTML";
+            this.chkSaveThumbInnerHTML.Size = new System.Drawing.Size(56, 17);
+            this.chkSaveThumbInnerHTML.TabIndex = 35;
+            this.chkSaveThumbInnerHTML.Text = "HTML";
+            this.chkSaveThumbInnerHTML.UseVisualStyleBackColor = true;
+            this.chkSaveThumbInnerHTML.CheckedChanged += new System.EventHandler(this.chkSaveThumbInnerHTML_CheckedChanged);
+            this.chkSaveThumbInnerHTML.CheckStateChanged += new System.EventHandler(this.chkSaveThumbInnerHTML_CheckedChanged);
+            // 
+            // chkSaveThumbInnerThumbs
+            // 
+            this.chkSaveThumbInnerThumbs.AutoSize = true;
+            this.chkSaveThumbInnerThumbs.Enabled = false;
+            this.chkSaveThumbInnerThumbs.Location = new System.Drawing.Point(233, 19);
+            this.chkSaveThumbInnerThumbs.Name = "chkSaveThumbInnerThumbs";
+            this.chkSaveThumbInnerThumbs.Size = new System.Drawing.Size(80, 17);
+            this.chkSaveThumbInnerThumbs.TabIndex = 34;
+            this.chkSaveThumbInnerThumbs.Text = "Thumbnails";
+            this.chkSaveThumbInnerThumbs.UseVisualStyleBackColor = true;
+            this.chkSaveThumbInnerThumbs.CheckedChanged += new System.EventHandler(this.chkSaveThumbInnerThumbs_CheckedChanged);
+            this.chkSaveThumbInnerThumbs.CheckStateChanged += new System.EventHandler(this.chkSaveThumbInnerThumbs_CheckedChanged);
             // 
             // txtMaximumKilobytesPerSecond
             // 
@@ -762,5 +797,7 @@
         private System.Windows.Forms.Button btnCompletedFolder;
         private System.Windows.Forms.CheckBox chkCompletedFolder;
         private System.Windows.Forms.CheckBox chkCompletedFolderRelative;
+        private System.Windows.Forms.CheckBox chkSaveThumbInnerThumbs;
+        private System.Windows.Forms.CheckBox chkSaveThumbInnerHTML;
     }
 }

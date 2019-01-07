@@ -18,7 +18,11 @@ namespace JDP {
             chkCompletedFolderRelative.Checked = Settings.CompletedFolderIsRelative ?? false;
             chkCustomUserAgent.Checked = Settings.UseCustomUserAgent ?? false;
             txtCustomUserAgent.Text = Settings.CustomUserAgent ?? String.Empty;
-            chkSaveThumbnails.Checked = Settings.SaveThumbnails ?? true;
+// JWS
+            chkSaveThumbnails.CheckState = (Settings.SaveThumbnails.HasValue) ? (CheckState)Settings.SaveThumbnails : CheckState.Checked;
+            chkSaveThumbInnerHTML.Checked = Settings.SaveThumbnailsInnerHTML ?? Convert.ToBoolean(CheckState.Checked);
+            chkSaveThumbInnerThumbs.Checked = Settings.SaveThumbnailsInnerThumb ?? Convert.ToBoolean(CheckState.Checked);
+// JWS
             chkRenameDownloadFolderWithDescription.Checked = Settings.RenameDownloadFolderWithDescription ?? false;
             chkRenameDownloadFolderWithCategory.Checked = Settings.RenameDownloadFolderWithCategory ?? false;
             chkRenameDownloadFolderWithParentThreadDescription.Checked = Settings.RenameDownloadFolderWithParentThreadDescription ?? false;
@@ -121,7 +125,9 @@ namespace JDP {
                 Settings.CompletedFolderIsRelative = chkCompletedFolderRelative.Checked;
                 Settings.UseCustomUserAgent = chkCustomUserAgent.Checked;
                 Settings.CustomUserAgent = txtCustomUserAgent.Text;
-                Settings.SaveThumbnails = chkSaveThumbnails.Checked;
+                Settings.SaveThumbnails = (int) chkSaveThumbnails.CheckState;
+                Settings.SaveThumbnailsInnerHTML = Convert.ToBoolean(chkSaveThumbInnerHTML.Checked);
+                Settings.SaveThumbnailsInnerThumb = Convert.ToBoolean(chkSaveThumbInnerThumbs.Checked);
                 Settings.RenameDownloadFolderWithDescription = chkRenameDownloadFolderWithDescription.Checked;
                 Settings.RenameDownloadFolderWithCategory = chkRenameDownloadFolderWithCategory.Checked;
                 Settings.RenameDownloadFolderWithParentThreadDescription = chkRenameDownloadFolderWithParentThreadDescription.Checked;
@@ -250,6 +256,57 @@ namespace JDP {
             txtCompletedFolder.Text = chkCompletedFolderRelative.Checked ?
                 General.GetRelativeDirectoryPath(path, Settings.ExeDirectory) :
                 General.GetAbsoluteDirectoryPath(path, Settings.ExeDirectory);
+        }
+
+        private void chkSaveThumbnails_CheckedChanged(object sender, EventArgs e)
+        {
+            switch (chkSaveThumbnails.CheckState)
+            {
+                case CheckState.Unchecked:
+                    chkSaveThumbInnerHTML.Enabled = false;
+                    chkSaveThumbInnerThumbs.Enabled = false;
+                    chkSaveThumbInnerThumbs.CheckState = CheckState.Unchecked;
+                    chkSaveThumbInnerHTML.CheckState = CheckState.Unchecked;
+                    break;
+                case CheckState.Indeterminate:
+                    chkSaveThumbInnerHTML.Enabled = true;
+                    chkSaveThumbInnerThumbs.Enabled = true;
+                    chkSaveThumbInnerThumbs.CheckState = CheckState.Checked;
+                    chkSaveThumbInnerHTML.CheckState = CheckState.Checked;
+                    break;
+                case CheckState.Checked:
+                    chkSaveThumbInnerHTML.Enabled = false;
+                    chkSaveThumbInnerThumbs.Enabled = false;
+                    chkSaveThumbInnerThumbs.CheckState = CheckState.Checked;
+                    chkSaveThumbInnerHTML.CheckState = CheckState.Checked;
+                    break;
+            }
+        }
+
+        private void chkSaveThumbInnerThumbs_CheckedChanged(object sender, EventArgs e)
+        {
+            //switch (chkSaveThumbInnerThumbs.CheckState)
+            //{
+            //    case CheckState.Unchecked:
+            //        break;
+            //    case CheckState.Indeterminate:
+            //        break;
+            //    case CheckState.Checked:
+            //        break;
+            //}
+        }
+
+        private void chkSaveThumbInnerHTML_CheckedChanged(object sender, EventArgs e)
+        {
+            //switch (chkSaveThumbInnerThumbs.CheckState)
+            //{
+            //    case CheckState.Unchecked:
+            //        break;
+            //    case CheckState.Indeterminate:
+            //        break;
+            //    case CheckState.Checked:
+            //        break;
+            //}
         }
     }
 }

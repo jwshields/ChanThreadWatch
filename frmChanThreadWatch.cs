@@ -532,7 +532,7 @@ namespace JDP {
         private void miReparse_Click(object sender, EventArgs e) {
             if (_isExiting) return;
             foreach (ThreadWatcher watcher in SelectedThreadWatchers) {
-                if (!watcher.IsRunning && !watcher.IsReparsing && Settings.SaveThumbnails != false) {
+                if (!watcher.IsRunning && !watcher.IsReparsing && Settings.SaveThumbnails != 0) {
                     watcher.BeginReparse();
                 }
             }
