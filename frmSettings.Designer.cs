@@ -433,28 +433,26 @@
             // chkSaveThumbInnerHTML
             // 
             this.chkSaveThumbInnerHTML.AutoSize = true;
-            this.chkSaveThumbInnerHTML.Enabled = false;
             this.chkSaveThumbInnerHTML.Location = new System.Drawing.Point(319, 19);
             this.chkSaveThumbInnerHTML.Name = "chkSaveThumbInnerHTML";
             this.chkSaveThumbInnerHTML.Size = new System.Drawing.Size(56, 17);
             this.chkSaveThumbInnerHTML.TabIndex = 35;
             this.chkSaveThumbInnerHTML.Text = "HTML";
             this.chkSaveThumbInnerHTML.UseVisualStyleBackColor = true;
-            this.chkSaveThumbInnerHTML.CheckedChanged += new System.EventHandler(this.chkSaveThumbInnerHTML_CheckedChanged);
-            this.chkSaveThumbInnerHTML.CheckStateChanged += new System.EventHandler(this.chkSaveThumbInnerHTML_CheckedChanged);
+            this.chkSaveThumbInnerHTML.CheckedChanged += new System.EventHandler(this.chkSaveThumbInner_CheckedChanged);
+            this.chkSaveThumbInnerHTML.CheckStateChanged += new System.EventHandler(this.chkSaveThumbInner_CheckedChanged);
             // 
             // chkSaveThumbInnerThumbs
             // 
             this.chkSaveThumbInnerThumbs.AutoSize = true;
-            this.chkSaveThumbInnerThumbs.Enabled = false;
             this.chkSaveThumbInnerThumbs.Location = new System.Drawing.Point(233, 19);
             this.chkSaveThumbInnerThumbs.Name = "chkSaveThumbInnerThumbs";
             this.chkSaveThumbInnerThumbs.Size = new System.Drawing.Size(80, 17);
             this.chkSaveThumbInnerThumbs.TabIndex = 34;
             this.chkSaveThumbInnerThumbs.Text = "Thumbnails";
             this.chkSaveThumbInnerThumbs.UseVisualStyleBackColor = true;
-            this.chkSaveThumbInnerThumbs.CheckedChanged += new System.EventHandler(this.chkSaveThumbInnerThumbs_CheckedChanged);
-            this.chkSaveThumbInnerThumbs.CheckStateChanged += new System.EventHandler(this.chkSaveThumbInnerThumbs_CheckedChanged);
+            this.chkSaveThumbInnerThumbs.CheckedChanged += new System.EventHandler(this.chkSaveThumbInner_CheckedChanged);
+            this.chkSaveThumbInnerThumbs.CheckStateChanged += new System.EventHandler(this.chkSaveThumbInner_CheckedChanged);
             // 
             // txtMaximumKilobytesPerSecond
             // 

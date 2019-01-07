@@ -261,34 +261,24 @@ namespace JDP {
             switch (chkSaveThumbnails.CheckState)
             {
                 case CheckState.Unchecked:
-                    chkSaveThumbInnerHTML.Enabled = false;
-                    chkSaveThumbInnerThumbs.Enabled = false;
                     chkSaveThumbInnerThumbs.CheckState = CheckState.Unchecked;
                     chkSaveThumbInnerHTML.CheckState = CheckState.Unchecked;
                     break;
-                case CheckState.Indeterminate:
-                    chkSaveThumbInnerHTML.Enabled = true;
-                    chkSaveThumbInnerThumbs.Enabled = true;
-                    chkSaveThumbInnerThumbs.CheckState = CheckState.Checked;
-                    chkSaveThumbInnerHTML.CheckState = CheckState.Checked;
-                    break;
                 case CheckState.Checked:
-                    chkSaveThumbInnerHTML.Enabled = false;
-                    chkSaveThumbInnerThumbs.Enabled = false;
                     chkSaveThumbInnerThumbs.CheckState = CheckState.Checked;
                     chkSaveThumbInnerHTML.CheckState = CheckState.Checked;
                     break;
             }
         }
 
-        private void chkSaveThumbInnerThumbs_CheckedChanged(object sender, EventArgs e)
+        private void chkSaveThumbInner_CheckedChanged(object sender, EventArgs e)
         {
-
-        }
-
-        private void chkSaveThumbInnerHTML_CheckedChanged(object sender, EventArgs e)
-        {
-
+            if ((chkSaveThumbInnerHTML.Checked == true) && (chkSaveThumbInnerThumbs.Checked == true))
+                chkSaveThumbnails.CheckState = CheckState.Checked;
+            else if ((chkSaveThumbInnerThumbs.Checked == false) && (chkSaveThumbInnerHTML.Checked == false))
+                chkSaveThumbnails.CheckState = CheckState.Unchecked;
+            else if ((chkSaveThumbInnerHTML.Checked == true) || (chkSaveThumbInnerThumbs.Checked == true))
+                chkSaveThumbnails.CheckState = CheckState.Indeterminate;
         }
     }
 }
