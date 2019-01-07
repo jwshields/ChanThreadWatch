@@ -18,11 +18,9 @@ namespace JDP {
             chkCompletedFolderRelative.Checked = Settings.CompletedFolderIsRelative ?? false;
             chkCustomUserAgent.Checked = Settings.UseCustomUserAgent ?? false;
             txtCustomUserAgent.Text = Settings.CustomUserAgent ?? String.Empty;
-// JWS
             chkSaveThumbnails.CheckState = (Settings.SaveThumbnails.HasValue) ? (CheckState)Settings.SaveThumbnails : CheckState.Checked;
             chkSaveThumbInnerHTML.Checked = Settings.SaveThumbnailsInnerHTML ?? Convert.ToBoolean(CheckState.Checked);
             chkSaveThumbInnerThumbs.Checked = Settings.SaveThumbnailsInnerThumb ?? Convert.ToBoolean(CheckState.Checked);
-// JWS
             chkRenameDownloadFolderWithDescription.Checked = Settings.RenameDownloadFolderWithDescription ?? false;
             chkRenameDownloadFolderWithCategory.Checked = Settings.RenameDownloadFolderWithCategory ?? false;
             chkRenameDownloadFolderWithParentThreadDescription.Checked = Settings.RenameDownloadFolderWithParentThreadDescription ?? false;
@@ -285,28 +283,12 @@ namespace JDP {
 
         private void chkSaveThumbInnerThumbs_CheckedChanged(object sender, EventArgs e)
         {
-            //switch (chkSaveThumbInnerThumbs.CheckState)
-            //{
-            //    case CheckState.Unchecked:
-            //        break;
-            //    case CheckState.Indeterminate:
-            //        break;
-            //    case CheckState.Checked:
-            //        break;
-            //}
+
         }
 
         private void chkSaveThumbInnerHTML_CheckedChanged(object sender, EventArgs e)
         {
-            //switch (chkSaveThumbInnerThumbs.CheckState)
-            //{
-            //    case CheckState.Unchecked:
-            //        break;
-            //    case CheckState.Indeterminate:
-            //        break;
-            //    case CheckState.Checked:
-            //        break;
-            //}
+
         }
     }
 }
