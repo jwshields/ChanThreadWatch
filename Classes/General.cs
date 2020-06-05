@@ -676,6 +676,22 @@ namespace JDP {
                     });
             }
 
+            foreach (HTMLTag tag in htmlParser.FindStartTags("meta")) {
+                HTMLAttribute nameAttribute = tag.GetAttribute("name");
+                HTMLAttribute contentAttribute = tag.GetAttribute("content");
+                if (nameAttribute != null && contentAttribute != null && !existingOffsets.Contains(contentAttribute.Offset)) {
+                    if (nameAttribute.Value.ToLower() == "referrer" && contentAttribute.Value.ToLower() != "same-origin") {
+                        replaceList.Add(
+                             new ReplaceInfo {
+                                 Offset = contentAttribute.Offset,
+                                 Length = contentAttribute.Length,
+                                 Type = ReplaceType.Other,
+                                 Value = contentAttribute.Name + "=\"same-origin\""
+                             });
+                    }
+                }
+            }
+
             foreach (HTMLTag tag in htmlParser.FindStartTags("a", "img", "script", "link")) {
                 bool isATag = tag.NameEquals("a");
                 bool isImgTag = tag.NameEquals("img");
