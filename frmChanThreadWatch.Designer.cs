@@ -62,6 +62,7 @@
             this.miBlacklist = new System.Windows.Forms.MenuItem();
             this.miCheckNow = new System.Windows.Forms.MenuItem();
             this.miCheckEvery = new System.Windows.Forms.MenuItem();
+            this.miReparse = new System.Windows.Forms.MenuItem();
             this.grpDoubleClick = new System.Windows.Forms.GroupBox();
             this.rbEdit = new System.Windows.Forms.RadioButton();
             this.rbOpenURL = new System.Windows.Forms.RadioButton();
@@ -71,7 +72,6 @@
             this.tmrSaveThreadList = new System.Windows.Forms.Timer(this.components);
             this.btnDownloads = new System.Windows.Forms.Button();
             this.tmrMaintenance = new System.Windows.Forms.Timer(this.components);
-            this.miReparse = new System.Windows.Forms.MenuItem();
             this.btnHelp = new System.Windows.Forms.Button();
             this.niTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmTrayIcon = new System.Windows.Forms.ContextMenu();
@@ -178,7 +178,7 @@
             this.chkAutoFollow.Location = new System.Drawing.Point(12, 126);
             this.chkAutoFollow.Name = "chkAutoFollow";
             this.chkAutoFollow.Size = new System.Drawing.Size(78, 17);
-            this.chkAutoFollow.TabIndex = 14;
+            this.chkAutoFollow.TabIndex = 9;
             this.chkAutoFollow.Text = "Auto-follow";
             this.chkAutoFollow.UseVisualStyleBackColor = true;
             // 
@@ -188,7 +188,7 @@
             this.lblCategory.Location = new System.Drawing.Point(161, 127);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
-            this.lblCategory.TabIndex = 13;
+            this.lblCategory.TabIndex = 10;
             this.lblCategory.Text = "Category:";
             // 
             // cboCategory
@@ -198,7 +198,7 @@
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(129, 21);
             this.cboCategory.Sorted = true;
-            this.cboCategory.TabIndex = 12;
+            this.cboCategory.TabIndex = 11;
             // 
             // pnlCheckEvery
             // 
@@ -215,17 +215,18 @@
             this.txtCheckEvery.Location = new System.Drawing.Point(185, 0);
             this.txtCheckEvery.Name = "txtCheckEvery";
             this.txtCheckEvery.Size = new System.Drawing.Size(40, 20);
-            this.txtCheckEvery.TabIndex = 10;
+            this.txtCheckEvery.TabIndex = 2;
             this.txtCheckEvery.TextChanged += new System.EventHandler(this.txtCheckEvery_TextChanged);
             // 
             // cboCheckEvery
             // 
             this.cboCheckEvery.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCheckEvery.FormattingEnabled = true;
+            this.cboCheckEvery.ItemHeight = 13;
             this.cboCheckEvery.Location = new System.Drawing.Point(124, 0);
             this.cboCheckEvery.Name = "cboCheckEvery";
             this.cboCheckEvery.Size = new System.Drawing.Size(55, 21);
-            this.cboCheckEvery.TabIndex = 8;
+            this.cboCheckEvery.TabIndex = 1;
             this.cboCheckEvery.SelectedIndexChanged += new System.EventHandler(this.cboCheckEvery_SelectedIndexChanged);
             // 
             // lblCheckEvery
@@ -234,7 +235,7 @@
             this.lblCheckEvery.Location = new System.Drawing.Point(3, 3);
             this.lblCheckEvery.Name = "lblCheckEvery";
             this.lblCheckEvery.Size = new System.Drawing.Size(115, 13);
-            this.lblCheckEvery.TabIndex = 7;
+            this.lblCheckEvery.TabIndex = 0;
             this.lblCheckEvery.Text = "Check every (minutes):";
             // 
             // txtImageAuth
@@ -243,7 +244,7 @@
             this.txtImageAuth.Location = new System.Drawing.Point(164, 72);
             this.txtImageAuth.Name = "txtImageAuth";
             this.txtImageAuth.Size = new System.Drawing.Size(184, 20);
-            this.txtImageAuth.TabIndex = 5;
+            this.txtImageAuth.TabIndex = 7;
             // 
             // txtPageAuth
             // 
@@ -251,7 +252,7 @@
             this.txtPageAuth.Location = new System.Drawing.Point(164, 44);
             this.txtPageAuth.Name = "txtPageAuth";
             this.txtPageAuth.Size = new System.Drawing.Size(184, 20);
-            this.txtPageAuth.TabIndex = 3;
+            this.txtPageAuth.TabIndex = 5;
             // 
             // chkImageAuth
             // 
@@ -259,7 +260,7 @@
             this.chkImageAuth.Location = new System.Drawing.Point(12, 74);
             this.chkImageAuth.Name = "chkImageAuth";
             this.chkImageAuth.Size = new System.Drawing.Size(136, 17);
-            this.chkImageAuth.TabIndex = 4;
+            this.chkImageAuth.TabIndex = 6;
             this.chkImageAuth.Text = "Image auth (user:pass):";
             this.chkImageAuth.UseVisualStyleBackColor = true;
             this.chkImageAuth.CheckedChanged += new System.EventHandler(this.chkImageAuth_CheckedChanged);
@@ -270,7 +271,7 @@
             this.chkPageAuth.Location = new System.Drawing.Point(12, 46);
             this.chkPageAuth.Name = "chkPageAuth";
             this.chkPageAuth.Size = new System.Drawing.Size(132, 17);
-            this.chkPageAuth.TabIndex = 2;
+            this.chkPageAuth.TabIndex = 4;
             this.chkPageAuth.Text = "Page auth (user:pass):";
             this.chkPageAuth.UseVisualStyleBackColor = true;
             this.chkPageAuth.CheckedChanged += new System.EventHandler(this.chkPageAuth_CheckedChanged);
@@ -281,7 +282,7 @@
             this.chkOneTime.Location = new System.Drawing.Point(12, 100);
             this.chkOneTime.Name = "chkOneTime";
             this.chkOneTime.Size = new System.Drawing.Size(117, 17);
-            this.chkOneTime.TabIndex = 6;
+            this.chkOneTime.TabIndex = 8;
             this.chkOneTime.Text = "One-time download";
             this.chkOneTime.UseVisualStyleBackColor = true;
             this.chkOneTime.CheckedChanged += new System.EventHandler(this.chkOneTime_CheckedChanged);
@@ -292,7 +293,7 @@
             this.lblURL.Location = new System.Drawing.Point(10, 22);
             this.lblURL.Name = "lblURL";
             this.lblURL.Size = new System.Drawing.Size(32, 13);
-            this.lblURL.TabIndex = 0;
+            this.lblURL.TabIndex = 2;
             this.lblURL.Text = "URL:";
             // 
             // txtPageURL
@@ -300,7 +301,7 @@
             this.txtPageURL.Location = new System.Drawing.Point(48, 18);
             this.txtPageURL.Name = "txtPageURL";
             this.txtPageURL.Size = new System.Drawing.Size(300, 20);
-            this.txtPageURL.TabIndex = 1;
+            this.txtPageURL.TabIndex = 3;
             this.txtPageURL.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPageURL_KeyDown);
             // 
             // btnAdd
@@ -308,7 +309,7 @@
             this.btnAdd.Location = new System.Drawing.Point(265, 154);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(84, 23);
-            this.btnAdd.TabIndex = 9;
+            this.btnAdd.TabIndex = 15;
             this.btnAdd.Text = "Add Thread";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
@@ -319,7 +320,7 @@
             this.btnRemoveCompleted.Location = new System.Drawing.Point(630, 305);
             this.btnRemoveCompleted.Name = "btnRemoveCompleted";
             this.btnRemoveCompleted.Size = new System.Drawing.Size(120, 23);
-            this.btnRemoveCompleted.TabIndex = 3;
+            this.btnRemoveCompleted.TabIndex = 95;
             this.btnRemoveCompleted.Text = "Remove Completed";
             this.btnRemoveCompleted.UseVisualStyleBackColor = true;
             this.btnRemoveCompleted.Click += new System.EventHandler(this.btnRemoveCompleted_Click);
@@ -330,7 +331,7 @@
             this.btnAbout.Location = new System.Drawing.Point(626, 469);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(60, 23);
-            this.btnAbout.TabIndex = 7;
+            this.btnAbout.TabIndex = 9998;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
@@ -341,7 +342,7 @@
             this.btnSettings.Location = new System.Drawing.Point(553, 469);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(67, 23);
-            this.btnSettings.TabIndex = 6;
+            this.btnSettings.TabIndex = 9997;
             this.btnSettings.Text = "Settings";
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
@@ -427,6 +428,12 @@
             this.miCheckEvery.Index = 10;
             this.miCheckEvery.Text = "Check Every";
             // 
+            // miReparse
+            // 
+            this.miReparse.Index = 11;
+            this.miReparse.Text = "Reparse";
+            this.miReparse.Click += new System.EventHandler(this.miReparse_Click);
+            // 
             // grpDoubleClick
             // 
             this.grpDoubleClick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -481,7 +488,7 @@
             this.btnAddFromClipboard.Location = new System.Drawing.Point(630, 337);
             this.btnAddFromClipboard.Name = "btnAddFromClipboard";
             this.btnAddFromClipboard.Size = new System.Drawing.Size(120, 23);
-            this.btnAddFromClipboard.TabIndex = 4;
+            this.btnAddFromClipboard.TabIndex = 100;
             this.btnAddFromClipboard.Text = "Add From Clipboard";
             this.btnAddFromClipboard.UseVisualStyleBackColor = true;
             this.btnAddFromClipboard.Click += new System.EventHandler(this.btnAddFromClipboard_Click);
@@ -498,7 +505,7 @@
             this.btnDownloads.Location = new System.Drawing.Point(463, 469);
             this.btnDownloads.Name = "btnDownloads";
             this.btnDownloads.Size = new System.Drawing.Size(84, 23);
-            this.btnDownloads.TabIndex = 5;
+            this.btnDownloads.TabIndex = 9996;
             this.btnDownloads.Text = "Downloads";
             this.btnDownloads.UseVisualStyleBackColor = true;
             this.btnDownloads.Click += new System.EventHandler(this.btnDownloads_Click);
@@ -509,19 +516,13 @@
             this.tmrMaintenance.Interval = 1000;
             this.tmrMaintenance.Tick += new System.EventHandler(this.tmrMaintenance_Tick);
             // 
-            // miReparse
-            // 
-            this.miReparse.Index = 11;
-            this.miReparse.Text = "Reparse";
-            this.miReparse.Click += new System.EventHandler(this.miReparse_Click);
-            // 
             // btnHelp
             // 
             this.btnHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHelp.Location = new System.Drawing.Point(692, 469);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(60, 23);
-            this.btnHelp.TabIndex = 8;
+            this.btnHelp.TabIndex = 9999;
             this.btnHelp.Text = "Help";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);

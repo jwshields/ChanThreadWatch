@@ -56,6 +56,7 @@
             this.pnlParentThreadDescriptionFormat = new System.Windows.Forms.Panel();
             this.grpNamingStructure = new System.Windows.Forms.GroupBox();
             this.grpGeneral = new System.Windows.Forms.GroupBox();
+            this.chkSaveURLsEncountered = new System.Windows.Forms.CheckBox();
             this.grpThreadStatus = new System.Windows.Forms.GroupBox();
             this.chkThreadStatus = new System.Windows.Forms.CheckBox();
             this.txtThreadStatusBoxThreshold = new System.Windows.Forms.TextBox();
@@ -83,7 +84,6 @@
             this.chkCompletedFolder = new System.Windows.Forms.CheckBox();
             this.chkCompletedFolderRelative = new System.Windows.Forms.CheckBox();
             this.frmSettingsToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.chkSaveURLsEncountered = new System.Windows.Forms.CheckBox();
             this.pnlSlug.SuspendLayout();
             this.grpThreadFolderNaming.SuspendLayout();
             this.pnlParentThreadDescriptionFormat.SuspendLayout();
@@ -131,7 +131,7 @@
             this.btnOK.Location = new System.Drawing.Point(698, 385);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(60, 23);
-            this.btnOK.TabIndex = 14;
+            this.btnOK.TabIndex = 17;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -143,7 +143,7 @@
             this.btnCancel.Location = new System.Drawing.Point(766, 385);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(68, 23);
-            this.btnCancel.TabIndex = 15;
+            this.btnCancel.TabIndex = 18;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -153,7 +153,7 @@
             this.chkCustomUserAgent.Location = new System.Drawing.Point(10, 66);
             this.chkCustomUserAgent.Name = "chkCustomUserAgent";
             this.chkCustomUserAgent.Size = new System.Drawing.Size(117, 17);
-            this.chkCustomUserAgent.TabIndex = 4;
+            this.chkCustomUserAgent.TabIndex = 8;
             this.chkCustomUserAgent.Text = "Custom user agent:";
             this.chkCustomUserAgent.UseVisualStyleBackColor = true;
             this.chkCustomUserAgent.CheckedChanged += new System.EventHandler(this.chkCustomUserAgent_CheckedChanged);
@@ -166,7 +166,7 @@
             this.txtCustomUserAgent.Location = new System.Drawing.Point(140, 64);
             this.txtCustomUserAgent.Name = "txtCustomUserAgent";
             this.txtCustomUserAgent.Size = new System.Drawing.Size(692, 20);
-            this.txtCustomUserAgent.TabIndex = 5;
+            this.txtCustomUserAgent.TabIndex = 9;
             // 
             // chkDownloadFolderRelative
             // 
@@ -187,7 +187,7 @@
             this.lblSettingsLocation.Location = new System.Drawing.Point(8, 393);
             this.lblSettingsLocation.Name = "lblSettingsLocation";
             this.lblSettingsLocation.Size = new System.Drawing.Size(85, 13);
-            this.lblSettingsLocation.TabIndex = 11;
+            this.lblSettingsLocation.TabIndex = 14;
             this.lblSettingsLocation.Text = "Save settings in:";
             // 
             // rbSettingsInAppDataFolder
@@ -197,7 +197,7 @@
             this.rbSettingsInAppDataFolder.Location = new System.Drawing.Point(108, 391);
             this.rbSettingsInAppDataFolder.Name = "rbSettingsInAppDataFolder";
             this.rbSettingsInAppDataFolder.Size = new System.Drawing.Size(130, 17);
-            this.rbSettingsInAppDataFolder.TabIndex = 12;
+            this.rbSettingsInAppDataFolder.TabIndex = 15;
             this.rbSettingsInAppDataFolder.TabStop = true;
             this.rbSettingsInAppDataFolder.Text = "Application data folder";
             this.rbSettingsInAppDataFolder.UseVisualStyleBackColor = true;
@@ -209,7 +209,7 @@
             this.rbSettingsInExeFolder.Location = new System.Drawing.Point(252, 391);
             this.rbSettingsInExeFolder.Name = "rbSettingsInExeFolder";
             this.rbSettingsInExeFolder.Size = new System.Drawing.Size(107, 17);
-            this.rbSettingsInExeFolder.TabIndex = 13;
+            this.rbSettingsInExeFolder.TabIndex = 16;
             this.rbSettingsInExeFolder.TabStop = true;
             this.rbSettingsInExeFolder.Text = "Executable folder";
             this.rbSettingsInExeFolder.UseVisualStyleBackColor = true;
@@ -220,7 +220,7 @@
             this.chkUseOriginalFileNames.Location = new System.Drawing.Point(6, 115);
             this.chkUseOriginalFileNames.Name = "chkUseOriginalFileNames";
             this.chkUseOriginalFileNames.Size = new System.Drawing.Size(135, 17);
-            this.chkUseOriginalFileNames.TabIndex = 8;
+            this.chkUseOriginalFileNames.TabIndex = 2;
             this.chkUseOriginalFileNames.Text = "Use original filenames *";
             this.frmSettingsToolTip.SetToolTip(this.chkUseOriginalFileNames, "Only supported for some sites");
             this.chkUseOriginalFileNames.UseVisualStyleBackColor = true;
@@ -231,7 +231,7 @@
             this.chkVerifyImageHashes.Location = new System.Drawing.Point(6, 55);
             this.chkVerifyImageHashes.Name = "chkVerifyImageHashes";
             this.chkVerifyImageHashes.Size = new System.Drawing.Size(127, 17);
-            this.chkVerifyImageHashes.TabIndex = 9;
+            this.chkVerifyImageHashes.TabIndex = 1;
             this.chkVerifyImageHashes.Text = "Verify image hashes *";
             this.frmSettingsToolTip.SetToolTip(this.chkVerifyImageHashes, "Only supported for some sites");
             this.chkVerifyImageHashes.UseVisualStyleBackColor = true;
@@ -242,7 +242,7 @@
             this.chkCheckForUpdates.Location = new System.Drawing.Point(206, 42);
             this.chkCheckForUpdates.Name = "chkCheckForUpdates";
             this.chkCheckForUpdates.Size = new System.Drawing.Size(197, 30);
-            this.chkCheckForUpdates.TabIndex = 10;
+            this.chkCheckForUpdates.TabIndex = 4;
             this.chkCheckForUpdates.Text = "Automatically check for and notify of\r\nupdated versions of this program";
             this.chkCheckForUpdates.UseVisualStyleBackColor = true;
             // 
@@ -252,7 +252,7 @@
             this.chkSaveThumbnails.Location = new System.Drawing.Point(6, 19);
             this.chkSaveThumbnails.Name = "chkSaveThumbnails";
             this.chkSaveThumbnails.Size = new System.Drawing.Size(190, 30);
-            this.chkSaveThumbnails.TabIndex = 6;
+            this.chkSaveThumbnails.TabIndex = 0;
             this.chkSaveThumbnails.Text = "Save thumbnails and Post-Process\r\nHTML";
             this.chkSaveThumbnails.UseVisualStyleBackColor = true;
             // 
@@ -262,7 +262,7 @@
             this.chkRenameDownloadFolderWithDescription.Location = new System.Drawing.Point(6, 19);
             this.chkRenameDownloadFolderWithDescription.Name = "chkRenameDownloadFolderWithDescription";
             this.chkRenameDownloadFolderWithDescription.Size = new System.Drawing.Size(79, 17);
-            this.chkRenameDownloadFolderWithDescription.TabIndex = 7;
+            this.chkRenameDownloadFolderWithDescription.TabIndex = 1;
             this.chkRenameDownloadFolderWithDescription.Text = "Description";
             this.chkRenameDownloadFolderWithDescription.UseVisualStyleBackColor = true;
             // 
@@ -272,7 +272,7 @@
             this.chkUseSlug.Location = new System.Drawing.Point(6, 138);
             this.chkUseSlug.Name = "chkUseSlug";
             this.chkUseSlug.Size = new System.Drawing.Size(147, 17);
-            this.chkUseSlug.TabIndex = 16;
+            this.chkUseSlug.TabIndex = 3;
             this.chkUseSlug.Text = "Use slug in thread name *";
             this.frmSettingsToolTip.SetToolTip(this.chkUseSlug, "Only supported for some sites");
             this.chkUseSlug.UseVisualStyleBackColor = true;
@@ -287,7 +287,7 @@
             this.pnlSlug.Location = new System.Drawing.Point(6, 161);
             this.pnlSlug.Name = "pnlSlug";
             this.pnlSlug.Size = new System.Drawing.Size(308, 26);
-            this.pnlSlug.TabIndex = 17;
+            this.pnlSlug.TabIndex = 4;
             // 
             // lblSlugType
             // 
@@ -295,7 +295,7 @@
             this.lblSlugType.Location = new System.Drawing.Point(3, 8);
             this.lblSlugType.Name = "lblSlugType";
             this.lblSlugType.Size = new System.Drawing.Size(54, 13);
-            this.lblSlugType.TabIndex = 21;
+            this.lblSlugType.TabIndex = 0;
             this.lblSlugType.Text = "Slug type:";
             // 
             // rbSlugOnly
@@ -304,7 +304,7 @@
             this.rbSlugOnly.Location = new System.Drawing.Point(232, 6);
             this.rbSlugOnly.Name = "rbSlugOnly";
             this.rbSlugOnly.Size = new System.Drawing.Size(68, 17);
-            this.rbSlugOnly.TabIndex = 20;
+            this.rbSlugOnly.TabIndex = 3;
             this.rbSlugOnly.TabStop = true;
             this.rbSlugOnly.Text = "Slug only";
             this.rbSlugOnly.UseVisualStyleBackColor = true;
@@ -315,7 +315,7 @@
             this.rbSlugLast.Location = new System.Drawing.Point(134, 6);
             this.rbSlugLast.Name = "rbSlugLast";
             this.rbSlugLast.Size = new System.Drawing.Size(92, 17);
-            this.rbSlugLast.TabIndex = 19;
+            this.rbSlugLast.TabIndex = 2;
             this.rbSlugLast.TabStop = true;
             this.rbSlugLast.Text = "Thread ID first";
             this.rbSlugLast.UseVisualStyleBackColor = true;
@@ -326,7 +326,7 @@
             this.rbSlugFirst.Location = new System.Drawing.Point(63, 6);
             this.rbSlugFirst.Name = "rbSlugFirst";
             this.rbSlugFirst.Size = new System.Drawing.Size(65, 17);
-            this.rbSlugFirst.TabIndex = 18;
+            this.rbSlugFirst.TabIndex = 1;
             this.rbSlugFirst.TabStop = true;
             this.rbSlugFirst.Text = "Slug first";
             this.rbSlugFirst.UseVisualStyleBackColor = true;
@@ -337,7 +337,7 @@
             this.chkRenameDownloadFolderWithCategory.Location = new System.Drawing.Point(91, 19);
             this.chkRenameDownloadFolderWithCategory.Name = "chkRenameDownloadFolderWithCategory";
             this.chkRenameDownloadFolderWithCategory.Size = new System.Drawing.Size(68, 17);
-            this.chkRenameDownloadFolderWithCategory.TabIndex = 18;
+            this.chkRenameDownloadFolderWithCategory.TabIndex = 2;
             this.chkRenameDownloadFolderWithCategory.Text = "Category";
             this.chkRenameDownloadFolderWithCategory.UseVisualStyleBackColor = true;
             // 
@@ -347,7 +347,7 @@
             this.chkRenameDownloadFolderWithParentThreadDescription.Location = new System.Drawing.Point(6, 42);
             this.chkRenameDownloadFolderWithParentThreadDescription.Name = "chkRenameDownloadFolderWithParentThreadDescription";
             this.chkRenameDownloadFolderWithParentThreadDescription.Size = new System.Drawing.Size(144, 17);
-            this.chkRenameDownloadFolderWithParentThreadDescription.TabIndex = 20;
+            this.chkRenameDownloadFolderWithParentThreadDescription.TabIndex = 3;
             this.chkRenameDownloadFolderWithParentThreadDescription.Text = "Parent thread description";
             this.chkRenameDownloadFolderWithParentThreadDescription.UseVisualStyleBackColor = true;
             this.chkRenameDownloadFolderWithParentThreadDescription.CheckedChanged += new System.EventHandler(this.chkRenameDownloadFolderWithParentThreadDescription_CheckedChanged);
@@ -358,7 +358,7 @@
             this.lblParentThreadDescriptionFormat.Location = new System.Drawing.Point(3, 7);
             this.lblParentThreadDescriptionFormat.Name = "lblParentThreadDescriptionFormat";
             this.lblParentThreadDescriptionFormat.Size = new System.Drawing.Size(42, 13);
-            this.lblParentThreadDescriptionFormat.TabIndex = 21;
+            this.lblParentThreadDescriptionFormat.TabIndex = 4;
             this.lblParentThreadDescriptionFormat.Text = "Format:";
             // 
             // txtParentThreadDescriptionFormat
@@ -366,7 +366,7 @@
             this.txtParentThreadDescriptionFormat.Location = new System.Drawing.Point(51, 3);
             this.txtParentThreadDescriptionFormat.Name = "txtParentThreadDescriptionFormat";
             this.txtParentThreadDescriptionFormat.Size = new System.Drawing.Size(150, 20);
-            this.txtParentThreadDescriptionFormat.TabIndex = 22;
+            this.txtParentThreadDescriptionFormat.TabIndex = 5;
             // 
             // chkSortImagesByPoster
             // 
@@ -374,7 +374,7 @@
             this.chkSortImagesByPoster.Location = new System.Drawing.Point(6, 92);
             this.chkSortImagesByPoster.Name = "chkSortImagesByPoster";
             this.chkSortImagesByPoster.Size = new System.Drawing.Size(134, 17);
-            this.chkSortImagesByPoster.TabIndex = 23;
+            this.chkSortImagesByPoster.TabIndex = 1;
             this.chkSortImagesByPoster.Text = "Sort images by poster *";
             this.frmSettingsToolTip.SetToolTip(this.chkSortImagesByPoster, "Only supported for some sites");
             this.chkSortImagesByPoster.UseVisualStyleBackColor = true;
@@ -388,7 +388,7 @@
             this.grpThreadFolderNaming.Location = new System.Drawing.Point(6, 19);
             this.grpThreadFolderNaming.Name = "grpThreadFolderNaming";
             this.grpThreadFolderNaming.Size = new System.Drawing.Size(365, 67);
-            this.grpThreadFolderNaming.TabIndex = 24;
+            this.grpThreadFolderNaming.TabIndex = 0;
             this.grpThreadFolderNaming.TabStop = false;
             this.grpThreadFolderNaming.Text = "Thread Folder Naming";
             // 
@@ -411,7 +411,7 @@
             this.grpNamingStructure.Location = new System.Drawing.Point(12, 90);
             this.grpNamingStructure.Name = "grpNamingStructure";
             this.grpNamingStructure.Size = new System.Drawing.Size(379, 204);
-            this.grpNamingStructure.TabIndex = 25;
+            this.grpNamingStructure.TabIndex = 10;
             this.grpNamingStructure.TabStop = false;
             this.grpNamingStructure.Text = "Naming and Structure";
             // 
@@ -431,9 +431,21 @@
             this.grpGeneral.Location = new System.Drawing.Point(397, 90);
             this.grpGeneral.Name = "grpGeneral";
             this.grpGeneral.Size = new System.Drawing.Size(437, 204);
-            this.grpGeneral.TabIndex = 26;
+            this.grpGeneral.TabIndex = 11;
             this.grpGeneral.TabStop = false;
             this.grpGeneral.Text = "General";
+            // 
+            // chkSaveURLsEncountered
+            // 
+            this.chkSaveURLsEncountered.AutoSize = true;
+            this.chkSaveURLsEncountered.Location = new System.Drawing.Point(206, 101);
+            this.chkSaveURLsEncountered.Name = "chkSaveURLsEncountered";
+            this.chkSaveURLsEncountered.Size = new System.Drawing.Size(198, 17);
+            this.chkSaveURLsEncountered.TabIndex = 6;
+            this.chkSaveURLsEncountered.Text = "Enable saving of urls.txt for threads *";
+            this.frmSettingsToolTip.SetToolTip(this.chkSaveURLsEncountered, "When enabled, if a URL is found when parsing a thread,\r\na file named \"urls.txt\" w" +
+        "ill be created and all URLs encountered\r\nwill be saved into it.");
+            this.chkSaveURLsEncountered.UseVisualStyleBackColor = true;
             // 
             // grpThreadStatus
             // 
@@ -442,7 +454,7 @@
             this.grpThreadStatus.Location = new System.Drawing.Point(6, 114);
             this.grpThreadStatus.Name = "grpThreadStatus";
             this.grpThreadStatus.Size = new System.Drawing.Size(172, 52);
-            this.grpThreadStatus.TabIndex = 41;
+            this.grpThreadStatus.TabIndex = 7;
             this.grpThreadStatus.TabStop = false;
             this.grpThreadStatus.Text = "Thread Status Format";
             this.frmSettingsToolTip.SetToolTip(this.grpThreadStatus, resources.GetString("grpThreadStatus.ToolTip"));
@@ -453,7 +465,7 @@
             this.chkThreadStatus.Location = new System.Drawing.Point(6, 19);
             this.chkThreadStatus.Name = "chkThreadStatus";
             this.chkThreadStatus.Size = new System.Drawing.Size(93, 17);
-            this.chkThreadStatus.TabIndex = 42;
+            this.chkThreadStatus.TabIndex = 0;
             this.chkThreadStatus.Text = "Show Minutes";
             this.frmSettingsToolTip.SetToolTip(this.chkThreadStatus, resources.GetString("chkThreadStatus.ToolTip"));
             this.chkThreadStatus.UseVisualStyleBackColor = true;
@@ -466,7 +478,7 @@
             this.txtThreadStatusBoxThreshold.MaxLength = 4;
             this.txtThreadStatusBoxThreshold.Name = "txtThreadStatusBoxThreshold";
             this.txtThreadStatusBoxThreshold.Size = new System.Drawing.Size(61, 20);
-            this.txtThreadStatusBoxThreshold.TabIndex = 38;
+            this.txtThreadStatusBoxThreshold.TabIndex = 1;
             this.frmSettingsToolTip.SetToolTip(this.txtThreadStatusBoxThreshold, resources.GetString("txtThreadStatusBoxThreshold.ToolTip"));
             this.txtThreadStatusBoxThreshold.Leave += new System.EventHandler(this.txtThreadStatusBoxThreshold_Leave);
             // 
@@ -475,7 +487,7 @@
             this.txtMaximumKilobytesPerSecond.Location = new System.Drawing.Point(241, 178);
             this.txtMaximumKilobytesPerSecond.Name = "txtMaximumKilobytesPerSecond";
             this.txtMaximumKilobytesPerSecond.Size = new System.Drawing.Size(56, 20);
-            this.txtMaximumKilobytesPerSecond.TabIndex = 32;
+            this.txtMaximumKilobytesPerSecond.TabIndex = 9;
             this.txtMaximumKilobytesPerSecond.Leave += new System.EventHandler(this.txtMaximumKilobytesPerSecond_Leave);
             // 
             // lblMaximumKilobytesPerSecond
@@ -484,7 +496,7 @@
             this.lblMaximumKilobytesPerSecond.Location = new System.Drawing.Point(3, 181);
             this.lblMaximumKilobytesPerSecond.Name = "lblMaximumKilobytesPerSecond";
             this.lblMaximumKilobytesPerSecond.Size = new System.Drawing.Size(232, 13);
-            this.lblMaximumKilobytesPerSecond.TabIndex = 33;
+            this.lblMaximumKilobytesPerSecond.TabIndex = 8;
             this.lblMaximumKilobytesPerSecond.Text = "Maximum download speed (kB/s, 0 = unlimited):";
             // 
             // chkBlacklistWildcards
@@ -493,7 +505,7 @@
             this.chkBlacklistWildcards.Location = new System.Drawing.Point(206, 78);
             this.chkBlacklistWildcards.Name = "chkBlacklistWildcards";
             this.chkBlacklistWildcards.Size = new System.Drawing.Size(147, 17);
-            this.chkBlacklistWildcards.TabIndex = 28;
+            this.chkBlacklistWildcards.TabIndex = 5;
             this.chkBlacklistWildcards.Text = "Enable blacklist wildcards";
             this.chkBlacklistWildcards.UseVisualStyleBackColor = true;
             // 
@@ -503,7 +515,7 @@
             this.chkMinimizeToTray.Location = new System.Drawing.Point(333, 181);
             this.chkMinimizeToTray.Name = "chkMinimizeToTray";
             this.chkMinimizeToTray.Size = new System.Drawing.Size(98, 17);
-            this.chkMinimizeToTray.TabIndex = 27;
+            this.chkMinimizeToTray.TabIndex = 10;
             this.chkMinimizeToTray.Text = "Minimize to tray";
             this.chkMinimizeToTray.UseVisualStyleBackColor = true;
             // 
@@ -513,7 +525,7 @@
             this.chkInterBoardAutoFollow.Location = new System.Drawing.Point(6, 78);
             this.chkInterBoardAutoFollow.Name = "chkInterBoardAutoFollow";
             this.chkInterBoardAutoFollow.Size = new System.Drawing.Size(161, 30);
-            this.chkInterBoardAutoFollow.TabIndex = 12;
+            this.chkInterBoardAutoFollow.TabIndex = 2;
             this.chkInterBoardAutoFollow.Text = "Follow threads outside of the\r\ncurrent board *";
             this.frmSettingsToolTip.SetToolTip(this.chkInterBoardAutoFollow, "Only supported for some sites");
             this.chkInterBoardAutoFollow.UseVisualStyleBackColor = true;
@@ -524,7 +536,7 @@
             this.chkRecursiveAutoFollow.Location = new System.Drawing.Point(206, 19);
             this.chkRecursiveAutoFollow.Name = "chkRecursiveAutoFollow";
             this.chkRecursiveAutoFollow.Size = new System.Drawing.Size(205, 17);
-            this.chkRecursiveAutoFollow.TabIndex = 11;
+            this.chkRecursiveAutoFollow.TabIndex = 3;
             this.chkRecursiveAutoFollow.Text = "Recursively auto-follow child threads *";
             this.frmSettingsToolTip.SetToolTip(this.chkRecursiveAutoFollow, "Only supported for some sites");
             this.chkRecursiveAutoFollow.UseVisualStyleBackColor = true;
@@ -536,7 +548,7 @@
             this.lblSupportedSitesNote.Location = new System.Drawing.Point(394, 390);
             this.lblSupportedSitesNote.Name = "lblSupportedSitesNote";
             this.lblSupportedSitesNote.Size = new System.Drawing.Size(152, 13);
-            this.lblSupportedSitesNote.TabIndex = 40;
+            this.lblSupportedSitesNote.TabIndex = 9999;
             this.lblSupportedSitesNote.Text = "* Only supported for some sites";
             // 
             // cboWindowTitle
@@ -546,14 +558,14 @@
             this.cboWindowTitle.Location = new System.Drawing.Point(71, 29);
             this.cboWindowTitle.Name = "cboWindowTitle";
             this.cboWindowTitle.Size = new System.Drawing.Size(128, 21);
-            this.cboWindowTitle.TabIndex = 36;
+            this.cboWindowTitle.TabIndex = 1;
             // 
             // txtWindowTitle
             // 
             this.txtWindowTitle.Location = new System.Drawing.Point(71, 3);
             this.txtWindowTitle.Name = "txtWindowTitle";
             this.txtWindowTitle.Size = new System.Drawing.Size(351, 20);
-            this.txtWindowTitle.TabIndex = 35;
+            this.txtWindowTitle.TabIndex = 0;
             // 
             // btnBackupThreadList
             // 
@@ -561,7 +573,7 @@
             this.btnBackupThreadList.Location = new System.Drawing.Point(289, 47);
             this.btnBackupThreadList.Name = "btnBackupThreadList";
             this.btnBackupThreadList.Size = new System.Drawing.Size(84, 23);
-            this.btnBackupThreadList.TabIndex = 27;
+            this.btnBackupThreadList.TabIndex = 4;
             this.btnBackupThreadList.Text = "Force Backup";
             this.btnBackupThreadList.UseVisualStyleBackColor = true;
             this.btnBackupThreadList.Click += new System.EventHandler(this.btnBackupThreadList_Click);
@@ -573,7 +585,7 @@
             this.pnlBackupEvery.Location = new System.Drawing.Point(196, 15);
             this.pnlBackupEvery.Name = "pnlBackupEvery";
             this.pnlBackupEvery.Size = new System.Drawing.Size(177, 26);
-            this.pnlBackupEvery.TabIndex = 32;
+            this.pnlBackupEvery.TabIndex = 1;
             // 
             // lblBackupEvery
             // 
@@ -581,7 +593,7 @@
             this.lblBackupEvery.Location = new System.Drawing.Point(3, 5);
             this.lblBackupEvery.Name = "lblBackupEvery";
             this.lblBackupEvery.Size = new System.Drawing.Size(121, 13);
-            this.lblBackupEvery.TabIndex = 30;
+            this.lblBackupEvery.TabIndex = 1;
             this.lblBackupEvery.Text = "Backup every (minutes):";
             // 
             // txtBackupEvery
@@ -589,7 +601,7 @@
             this.txtBackupEvery.Location = new System.Drawing.Point(130, 2);
             this.txtBackupEvery.Name = "txtBackupEvery";
             this.txtBackupEvery.Size = new System.Drawing.Size(40, 20);
-            this.txtBackupEvery.TabIndex = 31;
+            this.txtBackupEvery.TabIndex = 2;
             this.txtBackupEvery.Leave += new System.EventHandler(this.txtBackupEvery_Leave);
             // 
             // chkBackupThreadList
@@ -598,7 +610,7 @@
             this.chkBackupThreadList.Location = new System.Drawing.Point(6, 24);
             this.chkBackupThreadList.Name = "chkBackupThreadList";
             this.chkBackupThreadList.Size = new System.Drawing.Size(111, 17);
-            this.chkBackupThreadList.TabIndex = 29;
+            this.chkBackupThreadList.TabIndex = 0;
             this.chkBackupThreadList.Text = "Backup thread list";
             this.chkBackupThreadList.UseVisualStyleBackColor = true;
             this.chkBackupThreadList.CheckedChanged += new System.EventHandler(this.chkBackupThreadList_CheckedChanged);
@@ -612,7 +624,7 @@
             this.grpBackup.Location = new System.Drawing.Point(10, 301);
             this.grpBackup.Name = "grpBackup";
             this.grpBackup.Size = new System.Drawing.Size(379, 76);
-            this.grpBackup.TabIndex = 26;
+            this.grpBackup.TabIndex = 12;
             this.grpBackup.TabStop = false;
             this.grpBackup.Text = "Backup";
             // 
@@ -622,7 +634,7 @@
             this.chkBackupCheckSize.Location = new System.Drawing.Point(6, 47);
             this.chkBackupCheckSize.Name = "chkBackupCheckSize";
             this.chkBackupCheckSize.Size = new System.Drawing.Size(207, 17);
-            this.chkBackupCheckSize.TabIndex = 33;
+            this.chkBackupCheckSize.TabIndex = 3;
             this.chkBackupCheckSize.Text = "Do not backup if current size is smaller";
             this.chkBackupCheckSize.UseVisualStyleBackColor = true;
             // 
@@ -632,7 +644,7 @@
             this.grpWindow.Location = new System.Drawing.Point(397, 300);
             this.grpWindow.Name = "grpWindow";
             this.grpWindow.Size = new System.Drawing.Size(437, 77);
-            this.grpWindow.TabIndex = 34;
+            this.grpWindow.TabIndex = 13;
             this.grpWindow.TabStop = false;
             this.grpWindow.Text = "Window";
             // 
@@ -644,7 +656,7 @@
             this.pnlWindowTitle.Location = new System.Drawing.Point(6, 16);
             this.pnlWindowTitle.Name = "pnlWindowTitle";
             this.pnlWindowTitle.Size = new System.Drawing.Size(425, 54);
-            this.pnlWindowTitle.TabIndex = 32;
+            this.pnlWindowTitle.TabIndex = 0;
             // 
             // btnWindowTitle
             // 
@@ -652,7 +664,7 @@
             this.btnWindowTitle.Location = new System.Drawing.Point(6, 28);
             this.btnWindowTitle.Name = "btnWindowTitle";
             this.btnWindowTitle.Size = new System.Drawing.Size(60, 23);
-            this.btnWindowTitle.TabIndex = 35;
+            this.btnWindowTitle.TabIndex = 2;
             this.btnWindowTitle.Text = "Insert";
             this.btnWindowTitle.UseVisualStyleBackColor = true;
             this.btnWindowTitle.Click += new System.EventHandler(this.btnWindowTitle_Click);
@@ -664,7 +676,7 @@
             this.txtCompletedFolder.Location = new System.Drawing.Point(180, 36);
             this.txtCompletedFolder.Name = "txtCompletedFolder";
             this.txtCompletedFolder.Size = new System.Drawing.Size(472, 20);
-            this.txtCompletedFolder.TabIndex = 36;
+            this.txtCompletedFolder.TabIndex = 5;
             // 
             // btnCompletedFolder
             // 
@@ -672,7 +684,7 @@
             this.btnCompletedFolder.Location = new System.Drawing.Point(658, 34);
             this.btnCompletedFolder.Name = "btnCompletedFolder";
             this.btnCompletedFolder.Size = new System.Drawing.Size(80, 23);
-            this.btnCompletedFolder.TabIndex = 37;
+            this.btnCompletedFolder.TabIndex = 6;
             this.btnCompletedFolder.Text = "Browse...";
             this.btnCompletedFolder.UseVisualStyleBackColor = true;
             this.btnCompletedFolder.Click += new System.EventHandler(this.btnCompletedFolder_Click);
@@ -684,7 +696,7 @@
             this.chkCompletedFolder.Location = new System.Drawing.Point(10, 39);
             this.chkCompletedFolder.Name = "chkCompletedFolder";
             this.chkCompletedFolder.Size = new System.Drawing.Size(164, 17);
-            this.chkCompletedFolder.TabIndex = 38;
+            this.chkCompletedFolder.TabIndex = 4;
             this.chkCompletedFolder.Text = "Move on Remove Completed";
             this.chkCompletedFolder.UseVisualStyleBackColor = true;
             this.chkCompletedFolder.CheckedChanged += new System.EventHandler(this.chkCompletedFolder_CheckedChanged);
@@ -696,20 +708,10 @@
             this.chkCompletedFolderRelative.Location = new System.Drawing.Point(746, 38);
             this.chkCompletedFolderRelative.Name = "chkCompletedFolderRelative";
             this.chkCompletedFolderRelative.Size = new System.Drawing.Size(89, 17);
-            this.chkCompletedFolderRelative.TabIndex = 39;
+            this.chkCompletedFolderRelative.TabIndex = 7;
             this.chkCompletedFolderRelative.Text = "Relative path";
             this.chkCompletedFolderRelative.UseVisualStyleBackColor = true;
             this.chkCompletedFolderRelative.CheckedChanged += new System.EventHandler(this.chkCompletedFolderRelative_CheckedChanged);
-            // 
-            // chkSaveURLsEncountered
-            // 
-            this.chkSaveURLsEncountered.AutoSize = true;
-            this.chkSaveURLsEncountered.Location = new System.Drawing.Point(206, 101);
-            this.chkSaveURLsEncountered.Name = "chkSaveURLsEncountered";
-            this.chkSaveURLsEncountered.Size = new System.Drawing.Size(198, 17);
-            this.chkSaveURLsEncountered.TabIndex = 42;
-            this.chkSaveURLsEncountered.Text = "Enable saving of urls.txt for threads *";
-            this.chkSaveURLsEncountered.UseVisualStyleBackColor = true;
             // 
             // frmSettings
             // 

@@ -55,7 +55,7 @@
             this.btnCancel.Location = new System.Drawing.Point(187, 209);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(68, 23);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -65,7 +65,7 @@
             this.btnOK.Location = new System.Drawing.Point(119, 209);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(60, 23);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -84,7 +84,7 @@
             this.pnlEdit.Location = new System.Drawing.Point(12, 12);
             this.pnlEdit.Name = "pnlEdit";
             this.pnlEdit.Size = new System.Drawing.Size(350, 182);
-            this.pnlEdit.TabIndex = 26;
+            this.pnlEdit.TabIndex = 0;
             // 
             // pnlDescription
             // 
@@ -93,7 +93,7 @@
             this.pnlDescription.Location = new System.Drawing.Point(3, 3);
             this.pnlDescription.Name = "pnlDescription";
             this.pnlDescription.Size = new System.Drawing.Size(200, 29);
-            this.pnlDescription.TabIndex = 39;
+            this.pnlDescription.TabIndex = 0;
             // 
             // txtDescription
             // 
@@ -118,7 +118,7 @@
             this.pnlCategory.Location = new System.Drawing.Point(3, 38);
             this.pnlCategory.Name = "pnlCategory";
             this.pnlCategory.Size = new System.Drawing.Size(200, 29);
-            this.pnlCategory.TabIndex = 38;
+            this.pnlCategory.TabIndex = 1;
             // 
             // lblCategory
             // 
@@ -126,7 +126,7 @@
             this.lblCategory.Location = new System.Drawing.Point(3, 8);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
-            this.lblCategory.TabIndex = 37;
+            this.lblCategory.TabIndex = 0;
             this.lblCategory.Text = "Category:";
             // 
             // cboCategory
@@ -136,7 +136,7 @@
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(129, 21);
             this.cboCategory.Sorted = true;
-            this.cboCategory.TabIndex = 36;
+            this.cboCategory.TabIndex = 1;
             // 
             // chkAutoFollow
             // 
@@ -144,7 +144,7 @@
             this.chkAutoFollow.Location = new System.Drawing.Point(126, 129);
             this.chkAutoFollow.Name = "chkAutoFollow";
             this.chkAutoFollow.Size = new System.Drawing.Size(78, 17);
-            this.chkAutoFollow.TabIndex = 36;
+            this.chkAutoFollow.TabIndex = 7;
             this.chkAutoFollow.Text = "Auto-follow";
             this.chkAutoFollow.UseVisualStyleBackColor = true;
             // 
@@ -156,14 +156,14 @@
             this.pnlCheckEvery.Location = new System.Drawing.Point(3, 152);
             this.pnlCheckEvery.Name = "pnlCheckEvery";
             this.pnlCheckEvery.Size = new System.Drawing.Size(236, 25);
-            this.pnlCheckEvery.TabIndex = 33;
+            this.pnlCheckEvery.TabIndex = 8;
             // 
             // txtCheckEvery
             // 
             this.txtCheckEvery.Location = new System.Drawing.Point(185, 0);
             this.txtCheckEvery.Name = "txtCheckEvery";
             this.txtCheckEvery.Size = new System.Drawing.Size(40, 20);
-            this.txtCheckEvery.TabIndex = 10;
+            this.txtCheckEvery.TabIndex = 2;
             this.txtCheckEvery.TextChanged += new System.EventHandler(this.txtCheckEvery_TextChanged);
             // 
             // cboCheckEvery
@@ -173,7 +173,7 @@
             this.cboCheckEvery.Location = new System.Drawing.Point(124, 0);
             this.cboCheckEvery.Name = "cboCheckEvery";
             this.cboCheckEvery.Size = new System.Drawing.Size(55, 21);
-            this.cboCheckEvery.TabIndex = 8;
+            this.cboCheckEvery.TabIndex = 1;
             this.cboCheckEvery.SelectedIndexChanged += new System.EventHandler(this.cboCheckEvery_SelectedIndexChanged);
             // 
             // lblCheckEvery
@@ -182,7 +182,7 @@
             this.lblCheckEvery.Location = new System.Drawing.Point(3, 4);
             this.lblCheckEvery.Name = "lblCheckEvery";
             this.lblCheckEvery.Size = new System.Drawing.Size(115, 13);
-            this.lblCheckEvery.TabIndex = 31;
+            this.lblCheckEvery.TabIndex = 0;
             this.lblCheckEvery.Text = "Check every (minutes):";
             // 
             // txtImageAuth
@@ -191,7 +191,7 @@
             this.txtImageAuth.Location = new System.Drawing.Point(155, 101);
             this.txtImageAuth.Name = "txtImageAuth";
             this.txtImageAuth.Size = new System.Drawing.Size(184, 20);
-            this.txtImageAuth.TabIndex = 29;
+            this.txtImageAuth.TabIndex = 5;
             // 
             // txtPageAuth
             // 
@@ -199,7 +199,7 @@
             this.txtPageAuth.Location = new System.Drawing.Point(155, 73);
             this.txtPageAuth.Name = "txtPageAuth";
             this.txtPageAuth.Size = new System.Drawing.Size(184, 20);
-            this.txtPageAuth.TabIndex = 27;
+            this.txtPageAuth.TabIndex = 3;
             // 
             // chkImageAuth
             // 
@@ -207,7 +207,7 @@
             this.chkImageAuth.Location = new System.Drawing.Point(3, 103);
             this.chkImageAuth.Name = "chkImageAuth";
             this.chkImageAuth.Size = new System.Drawing.Size(136, 17);
-            this.chkImageAuth.TabIndex = 28;
+            this.chkImageAuth.TabIndex = 4;
             this.chkImageAuth.Text = "Image auth (user:pass):";
             this.chkImageAuth.UseVisualStyleBackColor = true;
             this.chkImageAuth.CheckedChanged += new System.EventHandler(this.chkImageAuth_CheckedChanged);
@@ -218,7 +218,7 @@
             this.chkPageAuth.Location = new System.Drawing.Point(3, 75);
             this.chkPageAuth.Name = "chkPageAuth";
             this.chkPageAuth.Size = new System.Drawing.Size(132, 17);
-            this.chkPageAuth.TabIndex = 26;
+            this.chkPageAuth.TabIndex = 2;
             this.chkPageAuth.Text = "Page auth (user:pass):";
             this.chkPageAuth.UseVisualStyleBackColor = true;
             this.chkPageAuth.CheckedChanged += new System.EventHandler(this.chkPageAuth_CheckedChanged);
@@ -229,7 +229,7 @@
             this.chkOneTime.Location = new System.Drawing.Point(3, 129);
             this.chkOneTime.Name = "chkOneTime";
             this.chkOneTime.Size = new System.Drawing.Size(117, 17);
-            this.chkOneTime.TabIndex = 30;
+            this.chkOneTime.TabIndex = 6;
             this.chkOneTime.Text = "One-time download";
             this.chkOneTime.UseVisualStyleBackColor = true;
             this.chkOneTime.CheckedChanged += new System.EventHandler(this.chkOneTime_CheckedChanged);
