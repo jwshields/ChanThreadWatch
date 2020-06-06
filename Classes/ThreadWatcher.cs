@@ -29,6 +29,7 @@ namespace JDP {
         private int _checkIntervalSeconds;
         private int _minCheckIntervalSeconds;
         private bool? _threadStatusSimple = Settings.ThreadStatusSimple;
+        private bool? _saveURLs = Settings.SaveURLs;
         private int? _threadStatusThreshold = Settings.ThreadStatusThreshold;
         private string _mainDownloadDirectory = Settings.AbsoluteDownloadDirectory;
         private string _threadDownloadDirectory;
@@ -103,6 +104,10 @@ namespace JDP {
             set { SetSetting(out _autoFollow, value, true, false); }
         }
 
+        public bool? SaveURLs {
+            get { return _saveURLs; }
+            set { SetSetting(out _saveURLs, value, true, false); }
+        }
         public bool DoNotRename { get; set; }
 
         public int CheckIntervalSeconds {
@@ -595,6 +600,7 @@ namespace JDP {
 
         private List<PageInfo> _pageList;
         private HashSet<string> _imageDiskFileNames;
+        private HashSet<string> _urlsSeen;
         private Dictionary<string, DownloadInfo> _completedImages;
         private Dictionary<string, DownloadInfo> _completedThumbs;
         private int _maxFileNameLength;
@@ -622,6 +628,7 @@ namespace JDP {
                             _imageDiskFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                             _completedImages = new Dictionary<string, DownloadInfo>(StringComparer.OrdinalIgnoreCase);
                             _completedThumbs = new Dictionary<string, DownloadInfo>(StringComparer.OrdinalIgnoreCase);
+                            _urlsSeen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                             _maxFileNameLengthBaseDir = 0;
 
                             if (String.IsNullOrEmpty(_threadDownloadDirectory)) {
@@ -707,6 +714,22 @@ namespace JDP {
                                 string crossLinkID = crossLinkSiteHelper.GetPageID();
                                 if (!RootThread.DescendantThreads.ContainsKey(crossLinkID) && RootThread.PageID != crossLinkID) OnAddThread(new AddThreadEventArgs(crossLink));
                             }
+                        }
+
+                        if (Settings.SaveURLs ?? false) {
+                            string urlFileName = "urls.txt";
+                            string urlListFile = Path.Combine(threadDir, urlFileName);
+                            HashSet<string> previousURLs = null;
+                            if (File.Exists(urlListFile)) {
+                                try { previousURLs = new HashSet<string>(File.ReadAllLines(pageInfo.Path)); }
+                                catch { }
+                            }
+                            //foreach (string crossLink in siteHelper.GetCrossLinks(pageInfo.ReplaceList, Settings.InterBoardAutoFollow != false)) {
+                            //    SiteHelper crossLinkSiteHelper = SiteHelpers.GetInstance((new Uri(crossLink)).Host);
+                            //    crossLinkSiteHelper.SetURL(crossLink);
+                            //    string crossLinkID = crossLinkSiteHelper.GetPageID();
+                            //    if (!RootThread.DescendantThreads.ContainsKey(crossLinkID) && RootThread.PageID != crossLinkID) OnAddThread(new AddThreadEventArgs(crossLink));
+                            //}
                         }
 
                         List<ThumbnailInfo> thumbs = new List<ThumbnailInfo>();

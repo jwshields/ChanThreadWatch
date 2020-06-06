@@ -43,6 +43,7 @@ namespace JDP {
             chkThreadStatus.CheckState = Settings.ThreadStatusSimple == true ? CheckState.Checked : CheckState.Unchecked;
             txtThreadStatusBoxThreshold.Enabled = Settings.ThreadStatusSimple == true;
             txtThreadStatusBoxThreshold.Text = (Settings.ThreadStatusThreshold ?? 10).ToString();
+            chkSaveURLsEncountered.Checked = Settings.SaveURLs ?? false;
             chkBackupCheckSize.Enabled = chkBackupThreadList.Checked;
             chkBackupCheckSize.Checked = Settings.BackupCheckSize ?? false;
             txtMaximumKilobytesPerSecond.Text = ((Settings.MaximumBytesPerSecond ?? 0) / 1024).ToString();
@@ -149,6 +150,7 @@ namespace JDP {
                 Settings.MinimizeToTray = chkMinimizeToTray.Checked;
                 Settings.BackupThreadList = chkBackupThreadList.Checked;
                 Settings.BackupEvery = Int32.Parse(txtBackupEvery.Text);
+                Settings.SaveURLs = chkSaveURLsEncountered.Checked;
                 Settings.ThreadStatusSimple = txtThreadStatusBoxThreshold.Enabled;
                 Int32.TryParse(txtThreadStatusBoxThreshold.Text, out int tmpThreadStatusThreshold);
                 Settings.ThreadStatusThreshold = tmpThreadStatusThreshold;
@@ -214,6 +216,9 @@ namespace JDP {
 
         private void chkUseSlug_CheckedChanged(object sender, EventArgs e) {
             pnlSlug.Enabled = chkUseSlug.Checked;
+        }
+        private void chkSaveURLsEncountered_CheckedChanged(object sender, EventArgs e) {
+            chkSaveURLsEncountered.Enabled = chkSaveURLsEncountered.Checked;
         }
 
         private void chkRenameDownloadFolderWithParentThreadDescription_CheckedChanged(object sender, EventArgs e) {

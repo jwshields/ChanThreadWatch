@@ -83,6 +83,7 @@
             this.chkCompletedFolder = new System.Windows.Forms.CheckBox();
             this.chkCompletedFolderRelative = new System.Windows.Forms.CheckBox();
             this.frmSettingsToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.chkSaveURLsEncountered = new System.Windows.Forms.CheckBox();
             this.pnlSlug.SuspendLayout();
             this.grpThreadFolderNaming.SuspendLayout();
             this.pnlParentThreadDescriptionFormat.SuspendLayout();
@@ -416,6 +417,7 @@
             // 
             // grpGeneral
             // 
+            this.grpGeneral.Controls.Add(this.chkSaveURLsEncountered);
             this.grpGeneral.Controls.Add(this.grpThreadStatus);
             this.grpGeneral.Controls.Add(this.txtMaximumKilobytesPerSecond);
             this.grpGeneral.Controls.Add(this.lblMaximumKilobytesPerSecond);
@@ -699,6 +701,16 @@
             this.chkCompletedFolderRelative.UseVisualStyleBackColor = true;
             this.chkCompletedFolderRelative.CheckedChanged += new System.EventHandler(this.chkCompletedFolderRelative_CheckedChanged);
             // 
+            // chkSaveURLsEncountered
+            // 
+            this.chkSaveURLsEncountered.AutoSize = true;
+            this.chkSaveURLsEncountered.Location = new System.Drawing.Point(206, 101);
+            this.chkSaveURLsEncountered.Name = "chkSaveURLsEncountered";
+            this.chkSaveURLsEncountered.Size = new System.Drawing.Size(198, 17);
+            this.chkSaveURLsEncountered.TabIndex = 42;
+            this.chkSaveURLsEncountered.Text = "Enable saving of urls.txt for threads *";
+            this.chkSaveURLsEncountered.UseVisualStyleBackColor = true;
+            // 
             // frmSettings
             // 
             this.AcceptButton = this.btnOK;
@@ -818,5 +830,6 @@
         private System.Windows.Forms.ToolTip frmSettingsToolTip;
         private System.Windows.Forms.GroupBox grpThreadStatus;
         private System.Windows.Forms.CheckBox chkThreadStatus;
+        private System.Windows.Forms.CheckBox chkSaveURLsEncountered;
     }
 }

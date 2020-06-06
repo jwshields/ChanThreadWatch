@@ -19,7 +19,7 @@ namespace JDP {
         }
 
         public static string ReleaseDate {
-            get { return "2019-Jan-13"; }
+            get { return "2020-06-04"; }
         }
 
         public static string ProgramURL {
@@ -475,7 +475,7 @@ namespace JDP {
             if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
                 !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                url = "http://" + url;
+                url = "https://" + url;
             }
             if (url.IndexOf('/', url.IndexOf("//", StringComparison.Ordinal) + 2) == -1) return null;
             try {

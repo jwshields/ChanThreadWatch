@@ -143,6 +143,11 @@ namespace JDP {
             set { SetBool("UseSlug", value); }
         }
 
+        public static bool? SaveURLs {
+            get { return GetBool("SaveURLs"); }
+            set { SetBool("SaveURLs", value); }
+        }
+
         public static SlugType SlugType {
             get {
                 string value = Get("SlugType") ?? String.Empty;
