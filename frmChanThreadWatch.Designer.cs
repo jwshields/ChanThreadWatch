@@ -479,7 +479,7 @@
             // 
             // tmrUpdateWaitStatus
             // 
-            this.tmrUpdateWaitStatus.Interval = 500;
+            this.tmrUpdateWaitStatus.Interval = 1000;
             this.tmrUpdateWaitStatus.Tick += new System.EventHandler(this.tmrUpdateWaitStatus_Tick);
             // 
             // btnAddFromClipboard
@@ -623,7 +623,7 @@
             // tmrMonitor
             // 
             this.tmrMonitor.Enabled = true;
-            this.tmrMonitor.Interval = 1000;
+            this.tmrMonitor.Interval = 5000;
             this.tmrMonitor.Tick += new System.EventHandler(this.tmrMonitor_Tick);
             // 
             // tmrBackupThreadList

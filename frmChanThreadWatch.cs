@@ -38,12 +38,31 @@ namespace JDP {
             int initialWidth = ClientSize.Width;
             GUI.SetFontAndScaling(this);
             float scaleFactorX = (float)ClientSize.Width / initialWidth;
-            if (Settings.ClientSize != null) {
-                Size newSize = Settings.ClientSize.Value + Size - ClientSize;
-                if (newSize.Width >= MinimumSize.Width && newSize.Height >= MinimumSize.Height) {
-                    ClientSize = Settings.ClientSize.Value;
+            if (Settings.WindowState == FormWindowState.Normal) {
+                if (Settings.WindowSize != null) {
+                    Size newSize = Settings.WindowSize.Value;
+                    if (newSize.Width <= MinimumSize.Width && newSize.Height <= MinimumSize.Height) {
+                        ClientSize = MinimumSize;
+                    }
+                    else {
+                        ClientSize = newSize;
+                    }
+                }
+                if (Settings.WindowLocation != null) {
+                    this.StartPosition = FormStartPosition.Manual;
+                    Point windowLocation = Settings.WindowLocation;
+                    this.Left = windowLocation.X;
+                    this.Top = windowLocation.Y;
                 }
             }
+            else {
+                this.StartPosition = FormStartPosition.Manual;
+                Point windowLocation = Settings.WindowLocation;
+                this.Left = windowLocation.X;
+                this.Top = windowLocation.Y;
+                this.WindowState = FormWindowState.Maximized;
+            }
+
             _columnWidths = new int[lvThreads.Columns.Count];
             for (int iColumn = 0; iColumn < lvThreads.Columns.Count; iColumn++) {
                 ColumnHeader column = lvThreads.Columns[iColumn];
@@ -169,9 +188,9 @@ namespace JDP {
             Settings.AutoFollow = chkAutoFollow.Checked;
             Settings.CheckEvery = pnlCheckEvery.Enabled ? (cboCheckEvery.Enabled ? (int)cboCheckEvery.SelectedValue : Int32.Parse(txtCheckEvery.Text)) : 0;
             Settings.OnThreadDoubleClick = OnThreadDoubleClick;
-            if (WindowState == FormWindowState.Normal) {
-                Settings.ClientSize = ClientSize;
-            }
+            Settings.WindowSize = ClientSize;
+            Settings.WindowLocation = new Point(this.Left, this.Top);
+            Settings.WindowState = WindowState;
 
             int[] columnWidths = new int[lvThreads.Columns.Count];
             int[] columnIndices = new int[lvThreads.Columns.Count];
@@ -248,8 +267,10 @@ namespace JDP {
         }
         
         private void frmChanThreadWatch_ResizeEnd(object sender, EventArgs e) {
-            if (WindowState == FormWindowState.Normal) {
-                Settings.ClientSize = ClientSize;
+            if (WindowState == FormWindowState.Normal || WindowState == FormWindowState.Maximized) {
+                Settings.WindowSize = ClientSize;
+                Settings.WindowState = WindowState;
+                Settings.WindowLocation = new Point(this.Left, this.Top);
             }
         }
 

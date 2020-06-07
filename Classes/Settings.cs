@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace JDP {
     public static class Settings {
@@ -323,13 +324,35 @@ namespace JDP {
             }
         }
 
-        public static Size? ClientSize {
+        public static Size? WindowSize {
             get {
-                int[] size = GetIntArray("ClientSize");
+                int[] size = GetIntArray("WindowSize");
                 if (size.Length != 2 || size[0] < 1 || size[1] < 1) return null;
                 return new Size(size[0], size[1]);
             }
-            set { Set("ClientSize", value.HasValue ? value.Value.Width + "," + value.Value.Height : null); }
+            set { Set("WindowSize", value.HasValue ? value.Value.Width + "," + value.Value.Height : null); }
+        }
+
+        public static Point WindowLocation {
+            get {
+                int[] windowLoc = GetIntArray("WindowLocation");
+                if (windowLoc.Length != 2) {
+                    return new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2 - System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2);
+                }
+                return new Point(windowLoc[0], windowLoc[1]);
+            }
+            set { Set("WindowLocation", !value.IsEmpty ? value.X + "," + value.Y : null); }
+        }
+
+        public static FormWindowState WindowState {
+            get {
+                int? tempState = GetInt("WindowState");
+                return tempState switch {
+                    1 => FormWindowState.Maximized,
+                    _ => FormWindowState.Normal,
+                };
+            }
+            set { Set("WindowState", value == FormWindowState.Maximized ? "1" : "0"); }
         }
 
         public static int[] ColumnWidths {
