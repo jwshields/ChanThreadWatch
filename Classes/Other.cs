@@ -102,7 +102,7 @@ namespace JDP {
     }
 
     public class ConnectionManager {
-        private const int _maxConnectionsPerHost = 4;
+        private const int _maxConnectionsPerHost = 5;
 
         private static Dictionary<string, ConnectionManager> _connectionManagers = new Dictionary<string, ConnectionManager>(StringComparer.OrdinalIgnoreCase);
 

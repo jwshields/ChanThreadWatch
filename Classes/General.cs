@@ -175,7 +175,8 @@ namespace JDP {
                     while (metaContent.Length > currentPosition && (metaContent[currentPosition] >= 48 && metaContent[currentPosition] <= 57 || metaContent[currentPosition] == 46)) {
                         timeString.Append(metaContent[currentPosition++]);
                     }
-                    int.TryParse(timeString.ToString(), out int time);
+                    int time;
+                    int.TryParse(timeString.ToString(), out time);
                     if (time < 0) {
                         return null;
                     }

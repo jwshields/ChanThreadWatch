@@ -330,7 +330,7 @@ namespace JDP {
         public override HashSet<string> GetURLs() {
             HashSet<string> urlList = new HashSet<string>();
             string rexPattern = @"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))";
-            Regex reg = new Regex(rexPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            Regex reg = new Regex(rexPattern, RegexOptions.IgnoreCase);
             foreach (HTMLTagRange postMessageTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("blockquote"),
                 t => HTMLParser.ClassAttributeValueHas(t, "postMessage")), t => _htmlParser.CreateTagRange(t)), r => r != null)) {
                 string tempval = _htmlParser.GetInnerHTML(postMessageTagRange);
