@@ -716,23 +716,32 @@ namespace JDP {
                             }
                         }
 
-                        if (Settings.SaveURLs ?? false) {
-                            string urlFileName = "urls.txt";
-                            string urlListFile = Path.Combine(threadDir, urlFileName);
+                        if (Settings.SaveURLs == true) {
+                            string urlListFile = Path.Combine(threadDir, "urls.txt");
                             HashSet<string> previousURLs = new HashSet<string>();
                             if (File.Exists(urlListFile)) {
-                                try { previousURLs = new HashSet<string>(File.ReadAllLines(urlListFile)); }
+                                try {
+                                    string[] tempURLsFile = File.ReadAllLines(urlListFile);
+                                    previousURLs = new HashSet<string>(tempURLsFile);
+                                }
                                 catch { }
                             }
                             foreach (string urlFound in siteHelper.GetURLs()) {
                                 previousURLs.Add(urlFound);
                             }
-                            if (previousURLs.Count < 1) return;
-                            List<string> outList = new List<string>();
-                            foreach (string url in previousURLs) {
-                                outList.Add(url);
+                            if (previousURLs.Count > 0) {
+                                List<string> outList = new List<string>();
+                                foreach (string url in previousURLs) {
+                                    outList.Add(url);
+                                }
+                                try {
+                                    File.WriteAllLines(urlListFile, outList.ToArray(), Encoding.UTF8);
+                                }
+                                catch (Exception ex) {
+                                    Logger.Log(ex.ToString());
+                                }
                             }
-                            File.WriteAllLines(urlListFile, outList.ToArray());
+                            else { }
                         }
 
                         List<ThumbnailInfo> thumbs = new List<ThumbnailInfo>();
