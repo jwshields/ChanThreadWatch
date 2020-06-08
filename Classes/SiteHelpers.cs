@@ -472,7 +472,8 @@ namespace JDP {
         }
 
         public override bool IsBoardHighTurnover() {
-            return String.Equals(GetBoardName(), "b", StringComparison.OrdinalIgnoreCase);
+            List<string> highTurnoveBoards =  new List<string> { "b", "pol" };
+            return highTurnoveBoards.Contains(GetBoardName().ToLower());
         }
     }
 

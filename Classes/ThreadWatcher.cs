@@ -727,6 +727,7 @@ namespace JDP {
                             foreach (string urlFound in siteHelper.GetURLs()) {
                                 previousURLs.Add(urlFound);
                             }
+                            if (previousURLs.Count < 1) return;
                             List<string> outList = new List<string>();
                             foreach (string url in previousURLs) {
                                 outList.Add(url);
