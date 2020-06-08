@@ -54,29 +54,28 @@ namespace JDP {
             Ascending = true;
         }
 
+        public int Compare(object x, object y) {
+            int cmp = String.Compare(((ListViewItem)x).SubItems[Column].Text, ((ListViewItem)y).SubItems[Column].Text);
+            return Ascending ? cmp : -cmp;
+        }
         //public int Compare(object x, object y)
         //{
-        //    int cmp = String.Compare(((ListViewItem)x).SubItems[Column].Text, ((ListViewItem)y).SubItems[Column].Text);
-        //    return Ascending ? cmp : -cmp;
-        //}
-        public int Compare(object x, object y)
-        {
-            IEnumerable<char> leftText = ((ListViewItem)x).SubItems[Column].Text;
-            IEnumerable<char> rightText = ((ListViewItem)y).SubItems[Column].Text;
-            using IEnumerator<char> leftIt = leftText.GetEnumerator();
-            using IEnumerator<char> rightIt = rightText.GetEnumerator();
-            while (true)
-            {
-                bool left = leftIt.MoveNext();
-                bool right = rightIt.MoveNext();
-                if (!(left && right)) return 0;
-                if (!left) return -1;
-                if (!right) return 1;
+        //    IEnumerable<char> leftText = ((ListViewItem)x).SubItems[Column].Text;
+        //    IEnumerable<char> rightText = ((ListViewItem)y).SubItems[Column].Text;
+        //    using IEnumerator<char> leftIt = leftText.GetEnumerator();
+        //    using IEnumerator<char> rightIt = rightText.GetEnumerator();
+        //    while (true)
+        //    {
+        //        bool left = leftIt.MoveNext();
+        //        bool right = rightIt.MoveNext();
+        //        if (!(left && right)) return 0;
+        //        if (!left) return -1;
+        //        if (!right) return 1;
 
-                int itemResult = String.Compare(leftIt.Current.ToString(), rightIt.Current.ToString());
-                if (itemResult != 0) return Ascending ? itemResult : -itemResult;
-            }
-        }
+        //        int itemResult = String.Compare(leftIt.Current.ToString(), rightIt.Current.ToString());
+        //        if (itemResult != 0) return Ascending ? itemResult : -itemResult;
+        //    }
+        //}
     }
 
     public class EditField<TValue> {

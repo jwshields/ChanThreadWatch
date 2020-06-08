@@ -345,10 +345,12 @@ namespace JDP {
         public static FormWindowState WindowState {
             get {
                 int? tempState = GetInt("WindowState");
-                return tempState switch {
-                    1 => FormWindowState.Maximized,
-                    _ => FormWindowState.Normal,
-                };
+                switch (tempState) {
+                    case 1:
+                        return FormWindowState.Maximized;
+                    default:
+                        return FormWindowState.Normal;
+                }
             }
             set { Set("WindowState", value == FormWindowState.Maximized ? "1" : "0"); }
         }

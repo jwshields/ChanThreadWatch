@@ -438,7 +438,6 @@
             // chkSaveURLsEncountered
             // 
             this.chkSaveURLsEncountered.AutoSize = true;
-            this.chkSaveURLsEncountered.Enabled = false;
             this.chkSaveURLsEncountered.Location = new System.Drawing.Point(206, 101);
             this.chkSaveURLsEncountered.Name = "chkSaveURLsEncountered";
             this.chkSaveURLsEncountered.Size = new System.Drawing.Size(198, 17);
