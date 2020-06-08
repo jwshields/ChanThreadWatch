@@ -719,17 +719,19 @@ namespace JDP {
                         if (Settings.SaveURLs ?? false) {
                             string urlFileName = "urls.txt";
                             string urlListFile = Path.Combine(threadDir, urlFileName);
-                            HashSet<string> previousURLs = null;
+                            HashSet<string> previousURLs = new HashSet<string>();
                             if (File.Exists(urlListFile)) {
-                                try { previousURLs = new HashSet<string>(File.ReadAllLines(pageInfo.Path)); }
+                                try { previousURLs = new HashSet<string>(File.ReadAllLines(urlListFile)); }
                                 catch { }
                             }
-                            //foreach (string crossLink in siteHelper.GetCrossLinks(pageInfo.ReplaceList, Settings.InterBoardAutoFollow != false)) {
-                            //    SiteHelper crossLinkSiteHelper = SiteHelpers.GetInstance((new Uri(crossLink)).Host);
-                            //    crossLinkSiteHelper.SetURL(crossLink);
-                            //    string crossLinkID = crossLinkSiteHelper.GetPageID();
-                            //    if (!RootThread.DescendantThreads.ContainsKey(crossLinkID) && RootThread.PageID != crossLinkID) OnAddThread(new AddThreadEventArgs(crossLink));
-                            //}
+                            foreach (string urlFound in siteHelper.GetURLs()) {
+                                previousURLs.Add(urlFound);
+                            }
+                            List<string> outList = new List<string>();
+                            foreach (string url in previousURLs) {
+                                outList.Add(url);
+                            }
+                            File.WriteAllLines(urlListFile, outList.ToArray());
                         }
 
                         List<ThumbnailInfo> thumbs = new List<ThumbnailInfo>();
