@@ -36,14 +36,14 @@
             // lvDownloads
             // 
             this.lvDownloads.AllowColumnReorder = true;
-            this.lvDownloads.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                                                                             | System.Windows.Forms.AnchorStyles.Left)
-                                                                            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvDownloads.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvDownloads.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-                this.chURL,
-                this.chSize,
-                this.chPercent,
-                this.chSpeed,
+            this.chURL,
+            this.chSize,
+            this.chPercent,
+            this.chSpeed,
                 this.chTry
             });
             this.lvDownloads.FullRowSelect = true;
@@ -77,16 +77,17 @@
             this.chSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.chSpeed.Width = 80;
             // 
-            // tmrUpdateList
-            // 
-            this.tmrUpdateList.Enabled = true;
-            this.tmrUpdateList.Tick += new System.EventHandler(this.tmrUpdateList_Tick);
-            // 
             // chTry
             // 
             this.chTry.Text = "Try";
             this.chTry.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.chTry.Width = 35;
+            // 
+            // tmrUpdateList
+            // 
+            this.tmrUpdateList.Enabled = true;
+            this.tmrUpdateList.Interval = 250;
+            this.tmrUpdateList.Tick += new System.EventHandler(this.tmrUpdateList_Tick);
             // 
             // frmDownloads
             // 

@@ -169,8 +169,7 @@ namespace JDP {
         }
 
         private int GetTagIndex(HTMLTag tag) {
-            int i;
-            if (!_offsetToIndex.TryGetValue(tag.Offset, out i)) {
+            if (!_offsetToIndex.TryGetValue(tag.Offset, out int i)) {
                 throw new Exception("Unable to locate the specified tag.");
             }
             return i;

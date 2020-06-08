@@ -657,6 +657,7 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmChanThreadWatch_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmChanThreadWatch_DragEnter);
             this.Resize += new System.EventHandler(this.frmChanThreadWatch_Resize);
+            this.ResizeBegin += new System.EventHandler(this.frmChanThreadWatch_ResizeBegin);
             this.grpAddThread.ResumeLayout(false);
             this.grpAddThread.PerformLayout();
             this.pnlCheckEvery.ResumeLayout(false);

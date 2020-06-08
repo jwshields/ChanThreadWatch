@@ -19,6 +19,10 @@ namespace JDP {
         private int[] _columnWidths;
         private object _cboCheckEveryLastValue;
         private bool _isLoadingThreadsFromFile;
+        private bool _isResizing;
+        private Size? _lastSize;
+        private FormWindowState _lastWindowState;
+        private Point _lastWindowLocation;
         private static Dictionary<string, int> _categories = new Dictionary<string, int>();
         private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
         private static HashSet<string> _blacklist = new HashSet<string>();
@@ -37,31 +41,41 @@ namespace JDP {
             }
             int initialWidth = ClientSize.Width;
             GUI.SetFontAndScaling(this);
+            _isResizing = true;
             float scaleFactorX = (float)ClientSize.Width / initialWidth;
             if (Settings.WindowState == FormWindowState.Normal) {
-                if (Settings.WindowSize != null) {
-                    Size newSize = Settings.WindowSize.Value;
-                    if (newSize.Width <= MinimumSize.Width && newSize.Height <= MinimumSize.Height) {
+                Size? tempWindowSize = Settings.WindowSize;
+                Point? tempWindowLocation = Settings.WindowLocation;
+                if (tempWindowSize == null) {
+                    ClientSize = MinimumSize;
+                    this.StartPosition = FormStartPosition.CenterScreen;
+                }
+                else {
+                    if (tempWindowSize.Value.Width <= MinimumSize.Width && tempWindowSize.Value.Height <= MinimumSize.Height) {
                         ClientSize = MinimumSize;
                     }
                     else {
-                        ClientSize = newSize;
+                        ClientSize = tempWindowSize.Value;
+                    }
+                    if (tempWindowLocation != null) {
+                        this.StartPosition = FormStartPosition.Manual;
+                        this.Left = tempWindowLocation.Value.X;
+                        this.Top = tempWindowLocation.Value.Y;
                     }
                 }
-                if (Settings.WindowLocation != null) {
-                    this.StartPosition = FormStartPosition.Manual;
-                    Point windowLocation = Settings.WindowLocation;
-                    this.Left = windowLocation.X;
-                    this.Top = windowLocation.Y;
-                }
+                _lastWindowLocation = new Point(this.Left, this.Top);
+                _lastSize = ClientSize;
             }
             else {
                 this.StartPosition = FormStartPosition.Manual;
-                Point windowLocation = Settings.WindowLocation;
-                this.Left = windowLocation.X;
-                this.Top = windowLocation.Y;
+                _lastWindowLocation = new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2 - MinimumSize.Width / 2, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height / 2 - MinimumSize.Height / 2);
+                _lastSize = MinimumSize;
+                this.Left = _lastWindowLocation.X;
+                this.Top = _lastWindowLocation.Y;
                 this.WindowState = FormWindowState.Maximized;
             }
+            _lastWindowState = FormWindowState.Normal;
+            _isResizing = false;
 
             _columnWidths = new int[lvThreads.Columns.Count];
             for (int iColumn = 0; iColumn < lvThreads.Columns.Count; iColumn++) {
@@ -261,17 +275,28 @@ namespace JDP {
         }
 
         private void frmChanThreadWatch_Resize(object sender, EventArgs e) {
+            if (_isResizing) return;
             if (WindowState == FormWindowState.Minimized && Settings.MinimizeToTray == true) {
                 Hide();
+                return;
             }
+            if (_lastWindowState != WindowState && WindowState != FormWindowState.Minimized) {
+                Settings.WindowState = _lastWindowState = WindowState;
+            }
+            Settings.Save();
+            return;
         }
         
         private void frmChanThreadWatch_ResizeEnd(object sender, EventArgs e) {
-            if (WindowState == FormWindowState.Normal || WindowState == FormWindowState.Maximized) {
-                Settings.WindowSize = ClientSize;
-                Settings.WindowState = WindowState;
-                Settings.WindowLocation = new Point(this.Left, this.Top);
-            }
+            _isResizing = false;
+            _lastSize = Settings.WindowSize = ClientSize;
+            _lastWindowLocation = (Point)(Settings.WindowLocation = new Point(this.Left, this.Top));
+            _lastWindowState = Settings.WindowState = WindowState;
+            Settings.Save();
+        }
+
+        private void frmChanThreadWatch_ResizeBegin(object sender, EventArgs e) {
+            _isResizing = true;
         }
 
         private void txtPageURL_KeyDown(object sender, KeyEventArgs e) {
@@ -742,7 +767,7 @@ namespace JDP {
 
         private void niTrayIcon_DoubleClick(object sender, EventArgs e) {
             Show();
-            WindowState = FormWindowState.Normal;
+            WindowState = _lastWindowState;
         }
 
         private void miExit_Click(object sender, EventArgs e) {

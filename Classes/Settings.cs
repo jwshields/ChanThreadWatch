@@ -333,15 +333,13 @@ namespace JDP {
             set { Set("WindowSize", value.HasValue ? value.Value.Width + "," + value.Value.Height : null); }
         }
 
-        public static Point WindowLocation {
+        public static Point? WindowLocation {
             get {
                 int[] windowLoc = GetIntArray("WindowLocation");
-                if (windowLoc.Length != 2) {
-                    return new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2 - System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2);
-                }
+                if (windowLoc.Length != 2) return null;
                 return new Point(windowLoc[0], windowLoc[1]);
             }
-            set { Set("WindowLocation", !value.IsEmpty ? value.X + "," + value.Y : null); }
+            set { Set("WindowLocation", !value.Value.IsEmpty ? value.Value.X + "," + value.Value.Y : null); }
         }
 
         public static FormWindowState WindowState {
