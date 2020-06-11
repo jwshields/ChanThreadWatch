@@ -122,31 +122,37 @@
             // 
             // chDescription
             // 
+            this.chDescription.Tag = "chDescriptionTag";
             this.chDescription.Text = "Description";
             this.chDescription.Width = 110;
             // 
             // chStatus
             // 
+            this.chStatus.Tag = "chStatusTag";
             this.chStatus.Text = "Status";
             this.chStatus.Width = 150;
             // 
             // chLastImageOn
             // 
+            this.chLastImageOn.Tag = "chLastImageOnTag";
             this.chLastImageOn.Text = "Last Image On";
             this.chLastImageOn.Width = 115;
             // 
             // chAddedOn
             // 
+            this.chAddedOn.Tag = "chAddedOnTag";
             this.chAddedOn.Text = "Added On";
             this.chAddedOn.Width = 115;
             // 
             // chAddedFrom
             // 
+            this.chAddedFrom.Tag = "chAddedFromTag";
             this.chAddedFrom.Text = "Added From";
             this.chAddedFrom.Width = 110;
             // 
             // chCategory
             // 
+            this.chCategory.Tag = "chCategoryTag";
             this.chCategory.Text = "Category";
             this.chCategory.Width = 75;
             // 
@@ -653,11 +659,11 @@
             this.Text = "Chan Thread Watch";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmChanThreadWatch_FormClosed);
             this.Shown += new System.EventHandler(this.frmChanThreadWatch_Shown);
+            this.ResizeBegin += new System.EventHandler(this.frmChanThreadWatch_ResizeBegin);
             this.ResizeEnd += new System.EventHandler(this.frmChanThreadWatch_ResizeEnd);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmChanThreadWatch_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmChanThreadWatch_DragEnter);
             this.Resize += new System.EventHandler(this.frmChanThreadWatch_Resize);
-            this.ResizeBegin += new System.EventHandler(this.frmChanThreadWatch_ResizeBegin);
             this.grpAddThread.ResumeLayout(false);
             this.grpAddThread.PerformLayout();
             this.pnlCheckEvery.ResumeLayout(false);

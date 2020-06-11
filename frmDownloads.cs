@@ -32,7 +32,7 @@ namespace JDP {
                     snapshotList.Add(new DownloadedSizeSnapshot(info.StartTicks, 0));
                     _snapshotLists[info.DownloadID] = snapshotList;
                 }
-                while (snapshotList.Count != 0 && ticksNow - snapshotList[0].Ticks > 5000) {
+                while (snapshotList.Count != 0 && ticksNow - snapshotList[0].Ticks > 0) {
                     snapshotList.RemoveAt(0);
                 }
                 snapshotList.Add(new DownloadedSizeSnapshot(ticksNow, info.DownloadedSize));
