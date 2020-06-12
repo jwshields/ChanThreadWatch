@@ -224,7 +224,6 @@
             this.txtCheckEvery.TabIndex = 2;
             this.txtCheckEvery.TextChanged += new System.EventHandler(this.txtCheckEvery_TextChanged);
             this.txtCheckEvery.Leave += new System.EventHandler(this.txtCheckEvery_Leave);
-
             // 
             // cboCheckEvery
             // 

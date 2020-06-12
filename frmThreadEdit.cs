@@ -178,9 +178,37 @@ namespace JDP {
         }
 
         private void txtCheckEvery_TextChanged(object sender, EventArgs e) {
-            if (Int32.TryParse(txtCheckEvery.Text, out int checkEvery)) {
+            int checkEvery;
+            if (Int32.TryParse(txtCheckEvery.Text, out checkEvery)) {
                 cboCheckEvery.SelectedIndex = -1;
                 cboCheckEvery.Enabled = false;
+            }
+            else {
+                if (cboCheckEvery.SelectedIndex == -1) cboCheckEvery.SelectedValue = _cboCheckEveryLastValue;
+                cboCheckEvery.Enabled = true;
+            }
+        }
+
+        private void txtCheckEvery_Leave(object sender, EventArgs e) {
+            if (Int32.TryParse(txtCheckEvery.Text, out int checkEvery)) {
+                int idx_cboCheckEvery = cboCheckEvery.FindStringExact(txtCheckEvery.Text);
+                if (idx_cboCheckEvery != -1) {
+                    cboCheckEvery.SelectedIndex = idx_cboCheckEvery;
+                    cboCheckEvery.Enabled = true;
+                    txtCheckEvery.Text = "";
+                }
+                else {
+                    if (checkEvery == 1) {
+                        idx_cboCheckEvery = cboCheckEvery.FindStringExact("1 or <");
+                        cboCheckEvery.SelectedIndex = idx_cboCheckEvery;
+                        cboCheckEvery.Enabled = true;
+                        txtCheckEvery.Text = "";
+                    }
+                    else {
+                        cboCheckEvery.SelectedIndex = -1;
+                        cboCheckEvery.Enabled = false;
+                    }
+                }
             }
             else {
                 if (cboCheckEvery.SelectedIndex == -1) cboCheckEvery.SelectedValue = _cboCheckEveryLastValue;

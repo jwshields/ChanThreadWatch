@@ -798,7 +798,7 @@ namespace JDP {
                     if (bps > weightedMaximumBytesPerSecond) {
                         long wakeElapsed = _byteCount * 1000L / weightedMaximumBytesPerSecond;
 
-                        int toSleep = (int)(wakeElapsed - elapsedMilliseconds);
+                        int toSleep = (int)((wakeElapsed - elapsedMilliseconds) % 2000);
                         if (toSleep > 1) {
                             try { Thread.Sleep(toSleep); }
                             catch (ThreadAbortException) { }
