@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace JDP {
     public static class Settings {
@@ -236,7 +237,7 @@ namespace JDP {
         }
 
         public static string SettingsFileName {
-            get { return "settings.txt"; }
+            get { return "settings.xml"; }
         }
 
         public static string ThreadsFileName {
@@ -458,28 +459,37 @@ namespace JDP {
 
         public static void Load() {
             string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
-
+            bool needsConversion = false;
             _settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             if (!File.Exists(path)) {
-                return;
+                string pathExeTxt = Path.Combine(GetSettingsDirectory(true), "settings.txt");
+                string pathAppdataTxt = Path.Combine(GetSettingsDirectory(false), "settings.txt");
+                if (File.Exists(pathExeTxt)) {
+                    UseExeDirectoryForSettings = true;
+                    needsConversion = true;
+                }
+                else if (File.Exists(pathAppdataTxt)) {
+                    UseExeDirectoryForSettings = false;
+                    needsConversion = true;
+                }
+                else return;
+                if (needsConversion) {
+                    ConvertTxttoXML();
+                }
             }
 
             try {
-                using (StreamReader sr = File.OpenText(path)) {
-                    string line;
-
-                    while ((line = sr.ReadLine()) != null) {
-                        int pos = line.IndexOf('=');
-
-                        if (pos != -1) {
-                            string name = line.Substring(0, pos);
-                            string val = line.Substring(pos + 1);
-
-                            if (!_settings.ContainsKey(name)) {
-                                _settings.Add(name, val);
-                            }
-                        }
+                XmlTextReader xmlSettingsReader = new XmlTextReader(path);
+                xmlSettingsReader.WhitespaceHandling = WhitespaceHandling.All;
+                XmlDocument settingsDoc = new XmlDocument();
+                settingsDoc.Load(xmlSettingsReader);
+                xmlSettingsReader.Close();
+                foreach (XmlNode childNode in settingsDoc.SelectSingleNode("Settings")) {
+                    string name = childNode.Name;
+                    string val = childNode.InnerText;
+                    if (!_settings.ContainsKey(name)) {
+                        _settings.Add(name, val);
                     }
                 }
             }
@@ -490,17 +500,65 @@ namespace JDP {
 
         public static void Save() {
             string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
+            XmlDocument tempsettingsDoc = new XmlDocument();
+            XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
+            foreach (KeyValuePair<string, string> kvp in _settings) {
+                XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
+                XmlText xmlElementValue = tempsettingsDoc.CreateTextNode(kvp.Value);
+                xmlElement.AppendChild(xmlElementValue);
+                settingsElement.AppendChild(xmlElement);
+            }
+            tempsettingsDoc.AppendChild(settingsElement);
             try {
-                using (StreamWriter sw = File.CreateText(path)) {
-                    lock (_settings) {
-                        foreach (KeyValuePair<string, string> kvp in _settings) {
-                            sw.WriteLine(kvp.Key + "=" + kvp.Value);
-                        }
-                    }
+                using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
+                    writer.Formatting = Formatting.Indented;
+                    tempsettingsDoc.Save(writer);
                 }
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());
+            }
+        }
+
+        private static void ConvertTxttoXML() {
+            string oldPath = Path.Combine(GetSettingsDirectory(), "settings.txt");
+            if (File.Exists(oldPath)) {
+                Dictionary<string, string> _tempSettings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                using (StreamReader sr = File.OpenText(oldPath)) {
+                    string line;
+                    while ((line = sr.ReadLine()) != null) {
+                        int pos = line.IndexOf('=');
+                        if (pos != -1) {
+                            string name = line.Substring(0, pos);
+                            string val = line.Substring(pos + 1);
+                            if (!_tempSettings.ContainsKey(name)) {
+                                _tempSettings.Add(name, val);
+                            }
+                        }
+                    }
+                }
+                XmlDocument tempsettingsDoc = new XmlDocument();
+                XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
+                foreach (KeyValuePair<string, string> kvp in _tempSettings) {
+                    XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
+                    XmlText xmlElementValue = tempsettingsDoc.CreateTextNode(kvp.Value);
+                    xmlElement.AppendChild(xmlElementValue);
+                    settingsElement.AppendChild(xmlElement);
+                }
+                tempsettingsDoc.AppendChild(settingsElement);
+                string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
+                try {
+                    using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
+                        writer.Formatting = Formatting.Indented;
+                        tempsettingsDoc.Save(writer);
+                        writer.Flush();
+                        writer.Close();
+                        File.Delete(oldPath);
+                    }
+                }
+                catch (Exception ex) {
+                    Logger.Log(ex.ToString());
+                }
             }
         }
     }
