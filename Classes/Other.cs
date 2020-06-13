@@ -1002,7 +1002,8 @@ namespace JDP {
         Exiting = 2,
         PageNotFound = 3,
         DownloadComplete = 4,
-        IOError = 5
+        IOError = 5,
+        DirtyShutdown = 6
     }
 
     public enum ReparseType {

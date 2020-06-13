@@ -241,7 +241,7 @@ namespace JDP {
         }
 
         public static string ThreadsFileName {
-            get { return "threads.txt"; }
+            get { return "threads.xml"; }
         }
 
         public static string LogFileName {
@@ -354,6 +354,11 @@ namespace JDP {
                 }
             }
             set { Set("WindowState", value == FormWindowState.Maximized ? "1" : "0"); }
+        }
+
+        public static bool? IsRunning {
+            get { return GetBool("IsRunning"); }
+            set { SetBool("IsRunning", value); }
         }
 
         public static int[] ColumnWidths {

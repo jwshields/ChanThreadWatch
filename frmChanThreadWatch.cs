@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 using JDP.Properties;
 
 namespace JDP {
@@ -21,6 +22,7 @@ namespace JDP {
         private bool _isLoadingThreadsFromFile;
         private bool _isResizing;
         private Size? _lastSize;
+        private bool _unsafeShutdown;
         private FormWindowState _lastWindowState;
         private Point _lastWindowLocation;
         private static Dictionary<string, int> _categories = new Dictionary<string, int>();
@@ -34,6 +36,13 @@ namespace JDP {
             Icon = Resources.ChanThreadWatchIcon;
             niTrayIcon.Icon = Resources.ChanThreadWatchIcon;
             Settings.Load();
+            if (Settings.IsRunning == true) {
+                this._unsafeShutdown = true;
+            }
+            else {
+                Settings.IsRunning = true;
+                this._unsafeShutdown = false;
+            }
             string logPath = Path.Combine(Settings.GetSettingsDirectory(), Settings.LogFileName);
             if (!File.Exists(logPath)) {
                 try { File.Create(logPath); }
@@ -205,6 +214,7 @@ namespace JDP {
             Settings.WindowSize = ClientSize;
             Settings.WindowLocation = new Point(this.Left, this.Top);
             Settings.WindowState = WindowState;
+            Settings.IsRunning = false;
 
             int[] columnWidths = new int[lvThreads.Columns.Count];
             int[] columnIndices = new int[lvThreads.Columns.Count];
@@ -1250,6 +1260,9 @@ namespace JDP {
                 case StopReason.IOError:
                     status += "Error writing to disk";
                     break;
+                case StopReason.DirtyShutdown:
+                    status += "CTW experienced an unsafe shutdown";
+                    break;
                 default:
                     status += "Unknown error";
                     break;
@@ -1279,28 +1292,112 @@ namespace JDP {
         private void SaveThreadList() {
             if (_isLoadingThreadsFromFile) return;
             try {
-                // Prepare lines before writing file so that an exception can't result
-                // in a partially written file.
-                List<string> lines = new List<string>();
-                lines.Add("4"); // File version
+                XmlDocument _tmpThreadsDoc = new XmlDocument();
+                XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
+                _tmpThreadsDoc.AppendChild(rootElem);
+                XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
+                XmlText fileVersionAttribute = _tmpThreadsDoc.CreateTextNode("5");
+                fileVersionElement.AppendChild(fileVersionAttribute);
+                XmlElement threadsElement = _tmpThreadsDoc.CreateElement(String.Empty, "Threads", String.Empty);
                 foreach (ThreadWatcher watcher in ThreadWatchers) {
+                    XmlElement _tmpXmlThread = _tmpThreadsDoc.CreateElement(String.Empty, "Thread", String.Empty);
+
                     WatcherExtraData extraData = (WatcherExtraData)watcher.Tag;
-                    lines.Add(watcher.PageURL);
-                    lines.Add(watcher.PageAuth);
-                    lines.Add(watcher.ImageAuth);
-                    lines.Add(watcher.CheckIntervalSeconds.ToString());
-                    lines.Add(watcher.OneTimeDownload ? "1" : "0");
-                    lines.Add(watcher.ThreadDownloadDirectory != null ? General.GetRelativeDirectoryPath(watcher.ThreadDownloadDirectory, watcher.MainDownloadDirectory) : String.Empty);
-                    lines.Add((watcher.IsStopping && watcher.StopReason != StopReason.Exiting) ? ((int)watcher.StopReason).ToString() : String.Empty);
-                    lines.Add(watcher.Description);
-                    lines.Add(extraData.AddedOn.ToUniversalTime().Ticks.ToString());
-                    lines.Add(extraData.LastImageOn != null ? extraData.LastImageOn.Value.ToUniversalTime().Ticks.ToString() : String.Empty);
-                    lines.Add(extraData.AddedFrom);
-                    lines.Add(watcher.Category);
-                    lines.Add(watcher.AutoFollow ? "1" : "0");
+                    string _tmpURL = watcher.PageURL;
+                    string _tmpPageAuth = watcher.PageAuth;
+                    string _tmpImageAuth = watcher.ImageAuth;
+                    string _tmpCheckIntervalSeconds = watcher.CheckIntervalSeconds.ToString();
+                    string _tmpOneTimeDownload = watcher.OneTimeDownload ? "1" : "0";
+                    string _tmpSaveDir = watcher.ThreadDownloadDirectory != null ? General.GetRelativeDirectoryPath(watcher.ThreadDownloadDirectory, watcher.MainDownloadDirectory) : String.Empty;
+                    string _tmpStopReason = (watcher.IsStopping && watcher.StopReason != StopReason.Exiting) ? ((int)watcher.StopReason).ToString() : String.Empty;
+                    string _tmpDescription = watcher.Description;
+                    string _tmpAddedOn = extraData.AddedOn.ToUniversalTime().Ticks.ToString();
+                    string _tmpLastImageOn = extraData.LastImageOn != null ? extraData.LastImageOn.Value.ToUniversalTime().Ticks.ToString() : String.Empty;
+                    string _tmpAddedFrom = extraData.AddedFrom;
+                    string _tmpCategory = watcher.Category;
+                    string _tmpAutoFollow = watcher.AutoFollow ? "1" : "0";
+
+                    XmlElement threadWatcherURL = _tmpThreadsDoc.CreateElement("URL");
+                    XmlText threadWatcherURLAttr = _tmpThreadsDoc.CreateTextNode(_tmpURL);
+                    threadWatcherURL.AppendChild(threadWatcherURLAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherURL);
+
+                    XmlElement threadWatcherPageAuth = _tmpThreadsDoc.CreateElement("PageAuth");
+                    XmlText threadWatcherPageAuthAttr = _tmpThreadsDoc.CreateTextNode(_tmpPageAuth);
+                    threadWatcherPageAuth.AppendChild(threadWatcherPageAuthAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherPageAuth);
+
+                    XmlElement threadWatcherImageAuth = _tmpThreadsDoc.CreateElement("ImageAuth");
+                    XmlText threadWatcherImageAuthAttr = _tmpThreadsDoc.CreateTextNode(_tmpImageAuth);
+                    threadWatcherImageAuth.AppendChild(threadWatcherImageAuthAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherImageAuth);
+
+                    XmlElement threadWatcherCheckIntervalSeconds = _tmpThreadsDoc.CreateElement("CheckIntervalSeconds");
+                    XmlText threadWatcherCheckIntervalSecondsAttr = _tmpThreadsDoc.CreateTextNode(_tmpCheckIntervalSeconds);
+                    threadWatcherCheckIntervalSeconds.AppendChild(threadWatcherCheckIntervalSecondsAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherCheckIntervalSeconds);
+
+                    XmlElement threadWatcherOneTimeDownload = _tmpThreadsDoc.CreateElement("OneTimeDownload");
+                    XmlText threadWatcherOneTimeDownloadAttr = _tmpThreadsDoc.CreateTextNode(_tmpOneTimeDownload);
+                    threadWatcherOneTimeDownload.AppendChild(threadWatcherOneTimeDownloadAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherOneTimeDownload);
+
+                    XmlElement threadWatcherSaveDir = _tmpThreadsDoc.CreateElement("SaveDir");
+                    XmlText threadWatcherSaveDirAttr = _tmpThreadsDoc.CreateTextNode(_tmpSaveDir);
+                    threadWatcherSaveDir.AppendChild(threadWatcherSaveDirAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherSaveDir);
+
+                    XmlElement threadWatcherStopReason = _tmpThreadsDoc.CreateElement("StopReason");
+                    XmlText threadWatcherStopReasonAttr = _tmpThreadsDoc.CreateTextNode(_tmpStopReason);
+                    threadWatcherStopReason.AppendChild(threadWatcherStopReasonAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherStopReason);
+
+                    XmlElement threadWatcherDescription = _tmpThreadsDoc.CreateElement("Description");
+                    XmlText threadWatcherDescriptionAttr = _tmpThreadsDoc.CreateTextNode(_tmpDescription);
+                    threadWatcherDescription.AppendChild(threadWatcherDescriptionAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherDescription);
+
+                    XmlElement threadWatcherAddedOn = _tmpThreadsDoc.CreateElement("AddedOn");
+                    XmlText threadWatcherAddedOnAttr = _tmpThreadsDoc.CreateTextNode(_tmpAddedOn);
+                    threadWatcherAddedOn.AppendChild(threadWatcherAddedOnAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherAddedOn);
+
+                    XmlElement threadWatcherLastImageOn = _tmpThreadsDoc.CreateElement("LastImageOn");
+                    XmlText threadWatcherLastImageOnAttr = _tmpThreadsDoc.CreateTextNode(_tmpAddedOn);
+                    threadWatcherLastImageOn.AppendChild(threadWatcherLastImageOnAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherLastImageOn);
+
+                    XmlElement threadWatcherAddedFrom = _tmpThreadsDoc.CreateElement("AddedFrom");
+                    XmlText threadWatcherAddedFromAttr = _tmpThreadsDoc.CreateTextNode(_tmpAddedFrom);
+                    threadWatcherAddedFrom.AppendChild(threadWatcherAddedFromAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherAddedFrom);
+
+                    XmlElement threadWatcherCategory = _tmpThreadsDoc.CreateElement("Category");
+                    XmlText threadWatcherCategoryAttr = _tmpThreadsDoc.CreateTextNode(_tmpCategory);
+                    threadWatcherCategory.AppendChild(threadWatcherCategoryAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherCategory);
+
+                    XmlElement threadWatcherAutoFollow = _tmpThreadsDoc.CreateElement("AutoFollow");
+                    XmlText threadWatcherAutoFollowAttr = _tmpThreadsDoc.CreateTextNode(_tmpAutoFollow);
+                    threadWatcherAutoFollow.AppendChild(threadWatcherAutoFollowAttr);
+                    _tmpXmlThread.AppendChild(threadWatcherAutoFollow);
+
+                    threadsElement.AppendChild(_tmpXmlThread);
                 }
+                _tmpThreadsDoc.DocumentElement.AppendChild(fileVersionElement);
+                _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
                 string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
-                File.WriteAllLines(path, lines.ToArray());
+                try {
+                    using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
+                        writer.Formatting = Formatting.Indented;
+                        _tmpThreadsDoc.Save(writer);
+                        writer.Flush();
+                        writer.Close();
+                    }
+                }
+                catch (Exception ex) {
+                    Logger.Log(ex.ToString());
+                }
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());
@@ -1310,63 +1407,63 @@ namespace JDP {
         private void LoadThreadList() {
             try {
                 string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
-                if (!File.Exists(path)) return;
-                string[] lines = File.ReadAllLines(path);
-                if (lines.Length < 1) return;
-                int fileVersion = Int32.Parse(lines[0]);
-                int linesPerThread;
-                switch (fileVersion) {
-                    case 1: linesPerThread = 6; break;
-                    case 2: linesPerThread = 7; break;
-                    case 3: linesPerThread = 10; break;
-                    case 4: linesPerThread = 13; break;
-                    default: return;
+                if (!File.Exists(path)) {
+                    bool needsConversion = false;
+                    string txtPath = Path.Combine(Settings.GetSettingsDirectory(), "threads.txt");
+                    if (File.Exists(txtPath)) {
+                        needsConversion = true;
+                    }
+                    else return;
+                    if (needsConversion) {
+                        bool conversionSuccess = ConvertThreadsTxttoXml();
+                        if (!conversionSuccess) { return; }
+                    }
                 }
-                if (lines.Length < (1 + linesPerThread)) return;
                 _isLoadingThreadsFromFile = true;
                 Invoke(() => {
                     UpdateCategories(String.Empty);
                 });
-                int i = 1;
-                while (i <= lines.Length - linesPerThread) {
-                    ThreadInfo thread = new ThreadInfo { ExtraData = new WatcherExtraData() };
-                    thread.URL = lines[i++];
-                    thread.PageAuth = lines[i++];
-                    thread.ImageAuth = lines[i++];
-                    thread.CheckIntervalSeconds = Int32.Parse(lines[i++]);
-                    thread.OneTimeDownload = lines[i++] == "1";
-                    thread.SaveDir = lines[i++];
-                    thread.SaveDir = thread.SaveDir.Length != 0 ? General.GetAbsoluteDirectoryPath(thread.SaveDir, Settings.AbsoluteDownloadDirectory) : null;
-                    if (fileVersion >= 2) {
-                        string stopReasonLine = lines[i++];
+                try {
+                    XmlTextReader xmlThreadsReader = new XmlTextReader(path);
+                    xmlThreadsReader.WhitespaceHandling = WhitespaceHandling.All;
+                    XmlDocument xmlThreadsDoc = new XmlDocument();
+                    xmlThreadsDoc.Load(xmlThreadsReader);
+                    xmlThreadsReader.Close();
+                    int fileVersion = Int32.Parse(xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("FileVersion").InnerText);
+                    foreach (XmlNode childNode in xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("Threads")) {
+                        if (childNode.Name != "Thread") continue;
+                        ThreadInfo thread = new ThreadInfo { ExtraData = new WatcherExtraData() };
+                        thread.URL = childNode.SelectSingleNode("URL").InnerText;
+                        thread.PageAuth = childNode.SelectSingleNode("PageAuth").InnerText;
+                        thread.ImageAuth = childNode.SelectSingleNode("ImageAuth").InnerText;
+                        thread.CheckIntervalSeconds = Int32.Parse(childNode.SelectSingleNode("CheckIntervalSeconds").InnerText);
+                        thread.OneTimeDownload = childNode.SelectSingleNode("OneTimeDownload").InnerText == "1";
+                        thread.SaveDir = childNode.SelectSingleNode("SaveDir").InnerText;
+                        thread.SaveDir = thread.SaveDir.Length != 0 ? General.GetAbsoluteDirectoryPath(thread.SaveDir, Settings.AbsoluteDownloadDirectory) : null;
+                        string stopReasonLine = childNode.SelectSingleNode("StopReason").InnerText;
                         if (stopReasonLine.Length != 0) {
                             thread.StopReason = (StopReason)Int32.Parse(stopReasonLine);
                         }
-                    }
-                    if (fileVersion >= 3) {
-                        thread.Description = lines[i++];
-                        thread.ExtraData.AddedOn = new DateTime(Int64.Parse(lines[i++]), DateTimeKind.Utc).ToLocalTime();
-                        string lastImageOn = lines[i++];
+                        else if (stopReasonLine.Length == 0 && this._unsafeShutdown) {
+                            thread.StopReason = (StopReason)6;
+                        }
+                        else { };
+                        thread.Description = childNode.SelectSingleNode("Description").InnerText;
+                        thread.ExtraData.AddedOn = new DateTime(Int64.Parse(childNode.SelectSingleNode("AddedOn").InnerText), DateTimeKind.Utc).ToLocalTime();
+                        string lastImageOn = childNode.SelectSingleNode("LastImageOn").InnerText;
                         if (lastImageOn.Length != 0) {
                             thread.ExtraData.LastImageOn = new DateTime(Int64.Parse(lastImageOn), DateTimeKind.Utc).ToLocalTime();
                         }
+                        thread.ExtraData.AddedFrom = childNode.SelectSingleNode("AddedFrom").InnerText;
+                        thread.Category = childNode.SelectSingleNode("Category").InnerText;
+                        thread.AutoFollow = childNode.SelectSingleNode("AutoFollow").InnerText == "1";
+                        Invoke(() => {
+                            AddThread(thread);
+                        });
                     }
-                    else {
-                        thread.Description = String.Empty;
-                        thread.ExtraData.AddedOn = DateTime.Now;
-                    }
-                    if (fileVersion >= 4) {
-                        thread.ExtraData.AddedFrom = lines[i++];
-                        thread.Category = lines[i++];
-                        thread.AutoFollow = lines[i++] == "1";
-                    }
-                    else {
-                        thread.ExtraData.AddedFrom = String.Empty;
-                        thread.Category = String.Empty;
-                    }
-                    Invoke(() => {
-                        AddThread(thread);
-                    });
+                }
+                catch (Exception ex) {
+                    Logger.Log(ex.ToString());
                 }
                 foreach (ThreadWatcher threadWatcher in ThreadWatchers) {
                     ThreadWatcher parentThread;
@@ -1379,7 +1476,7 @@ namespace JDP {
                     Invoke(() => {
                         DisplayAddedFrom(watcher);
                     });
-                    if (Settings.ChildThreadsAreNewFormat == true && threadWatcher.StopReason != StopReason.PageNotFound && threadWatcher.StopReason != StopReason.UserRequest) {
+                    if (Settings.ChildThreadsAreNewFormat == true && threadWatcher.StopReason != StopReason.PageNotFound && threadWatcher.StopReason != StopReason.UserRequest && threadWatcher.StopReason != StopReason.DirtyShutdown) {
                         threadWatcher.Start();
                     }
                 }
@@ -1426,6 +1523,105 @@ namespace JDP {
                 _isLoadingThreadsFromFile = false;
                 Logger.Log(ex.ToString());
             }
+        }
+
+        private bool ConvertThreadsTxttoXml() {
+            string txtPath = Path.Combine(Settings.GetSettingsDirectory(), "threads.txt");
+            string[] lines = File.ReadAllLines(txtPath);
+            if (lines.Length < 1) return false;
+            int fileVersion = Int32.Parse(lines[0]);
+            int linesPerThread;
+            switch (fileVersion) {
+                case 1: linesPerThread = 6; break;
+                case 2: linesPerThread = 7; break;
+                case 3: linesPerThread = 10; break;
+                case 4: linesPerThread = 13; break;
+                default: return false;
+            }
+            if (lines.Length < (1 + linesPerThread)) return false;
+            int i = 1;
+            List<Dictionary<string, string>> _tmpthreads = new List<System.Collections.Generic.Dictionary<string, string>>();
+            while (i <= lines.Length - linesPerThread) {
+                Dictionary<string, string> _tmpThreadDict = new Dictionary<string, string>();
+                _tmpThreadDict.Add("URL", lines[i++]);
+                _tmpThreadDict.Add("PageAuth", lines[i++]);
+                _tmpThreadDict.Add("ImageAuth", lines[i++]);
+                _tmpThreadDict.Add("CheckIntervalSeconds", lines[i++]);
+                _tmpThreadDict.Add("OneTimeDownload", lines[i++]);
+                _tmpThreadDict.Add("SaveDir", lines[i++]);
+                if (fileVersion >= 2) {
+                    string stopReasonLine = lines[i++];
+                    if (stopReasonLine.Length != 0) {
+                        _tmpThreadDict.Add("StopReason", stopReasonLine);
+                    }
+                }
+                if (fileVersion >= 3) {
+                    _tmpThreadDict.Add("Description", lines[i++]);
+                    _tmpThreadDict.Add("AddedOn", new DateTime(Int64.Parse(lines[i++]), DateTimeKind.Utc).ToLocalTime().Ticks.ToString());
+                    string lastImageOn = lines[i++];
+                    if (lastImageOn.Length != 0) {
+                        _tmpThreadDict.Add("LastImageOn", new DateTime(Int64.Parse(lastImageOn), DateTimeKind.Utc).ToLocalTime().Ticks.ToString());
+                    }
+                }
+                else {
+                    _tmpThreadDict.Add("Description", String.Empty);
+                    _tmpThreadDict.Add("AddedOn", DateTime.Now.ToString());
+                }
+                if (fileVersion >= 4) {
+                    _tmpThreadDict.Add("AddedFrom", lines[i++]);
+                    _tmpThreadDict.Add("Category", lines[i++]);
+                    _tmpThreadDict.Add("AutoFollow", lines[i++]);
+                }
+                else {
+                    _tmpThreadDict.Add("AddedFrom", String.Empty);
+                    _tmpThreadDict.Add("Category", String.Empty);
+                }
+                _tmpthreads.Add(_tmpThreadDict);
+            }
+            XmlDocument _tmpThreadsDoc= new XmlDocument();
+            XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
+            _tmpThreadsDoc.AppendChild(rootElem);
+            XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
+            XmlText fileVersionAttribute = _tmpThreadsDoc.CreateTextNode("5");
+            fileVersionElement.AppendChild(fileVersionAttribute);
+            XmlElement threadsElement = _tmpThreadsDoc.CreateElement(String.Empty, "Threads", String.Empty);
+            foreach (Dictionary<string, string> _threaditem in _tmpthreads) {
+                XmlElement _tmpXmlThread = _tmpThreadsDoc.CreateElement(String.Empty, "Thread", String.Empty);
+                foreach (KeyValuePair<string, string> kvp in _threaditem) {
+                    XmlElement _tmpXmlThreadElement = _tmpThreadsDoc.CreateElement(String.Empty, kvp.Key, String.Empty);
+                    XmlText _tmpXmlThreadAttr = _tmpThreadsDoc.CreateTextNode(kvp.Value);
+                    _tmpXmlThreadElement.AppendChild(_tmpXmlThreadAttr);
+                    _tmpXmlThread.AppendChild(_tmpXmlThreadElement);
+                }
+                threadsElement.AppendChild(_tmpXmlThread);
+            }
+            _tmpThreadsDoc.DocumentElement.AppendChild(fileVersionElement);
+            _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
+            string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
+            try {
+                using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
+                    writer.Formatting = Formatting.Indented;
+                    _tmpThreadsDoc.Save(writer);
+                    writer.Flush();
+                    writer.Close();
+                    string threadsTxtBakPath = $"{txtPath}.bak";
+                    if (File.Exists(threadsTxtBakPath)) {
+                        try {
+                            File.Delete(threadsTxtBakPath);
+                        }
+                        catch (Exception ex) {
+                            Logger.Log(ex.ToString());
+                        }
+                    }
+                    else { }
+                    string txtBackupPath = $"{txtPath}.xmlConversion.bak";
+                    File.Move(txtPath, txtBackupPath);
+                }
+            }
+            catch (Exception ex) {
+                Logger.Log(ex.ToString());
+            }
+            return true;
         }
 
         private void LoadBlacklist() {
