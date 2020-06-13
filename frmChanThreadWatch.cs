@@ -1221,29 +1221,29 @@ namespace JDP {
             DisplayStatus(watcher, statusStringOut);
         }
         private static void SetWaitStatusString(int remainingSeconds, out string templateStatusStringOut) {
-            var outNum = remainingSeconds;
-            var outTimeScale = "Second";
+            string outNum = remainingSeconds.ToString();
+            string outTimeScale = "Second";
             templateStatusStringOut = @"Waiting {0} {1}{2}";
             if (Settings.ThreadStatusSimple == true) {
                 var remainingMinutes = remainingSeconds / 60;
                 if ((remainingMinutes <= Settings.ThreadStatusThreshold) && Settings.ThreadStatusThreshold == 0) {
-                    templateStatusStringOut = "Less than 1 Minute";
-                    return;
+                    outNum = "less than 1";
+                    outTimeScale = "Minute";
                 }
                 else if (remainingMinutes >= Settings.ThreadStatusThreshold) {
-                    outNum = remainingSeconds / 60;
+                    outNum = (remainingSeconds / 60).ToString();
                     outTimeScale = "Minute";
                 }
                 else {
-                    outNum = remainingSeconds;
+                    outNum = remainingSeconds.ToString();
                 }
             }
-            var outPlural = outNum == 1 ? "" : "s";
+            var outPlural = outNum == "1" ? "" : "s";
             templateStatusStringOut = string.Format(templateStatusStringOut, outNum, outTimeScale, outPlural);
         }
 
         private void SetStopStatus(ThreadWatcher watcher, StopReason stopReason) {
-            string status = "Stopped: ";
+            string status = "​Stopped: ";
             switch (stopReason) {
                 case StopReason.UserRequest:
                     status += "User requested";
@@ -1465,6 +1465,7 @@ namespace JDP {
                 catch (Exception ex) {
                     Logger.Log(ex.ToString());
                 }
+                List<StopReason> _stopReasons = new List<StopReason> { StopReason.PageNotFound, StopReason.UserRequest, StopReason.DirtyShutdown };
                 foreach (ThreadWatcher threadWatcher in ThreadWatchers) {
                     ThreadWatcher parentThread;
                     _watchers.TryGetValue(((WatcherExtraData)threadWatcher.Tag).AddedFrom, out parentThread);
@@ -1476,7 +1477,7 @@ namespace JDP {
                     Invoke(() => {
                         DisplayAddedFrom(watcher);
                     });
-                    if (Settings.ChildThreadsAreNewFormat == true && threadWatcher.StopReason != StopReason.PageNotFound && threadWatcher.StopReason != StopReason.UserRequest && threadWatcher.StopReason != StopReason.DirtyShutdown) {
+                    if (Settings.ChildThreadsAreNewFormat == true && !_stopReasons.Contains(threadWatcher.StopReason)) {
                         threadWatcher.Start();
                     }
                 }
