@@ -268,9 +268,9 @@ namespace JDP {
         public static string GetSettingsDirectory() {
             if (UseExeDirectoryForSettings == null) {
                 #if DEBUG
-                    UseExeDirectoryForSettings = File.Exists(Path.Combine(Path.Combine(ExeDirectory, DebugFolderName), SettingsFileName));
+                    UseExeDirectoryForSettings = File.Exists(Path.Combine(Path.Combine(ExeDirectory, DebugFolderName), SettingsFileName)) || File.Exists(Path.Combine(Path.Combine(ExeDirectory, DebugFolderName), "settings.txt"));
                 #else
-                    UseExeDirectoryForSettings = File.Exists(Path.Combine(ExeDirectory, SettingsFileName));
+                    UseExeDirectoryForSettings = File.Exists(Path.Combine(ExeDirectory, SettingsFileName)) || File.Exists(Path.Combine(ExeDirectory, "settings.txt"));
                 #endif
             }
             return GetSettingsDirectory(UseExeDirectoryForSettings.Value);
@@ -468,14 +468,8 @@ namespace JDP {
             _settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             if (!File.Exists(path)) {
-                string pathExeTxt = Path.Combine(GetSettingsDirectory(true), "settings.txt");
-                string pathAppdataTxt = Path.Combine(GetSettingsDirectory(false), "settings.txt");
-                if (File.Exists(pathExeTxt)) {
-                    UseExeDirectoryForSettings = true;
-                    needsConversion = true;
-                }
-                else if (File.Exists(pathAppdataTxt)) {
-                    UseExeDirectoryForSettings = false;
+                string pathTxt = Path.Combine(GetSettingsDirectory(UseExeDirectoryForSettings ?? false), "settings.txt");
+                if (File.Exists(pathTxt)) {
                     needsConversion = true;
                 }
                 else return;

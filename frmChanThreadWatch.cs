@@ -1555,6 +1555,9 @@ namespace JDP {
                     if (stopReasonLine.Length != 0) {
                         _tmpThreadDict.Add("StopReason", stopReasonLine);
                     }
+                    else {
+                        _tmpThreadDict.Add("StopReason", String.Empty);
+                    }
                 }
                 if (fileVersion >= 3) {
                     _tmpThreadDict.Add("Description", lines[i++]);
@@ -1563,10 +1566,14 @@ namespace JDP {
                     if (lastImageOn.Length != 0) {
                         _tmpThreadDict.Add("LastImageOn", new DateTime(Int64.Parse(lastImageOn), DateTimeKind.Utc).ToLocalTime().Ticks.ToString());
                     }
+                    else {
+                        _tmpThreadDict.Add("LastImageOn", String.Empty);
+                    }
                 }
                 else {
                     _tmpThreadDict.Add("Description", String.Empty);
                     _tmpThreadDict.Add("AddedOn", DateTime.Now.ToString());
+                    _tmpThreadDict.Add("LastImageOn", String.Empty);
                 }
                 if (fileVersion >= 4) {
                     _tmpThreadDict.Add("AddedFrom", lines[i++]);
@@ -1576,6 +1583,7 @@ namespace JDP {
                 else {
                     _tmpThreadDict.Add("AddedFrom", String.Empty);
                     _tmpThreadDict.Add("Category", String.Empty);
+                    _tmpThreadDict.Add("AutoFollow", String.Empty);
                 }
                 _tmpthreads.Add(_tmpThreadDict);
             }
