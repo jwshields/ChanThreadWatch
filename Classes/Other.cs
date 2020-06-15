@@ -371,7 +371,7 @@ namespace JDP {
     }
 
     public class ThreadPoolManager {
-        private const int _minThreadCount = 4;
+        private const int _minThreadCount = 5;
         private const int _threadCreationDelay = 500;
         private const int _maxThreadIdleTime = 15000;
 
