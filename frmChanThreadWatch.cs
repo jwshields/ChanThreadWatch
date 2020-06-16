@@ -198,7 +198,9 @@ namespace JDP {
                     FocusLastThread();
                 });
             });
+            lvThreads.BeginUpdate();
             thread.Start();
+            lvThreads.EndUpdate();
         }
 
         private void frmChanThreadWatch_FormClosed(object sender, FormClosedEventArgs e) {
@@ -1243,7 +1245,7 @@ namespace JDP {
         }
 
         private void SetStopStatus(ThreadWatcher watcher, StopReason stopReason) {
-            string status = "​Stopped: ";
+            string status = "Stopped: ";
             switch (stopReason) {
                 case StopReason.UserRequest:
                     status += "User requested";
