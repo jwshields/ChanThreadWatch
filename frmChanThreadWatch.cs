@@ -21,10 +21,9 @@ namespace JDP {
         private object _cboCheckEveryLastValue;
         private bool _isLoadingThreadsFromFile;
         private bool _isResizing;
-        private Size? _lastSize;
         private bool _unsafeShutdown;
         private FormWindowState _lastWindowState;
-        private Point _lastWindowLocation;
+        private bool _isMinimized;
         private static Dictionary<string, int> _categories = new Dictionary<string, int>();
         private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
         private static HashSet<string> _blacklist = new HashSet<string>();
@@ -52,38 +51,31 @@ namespace JDP {
             GUI.SetFontAndScaling(this);
             _isResizing = true;
             float scaleFactorX = (float)ClientSize.Width / initialWidth;
-            if (Settings.WindowState == FormWindowState.Normal) {
-                Size? tempWindowSize = Settings.WindowSize;
-                Point? tempWindowLocation = Settings.WindowLocation;
-                if (tempWindowSize == null) {
-                    ClientSize = MinimumSize;
-                    this.StartPosition = FormStartPosition.CenterScreen;
+            Size? tempWindowSize = Settings.WindowSize;
+            if (tempWindowSize == null) {
+                ClientSize = MinimumSize;
+            }
+            else {
+                if (tempWindowSize.Value.Width <= MinimumSize.Width && tempWindowSize.Value.Height <= MinimumSize.Height) {
+                    Size = MinimumSize;
                 }
                 else {
-                    if (tempWindowSize.Value.Width <= MinimumSize.Width && tempWindowSize.Value.Height <= MinimumSize.Height) {
-                        ClientSize = MinimumSize;
-                    }
-                    else {
-                        ClientSize = tempWindowSize.Value;
-                    }
-                    if (tempWindowLocation != null) {
-                        this.StartPosition = FormStartPosition.Manual;
-                        this.Left = tempWindowLocation.Value.X;
-                        this.Top = tempWindowLocation.Value.Y;
-                    }
+                    Size = tempWindowSize.Value;
                 }
-                _lastWindowLocation = new Point(this.Left, this.Top);
-                _lastSize = ClientSize;
+            }
+            Point? tempWindowLocation = Settings.WindowLocation;
+            if (tempWindowLocation == null) {
+                this.StartPosition = FormStartPosition.CenterScreen;
             }
             else {
                 this.StartPosition = FormStartPosition.Manual;
-                _lastWindowLocation = new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2 - MinimumSize.Width / 2, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height / 2 - MinimumSize.Height / 2);
-                _lastSize = MinimumSize;
-                this.Left = _lastWindowLocation.X;
-                this.Top = _lastWindowLocation.Y;
+                this.Left = tempWindowLocation.Value.X;
+                this.Top = tempWindowLocation.Value.Y;
+            }
+            if (Settings.WindowState == FormWindowState.Maximized) {
+                this.StartPosition = FormStartPosition.Manual;
                 this.WindowState = FormWindowState.Maximized;
             }
-            _lastWindowState = FormWindowState.Normal;
             _isResizing = false;
 
             _columnWidths = new int[lvThreads.Columns.Count];
@@ -213,8 +205,8 @@ namespace JDP {
             Settings.AutoFollow = chkAutoFollow.Checked;
             Settings.CheckEvery = pnlCheckEvery.Enabled ? (cboCheckEvery.Enabled ? (int)cboCheckEvery.SelectedValue : Int32.Parse(txtCheckEvery.Text)) : 0;
             Settings.OnThreadDoubleClick = OnThreadDoubleClick;
-            Settings.WindowSize = ClientSize;
-            Settings.WindowLocation = new Point(this.Left, this.Top);
+            Settings.WindowSize = RestoreBounds.Size;
+            Settings.WindowLocation = new Point(RestoreBounds.Left, RestoreBounds.Top);
             Settings.WindowState = WindowState;
             Settings.IsRunning = false;
 
@@ -241,8 +233,8 @@ namespace JDP {
 
             // Save before waiting in addition to after in case the wait hangs or is interrupted
             SaveThreadList();
-
             _isExiting = true;
+
             foreach (ThreadWatcher watcher in ThreadWatchers) {
                 while (!watcher.WaitUntilStopped(10) || !watcher.WaitReparse(10)) {
                     Application.DoEvents();
@@ -250,7 +242,6 @@ namespace JDP {
             }
 
             SaveThreadList();
-
             Program.ReleaseMutex();
         }
 
@@ -288,22 +279,33 @@ namespace JDP {
 
         private void frmChanThreadWatch_Resize(object sender, EventArgs e) {
             if (_isResizing) return;
-            if (WindowState == FormWindowState.Minimized && Settings.MinimizeToTray == true) {
-                Hide();
+            if (WindowState == FormWindowState.Minimized) {
+                _isMinimized = true;
+                tmrUpdateWaitStatus.Stop();
+                if (Settings.MinimizeToTray == true) {
+                    Hide();
+                }
                 return;
             }
-            if (_lastWindowState != WindowState && WindowState != FormWindowState.Minimized) {
+            else {
+                if (_isMinimized) {
+                    _isMinimized = false;
+                    UpdateWaitingWatcherStatuses();
+                    tmrUpdateWaitStatus.Start();
+                }
+                Settings.WindowLocation = new Point(RestoreBounds.X, RestoreBounds.Y);
+                Settings.WindowSize = RestoreBounds.Size;
                 Settings.WindowState = _lastWindowState = WindowState;
+                Settings.Save();
             }
-            Settings.Save();
             return;
         }
         
         private void frmChanThreadWatch_ResizeEnd(object sender, EventArgs e) {
             _isResizing = false;
-            _lastSize = Settings.WindowSize = ClientSize;
-            _lastWindowLocation = (Point)(Settings.WindowLocation = new Point(this.Left, this.Top));
-            _lastWindowState = Settings.WindowState = WindowState;
+            Settings.WindowSize = RestoreBounds.Size;
+            Settings.WindowLocation = new Point(RestoreBounds.X, RestoreBounds.Y);
+            Settings.WindowState = _lastWindowState = WindowState;
             Settings.Save();
         }
 
@@ -619,7 +621,7 @@ namespace JDP {
 
         private void btnAbout_Click(object sender, EventArgs e) {
             MessageBox.Show(this, String.Format("Chan Thread Watch{0}Version {1} ({2}){0}{0}Original Author: JDP (jart1126@yahoo.com){0}http://sites.google.com/site/chanthreadwatch/" +
-                                                "{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}{3}",
+                                                "{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}{3}{0}Maintained by: noodle (https://github.com/jwshields){0}https://github.com/jwshields/ChanThreadWatch",
                 Environment.NewLine, General.Version, General.ReleaseDate, General.ProgramURL), "About",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -746,6 +748,29 @@ namespace JDP {
                 if (cboCheckEvery.SelectedIndex == -1) cboCheckEvery.SelectedValue = _cboCheckEveryLastValue;
                 cboCheckEvery.Enabled = true;
             }
+        }
+
+        private void txtBoxThreadFilter_TextChanged(object sender, EventArgs e) {
+            string filterThreadsValue = txtBoxThreadFilter.Text;
+            lvThreads.BeginUpdate();
+            lvThreads.Items.Clear();
+            if (filterThreadsValue == "") {
+                foreach (KeyValuePair<String,ThreadWatcher> watcher in _watchers) {
+                    WatcherExtraData watcherextra = (WatcherExtraData)watcher.Value.Tag;
+                    lvThreads.Items.Add(watcherextra.ListViewItem);
+                }
+            }
+            else {
+                foreach (KeyValuePair<String, ThreadWatcher> watcher in _watchers) {
+                    string watcherdesc = watcher.Value.Description;
+                    if (watcherdesc.Contains(filterThreadsValue)) {
+                        WatcherExtraData watcherextra = (WatcherExtraData)watcher.Value.Tag;
+                        lvThreads.Items.Add(watcherextra.ListViewItem);
+                    }
+                }
+            }
+            lvThreads.EndUpdate();
+            return;
         }
 
         private void cboCheckEvery_SelectedIndexChanged(object sender, EventArgs e) {
@@ -1033,6 +1058,7 @@ namespace JDP {
 
         private void RemoveThreads(bool removeCompleted, bool removeSelected, Action<ThreadWatcher> preRemoveAction) {
             int i = 0;
+            lvThreads.BeginUpdate();
             while (i < lvThreads.Items.Count) {
                 ThreadWatcher watcher = (ThreadWatcher)lvThreads.Items[i].Tag;
                 if ((removeCompleted || (removeSelected && lvThreads.Items[i].Selected)) && !watcher.IsRunning && !watcher.IsReparsing) {
@@ -1050,6 +1076,7 @@ namespace JDP {
                     i++;
                 }
             }
+            lvThreads.EndUpdate();
             _saveThreadList = true;
         }
 
@@ -1240,35 +1267,22 @@ namespace JDP {
                     outNum = remainingSeconds.ToString();
                 }
             }
-            var outPlural = outNum == "1" ? "" : "s";
+            string outPlural = outNum.Equals("1") || outNum.Equals("less than 1") ? "" : "s";
             templateStatusStringOut = string.Format(templateStatusStringOut, outNum, outTimeScale, outPlural);
         }
 
         private void SetStopStatus(ThreadWatcher watcher, StopReason stopReason) {
             string status = "Stopped: ";
-            switch (stopReason) {
-                case StopReason.UserRequest:
-                    status += "User requested";
-                    break;
-                case StopReason.Exiting:
-                    status += "Exiting";
-                    break;
-                case StopReason.PageNotFound:
-                    status += "Page not found";
-                    break;
-                case StopReason.DownloadComplete:
-                    status += "Download complete";
-                    break;
-                case StopReason.IOError:
-                    status += "Error writing to disk";
-                    break;
-                case StopReason.DirtyShutdown:
-                    status += "CTW experienced an unsafe shutdown";
-                    break;
-                default:
-                    status += "Unknown error";
-                    break;
-            }
+            status += stopReason switch {
+                StopReason.UserRequest => "User requested",
+                StopReason.Exiting => "Exiting",
+                StopReason.PageNotFound => "Page not found",
+                StopReason.DownloadComplete => "Download complete",
+                StopReason.IOError => "Error writing to disk",
+                StopReason.DirtyShutdown => "CTW experienced an unsafe shutdown",
+                StopReason.Other => "Unknown error",
+                _ => "Unknown error",
+            };
             DisplayStatus(watcher, status);
         }
 
@@ -1305,42 +1319,32 @@ namespace JDP {
                     XmlElement _tmpXmlThread = _tmpThreadsDoc.CreateElement(String.Empty, "Thread", String.Empty);
 
                     WatcherExtraData extraData = (WatcherExtraData)watcher.Tag;
-                    string _tmpURL = watcher.PageURL;
-                    string _tmpPageAuth = watcher.PageAuth;
-                    string _tmpImageAuth = watcher.ImageAuth;
-                    string _tmpCheckIntervalSeconds = watcher.CheckIntervalSeconds.ToString();
-                    string _tmpOneTimeDownload = watcher.OneTimeDownload ? "1" : "0";
                     string _tmpSaveDir = watcher.ThreadDownloadDirectory != null ? General.GetRelativeDirectoryPath(watcher.ThreadDownloadDirectory, watcher.MainDownloadDirectory) : String.Empty;
-                    string _tmpStopReason = (watcher.IsStopping && watcher.StopReason != StopReason.Exiting) ? ((int)watcher.StopReason).ToString() : String.Empty;
-                    string _tmpDescription = watcher.Description;
-                    string _tmpAddedOn = extraData.AddedOn.ToUniversalTime().Ticks.ToString();
+                    string _tmpStopReason = (watcher.IsStopping && watcher.StopReason != StopReason.Exiting) ? ((int)watcher.StopReason).ToString() : null;
                     string _tmpLastImageOn = extraData.LastImageOn != null ? extraData.LastImageOn.Value.ToUniversalTime().Ticks.ToString() : String.Empty;
-                    string _tmpAddedFrom = extraData.AddedFrom;
-                    string _tmpCategory = watcher.Category;
-                    string _tmpAutoFollow = watcher.AutoFollow ? "1" : "0";
 
                     XmlElement threadWatcherURL = _tmpThreadsDoc.CreateElement("URL");
-                    XmlText threadWatcherURLAttr = _tmpThreadsDoc.CreateTextNode(_tmpURL);
+                    XmlText threadWatcherURLAttr = _tmpThreadsDoc.CreateTextNode(watcher.PageURL);
                     threadWatcherURL.AppendChild(threadWatcherURLAttr);
                     _tmpXmlThread.AppendChild(threadWatcherURL);
 
                     XmlElement threadWatcherPageAuth = _tmpThreadsDoc.CreateElement("PageAuth");
-                    XmlText threadWatcherPageAuthAttr = _tmpThreadsDoc.CreateTextNode(_tmpPageAuth);
+                    XmlText threadWatcherPageAuthAttr = _tmpThreadsDoc.CreateTextNode(watcher.PageAuth);
                     threadWatcherPageAuth.AppendChild(threadWatcherPageAuthAttr);
                     _tmpXmlThread.AppendChild(threadWatcherPageAuth);
 
                     XmlElement threadWatcherImageAuth = _tmpThreadsDoc.CreateElement("ImageAuth");
-                    XmlText threadWatcherImageAuthAttr = _tmpThreadsDoc.CreateTextNode(_tmpImageAuth);
+                    XmlText threadWatcherImageAuthAttr = _tmpThreadsDoc.CreateTextNode(watcher.ImageAuth);
                     threadWatcherImageAuth.AppendChild(threadWatcherImageAuthAttr);
                     _tmpXmlThread.AppendChild(threadWatcherImageAuth);
 
                     XmlElement threadWatcherCheckIntervalSeconds = _tmpThreadsDoc.CreateElement("CheckIntervalSeconds");
-                    XmlText threadWatcherCheckIntervalSecondsAttr = _tmpThreadsDoc.CreateTextNode(_tmpCheckIntervalSeconds);
+                    XmlText threadWatcherCheckIntervalSecondsAttr = _tmpThreadsDoc.CreateTextNode(watcher.CheckIntervalSeconds.ToString());
                     threadWatcherCheckIntervalSeconds.AppendChild(threadWatcherCheckIntervalSecondsAttr);
                     _tmpXmlThread.AppendChild(threadWatcherCheckIntervalSeconds);
 
                     XmlElement threadWatcherOneTimeDownload = _tmpThreadsDoc.CreateElement("OneTimeDownload");
-                    XmlText threadWatcherOneTimeDownloadAttr = _tmpThreadsDoc.CreateTextNode(_tmpOneTimeDownload);
+                    XmlText threadWatcherOneTimeDownloadAttr = _tmpThreadsDoc.CreateTextNode(watcher.OneTimeDownload ? "1" : "0");
                     threadWatcherOneTimeDownload.AppendChild(threadWatcherOneTimeDownloadAttr);
                     _tmpXmlThread.AppendChild(threadWatcherOneTimeDownload);
 
@@ -1355,32 +1359,32 @@ namespace JDP {
                     _tmpXmlThread.AppendChild(threadWatcherStopReason);
 
                     XmlElement threadWatcherDescription = _tmpThreadsDoc.CreateElement("Description");
-                    XmlText threadWatcherDescriptionAttr = _tmpThreadsDoc.CreateTextNode(_tmpDescription);
+                    XmlText threadWatcherDescriptionAttr = _tmpThreadsDoc.CreateTextNode(watcher.Description);
                     threadWatcherDescription.AppendChild(threadWatcherDescriptionAttr);
                     _tmpXmlThread.AppendChild(threadWatcherDescription);
 
                     XmlElement threadWatcherAddedOn = _tmpThreadsDoc.CreateElement("AddedOn");
-                    XmlText threadWatcherAddedOnAttr = _tmpThreadsDoc.CreateTextNode(_tmpAddedOn);
+                    XmlText threadWatcherAddedOnAttr = _tmpThreadsDoc.CreateTextNode(extraData.AddedOn.ToUniversalTime().Ticks.ToString());
                     threadWatcherAddedOn.AppendChild(threadWatcherAddedOnAttr);
                     _tmpXmlThread.AppendChild(threadWatcherAddedOn);
 
                     XmlElement threadWatcherLastImageOn = _tmpThreadsDoc.CreateElement("LastImageOn");
-                    XmlText threadWatcherLastImageOnAttr = _tmpThreadsDoc.CreateTextNode(_tmpAddedOn);
+                    XmlText threadWatcherLastImageOnAttr = _tmpThreadsDoc.CreateTextNode(_tmpLastImageOn);
                     threadWatcherLastImageOn.AppendChild(threadWatcherLastImageOnAttr);
                     _tmpXmlThread.AppendChild(threadWatcherLastImageOn);
 
                     XmlElement threadWatcherAddedFrom = _tmpThreadsDoc.CreateElement("AddedFrom");
-                    XmlText threadWatcherAddedFromAttr = _tmpThreadsDoc.CreateTextNode(_tmpAddedFrom);
+                    XmlText threadWatcherAddedFromAttr = _tmpThreadsDoc.CreateTextNode(extraData.AddedFrom);
                     threadWatcherAddedFrom.AppendChild(threadWatcherAddedFromAttr);
                     _tmpXmlThread.AppendChild(threadWatcherAddedFrom);
 
                     XmlElement threadWatcherCategory = _tmpThreadsDoc.CreateElement("Category");
-                    XmlText threadWatcherCategoryAttr = _tmpThreadsDoc.CreateTextNode(_tmpCategory);
+                    XmlText threadWatcherCategoryAttr = _tmpThreadsDoc.CreateTextNode(watcher.Category);
                     threadWatcherCategory.AppendChild(threadWatcherCategoryAttr);
                     _tmpXmlThread.AppendChild(threadWatcherCategory);
 
                     XmlElement threadWatcherAutoFollow = _tmpThreadsDoc.CreateElement("AutoFollow");
-                    XmlText threadWatcherAutoFollowAttr = _tmpThreadsDoc.CreateTextNode(_tmpAutoFollow);
+                    XmlText threadWatcherAutoFollowAttr = _tmpThreadsDoc.CreateTextNode(watcher.AutoFollow ? "1" : "0");
                     threadWatcherAutoFollow.AppendChild(threadWatcherAutoFollowAttr);
                     _tmpXmlThread.AppendChild(threadWatcherAutoFollow);
 

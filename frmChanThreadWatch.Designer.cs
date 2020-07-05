@@ -89,6 +89,8 @@
             this.miExit = new System.Windows.Forms.MenuItem();
             this.tmrMonitor = new System.Windows.Forms.Timer(this.components);
             this.tmrBackupThreadList = new System.Windows.Forms.Timer(this.components);
+            this.txtBoxThreadFilter = new System.Windows.Forms.TextBox();
+            this.lblFilterThreadsTxt = new System.Windows.Forms.Label();
             this.grpAddThread.SuspendLayout();
             this.pnlCheckEvery.SuspendLayout();
             this.grpDoubleClick.SuspendLayout();
@@ -324,7 +326,7 @@
             // btnRemoveCompleted
             // 
             this.btnRemoveCompleted.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRemoveCompleted.Location = new System.Drawing.Point(630, 305);
+            this.btnRemoveCompleted.Location = new System.Drawing.Point(630, 327);
             this.btnRemoveCompleted.Name = "btnRemoveCompleted";
             this.btnRemoveCompleted.Size = new System.Drawing.Size(120, 23);
             this.btnRemoveCompleted.TabIndex = 95;
@@ -492,7 +494,7 @@
             // btnAddFromClipboard
             // 
             this.btnAddFromClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddFromClipboard.Location = new System.Drawing.Point(630, 337);
+            this.btnAddFromClipboard.Location = new System.Drawing.Point(630, 356);
             this.btnAddFromClipboard.Name = "btnAddFromClipboard";
             this.btnAddFromClipboard.Size = new System.Drawing.Size(120, 23);
             this.btnAddFromClipboard.TabIndex = 100;
@@ -639,11 +641,32 @@
             this.tmrBackupThreadList.Interval = 60000;
             this.tmrBackupThreadList.Tick += new System.EventHandler(this.tmrBackupThreadList_Tick);
             // 
+            // txtBoxThreadFilter
+            // 
+            this.txtBoxThreadFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBoxThreadFilter.Location = new System.Drawing.Point(630, 301);
+            this.txtBoxThreadFilter.Name = "txtBoxThreadFilter";
+            this.txtBoxThreadFilter.Size = new System.Drawing.Size(120, 20);
+            this.txtBoxThreadFilter.TabIndex = 4;
+            this.txtBoxThreadFilter.TextChanged += new System.EventHandler(this.txtBoxThreadFilter_TextChanged);
+            // 
+            // lblFilterThreadsTxt
+            // 
+            this.lblFilterThreadsTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFilterThreadsTxt.AutoSize = true;
+            this.lblFilterThreadsTxt.Location = new System.Drawing.Point(553, 304);
+            this.lblFilterThreadsTxt.Name = "lblFilterThreadsTxt";
+            this.lblFilterThreadsTxt.Size = new System.Drawing.Size(74, 13);
+            this.lblFilterThreadsTxt.TabIndex = 3;
+            this.lblFilterThreadsTxt.Text = "Filter Threads:";
+            // 
             // frmChanThreadWatch
             // 
             this.AllowDrop = true;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(760, 500);
+            this.Controls.Add(this.lblFilterThreadsTxt);
+            this.Controls.Add(this.txtBoxThreadFilter);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnDownloads);
             this.Controls.Add(this.btnAddFromClipboard);
@@ -671,6 +694,7 @@
             this.pnlCheckEvery.PerformLayout();
             this.grpDoubleClick.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -741,5 +765,7 @@
         private System.Windows.Forms.MenuItem miSeparatorMonitorQuickLinks;
         private System.Windows.Forms.MenuItem miSeparatorQuickLinksExit;
         private System.Windows.Forms.Timer tmrBackupThreadList;
+        private System.Windows.Forms.TextBox txtBoxThreadFilter;
+        private System.Windows.Forms.Label lblFilterThreadsTxt;
     }
 }

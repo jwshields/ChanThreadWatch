@@ -479,8 +479,7 @@ namespace JDP {
             }
 
             try {
-                XmlTextReader xmlSettingsReader = new XmlTextReader(path);
-                xmlSettingsReader.WhitespaceHandling = WhitespaceHandling.All;
+                XmlTextReader xmlSettingsReader = new XmlTextReader(path){WhitespaceHandling = WhitespaceHandling.All};
                 XmlDocument settingsDoc = new XmlDocument();
                 settingsDoc.Load(xmlSettingsReader);
                 xmlSettingsReader.Close();

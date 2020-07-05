@@ -185,9 +185,7 @@ namespace JDP {
                     if (attribute != null) {
                         url = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(attribute.Value));
                         if (url != null) {
-                            thumb = new ThumbnailInfo();
-                            thumb.URL = url;
-                            thumb.Referer = _url;
+                            thumb = new ThumbnailInfo{URL = url, Referer = _url};
                             if (replaceList != null) {
                                 replaceList.Add(
                                     new ReplaceInfo {
@@ -217,8 +215,20 @@ namespace JDP {
         public virtual HashSet<string> GetCrossLinks(List<ReplaceInfo> replaceList, bool interBoardAutoFollow) {
             return new HashSet<string>();
         }
+
         public virtual HashSet<string> GetURLs() {
             return new HashSet<string>();
+            //HashSet<string> urlList = new HashSet<string>();
+            //HTMLAttribute attribute;
+            //Regex reg = new Regex(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            //foreach (HTMLTag linkTag in _htmlParser.FindStartTags("a")) {
+            //    attribute = linkTag.GetAttribute("href");
+            //    MatchCollection outmatches = reg.Matches(attribute.Value);
+            //    foreach (Match match in outmatches) {
+            //        urlList.Add(match.Value);
+            //    }
+            //}
+            //    return urlList;
         }
 
         public virtual void ResurrectDeadPosts(HTMLParser previousParser, List<ReplaceInfo> replaceList) {
@@ -329,8 +339,7 @@ namespace JDP {
 
         public override HashSet<string> GetURLs() {
             HashSet<string> urlList = new HashSet<string>();
-            string rexPattern = @"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))";
-            Regex reg = new Regex(rexPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            Regex reg = new Regex(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (HTMLTagRange postMessageTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("blockquote"),
                 t => HTMLParser.ClassAttributeValueHas(t, "postMessage")), t => _htmlParser.CreateTagRange(t)), r => r != null)) {
                 string tempval = _htmlParser.GetInnerHTML(postMessageTagRange);
@@ -767,6 +776,20 @@ namespace JDP {
                 }
             }
             return crossLinks;
+        }
+
+        public override HashSet<string> GetURLs() {
+            HashSet<string> urlList = new HashSet<string>();
+            Regex reg = new Regex(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            foreach (HTMLTagRange bodyDivTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
+                t => HTMLParser.ClassAttributeValueHas(t, "body")), t => _htmlParser.CreateTagRange(t)), r => r != null)) {
+                foreach (HTMLTag quoteLinkTag in Enumerable.Where(_htmlParser.FindStartTags(bodyDivTagRange, "a"),
+                    t => reg.IsMatch(t.GetAttributeValueOrEmpty("href")))) {
+                    HTMLAttribute attribute = quoteLinkTag.GetAttribute("href");
+                    urlList.Add(attribute.Value);
+                }
+            }
+            return urlList;
         }
 
         public override void ResurrectDeadPosts(HTMLParser previousParser, List<ReplaceInfo> replaceList) {

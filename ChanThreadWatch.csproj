@@ -17,6 +17,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,7 +30,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -70,6 +70,7 @@
     <Compile Include="Classes\Other.cs" />
     <Compile Include="Classes\SiteHelpers.cs" />
     <Compile Include="Classes\General.cs" />
+    <Compile Include="Classes\ThreadList.cs" />
     <Compile Include="Classes\ThreadWatcher.cs" />
     <Compile Include="frmChanThreadWatch.cs">
       <SubType>Form</SubType>
@@ -95,6 +96,7 @@
     <Compile Include="frmThreadEdit.Designer.cs">
       <DependentUpon>frmThreadEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmChanThreadWatch.resx">

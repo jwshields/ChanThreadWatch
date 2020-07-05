@@ -19,15 +19,15 @@ namespace JDP {
         }
 
         public static string ReleaseDate {
-            get { return "2020-06-12"; }
+            get { return "2020-07-04"; }
         }
 
         public static string ProgramURL {
-            get { return "https://github.com/SuperGouge/ChanThreadWatch/releases"; }
+            get { return "https://github.com/jwshields/ChanThreadWatch/releases"; }
         }
 
         public static string WikiURL {
-            get { return "https://github.com/SuperGouge/ChanThreadWatch/wiki"; }
+            get { return "https://github.com/jwshields/ChanThreadWatch/wiki"; }
         }
 
         public static Action DownloadAsync(string url, string auth, string referer, string connectionGroupName, DateTime? cacheLastModifiedTime, Action<HttpWebResponse> onResponse, Action<byte[], int> onDownloadChunk, Action onComplete, Action<Exception> onException) {
@@ -327,12 +327,12 @@ namespace JDP {
         }
 
         private static string DetectCharacterSetFromBOM(byte[] bytes) {
-            switch (GetBOMType(bytes)) {
-                case BOMType.UTF8: return "UTF-8";
-                case BOMType.UTF16LE: return "UTF-16LE";
-                case BOMType.UTF16BE: return "UTF-16BE";
-                default: return null;
-            }
+            return (GetBOMType(bytes)) switch {
+                BOMType.UTF8 => "UTF-8",
+                BOMType.UTF16LE => "UTF-16LE",
+                BOMType.UTF16BE => "UTF-16BE",
+                _ => null,
+            };
         }
 
         private static string DetectCharacterSetFromContent(byte[] bytes, string httpContentType) {

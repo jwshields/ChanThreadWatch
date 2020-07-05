@@ -813,8 +813,6 @@ namespace JDP {
                     OnDownloadStatus(new DownloadStatusEventArgs(DownloadType.Page, pageIndex, _pageList.Count));
                 }
 
-                MillisecondsUntilNextCheck = CheckIntervalSeconds * 1000;
-
                 if (pendingImages.Count != 0 && !IsStopping) {
                     if (_maxFileNameLengthBaseDir == 0) {
                         _maxFileNameLengthBaseDir = General.GetMaximumFileNameLength(imageDir);
@@ -974,6 +972,7 @@ namespace JDP {
                 Logger.Log(ex.ToString());
             }
 
+            MillisecondsUntilNextCheck = CheckIntervalSeconds * 1000;
             if (ThreadDownloadDirectoryPendingRename) {
                 TryRenameThreadDownloadDirectory(true);
             }

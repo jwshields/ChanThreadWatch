@@ -574,13 +574,10 @@ namespace JDP {
         private byte[] _dataHash;
 
         public HashGeneratorStream(HashType hashType) {
-            switch (hashType) {
-                case HashType.MD5:
-                    _hashAlgo = new MD5CryptoServiceProvider();
-                    break;
-                default:
-                    throw new Exception("Unsupported hash type.");
-            }
+            _hashAlgo = hashType switch {
+                HashType.MD5 => new MD5CryptoServiceProvider(),
+                _ => throw new Exception("Unsupported hash type."),
+            };
         }
 
         public override bool CanRead {
