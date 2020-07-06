@@ -25,12 +25,12 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.lvDownloads = new System.Windows.Forms.ListView();
-            this.chURL = new System.Windows.Forms.ColumnHeader();
-            this.chSize = new System.Windows.Forms.ColumnHeader();
-            this.chPercent = new System.Windows.Forms.ColumnHeader();
-            this.chSpeed = new System.Windows.Forms.ColumnHeader();
+            this.chURL = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chPercent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chSpeed = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chTry = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tmrUpdateList = new System.Windows.Forms.Timer(this.components);
-            this.chTry = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // lvDownloads
@@ -44,8 +44,7 @@
             this.chSize,
             this.chPercent,
             this.chSpeed,
-                this.chTry
-            });
+            this.chTry});
             this.lvDownloads.FullRowSelect = true;
             this.lvDownloads.HideSelection = false;
             this.lvDownloads.Location = new System.Drawing.Point(8, 8);
@@ -86,7 +85,7 @@
             // tmrUpdateList
             // 
             this.tmrUpdateList.Enabled = true;
-            this.tmrUpdateList.Interval = 250;
+            this.tmrUpdateList.Interval = 500;
             this.tmrUpdateList.Tick += new System.EventHandler(this.tmrUpdateList_Tick);
             // 
             // frmDownloads
@@ -104,6 +103,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Downloads";
             this.ResumeLayout(false);
+
         }
 
         #endregion

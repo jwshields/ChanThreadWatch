@@ -64,7 +64,7 @@ namespace JDP {
             }
             long totalDownloadedTicks = ticksNow - minTotalDownloadedStartTicks;
             if (totalDownloadedSize > 0 && totalDownloadedTicks > 0) {
-                Text = "Downloads - " + GetKilobytesString(Convert.ToInt64(
+                    Text = "Downloads - " + GetKilobytesString(Convert.ToInt64(
                     totalDownloadedSize / (totalDownloadedTicks / 1000.0)), "KB/s");
             }
             else {

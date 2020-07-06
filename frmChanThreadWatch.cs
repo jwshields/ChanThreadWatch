@@ -22,7 +22,6 @@ namespace JDP {
         private bool _isLoadingThreadsFromFile;
         private bool _isResizing;
         private bool _unsafeShutdown;
-        private FormWindowState _lastWindowState;
         private bool _isMinimized;
         private static Dictionary<string, int> _categories = new Dictionary<string, int>();
         private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
@@ -295,7 +294,7 @@ namespace JDP {
                 }
                 Settings.WindowLocation = new Point(RestoreBounds.X, RestoreBounds.Y);
                 Settings.WindowSize = RestoreBounds.Size;
-                Settings.WindowState = _lastWindowState = WindowState;
+                Settings.WindowState = WindowState;
                 Settings.Save();
             }
             return;
@@ -305,7 +304,7 @@ namespace JDP {
             _isResizing = false;
             Settings.WindowSize = RestoreBounds.Size;
             Settings.WindowLocation = new Point(RestoreBounds.X, RestoreBounds.Y);
-            Settings.WindowState = _lastWindowState = WindowState;
+            Settings.WindowState = WindowState;
             Settings.Save();
         }
 
@@ -831,7 +830,6 @@ namespace JDP {
 
         private void niTrayIcon_DoubleClick(object sender, EventArgs e) {
             Show();
-            WindowState = _lastWindowState;
         }
 
         private void miExit_Click(object sender, EventArgs e) {

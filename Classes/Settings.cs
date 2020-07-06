@@ -347,13 +347,15 @@ namespace JDP {
             get {
                 int? tempState = GetInt("WindowState");
                 switch (tempState) {
-                    case 1:
+                    case 0:
+                        return FormWindowState.Normal;
+                    case 2:
                         return FormWindowState.Maximized;
                     default:
                         return FormWindowState.Normal;
                 }
             }
-            set { Set("WindowState", value == FormWindowState.Maximized ? "1" : "0"); }
+            set { Set("WindowState", $"{(int)value}"); }
         }
 
         public static bool? IsRunning {
