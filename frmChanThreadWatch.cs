@@ -762,8 +762,7 @@ namespace JDP {
             }
             else {
                 foreach (KeyValuePair<String, ThreadWatcher> watcher in _watchers) {
-                    string watcherdesc = watcher.Value.Description;
-                    if (watcherdesc.Contains(filterThreadsValue)) {
+                    if (watcher.Value.Description.Contains(filterThreadsValue)) {
                         WatcherExtraData watcherextra = (WatcherExtraData)watcher.Value.Tag;
                         lvThreads.Items.Add(watcherextra.ListViewItem);
                     }
@@ -1273,16 +1272,29 @@ namespace JDP {
 
         private void SetStopStatus(ThreadWatcher watcher, StopReason stopReason) {
             string status = "Stopped: ";
-            status += stopReason switch {
-                StopReason.UserRequest => "User requested",
-                StopReason.Exiting => "Exiting",
-                StopReason.PageNotFound => "Page not found",
-                StopReason.DownloadComplete => "Download complete",
-                StopReason.IOError => "Error writing to disk",
-                StopReason.DirtyShutdown => "CTW experienced an unsafe shutdown",
-                StopReason.Other => "Unknown error",
-                _ => "Unknown error",
-            };
+            switch (stopReason) {
+                case StopReason.UserRequest:
+                    status += "User requested";
+                    break;
+                case StopReason.Exiting:
+                    status += "Exiting";
+                    break;
+                case StopReason.PageNotFound:
+                    status += "Page not found";
+                    break;
+                case StopReason.DownloadComplete:
+                    status += "Download complete";
+                    break;
+                case StopReason.IOError:
+                    status += "Error writing to disk";
+                    break;
+                case StopReason.DirtyShutdown:
+                    status += "CTW experienced an unsafe shutdown";
+                    break;
+                default:
+                    status += "Unknown error";
+                    break;
+            }
             DisplayStatus(watcher, status);
         }
 

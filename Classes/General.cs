@@ -327,12 +327,12 @@ namespace JDP {
         }
 
         private static string DetectCharacterSetFromBOM(byte[] bytes) {
-            return (GetBOMType(bytes)) switch {
-                BOMType.UTF8 => "UTF-8",
-                BOMType.UTF16LE => "UTF-16LE",
-                BOMType.UTF16BE => "UTF-16BE",
-                _ => null,
-            };
+            switch (GetBOMType(bytes)) {
+                case BOMType.UTF8: return "UTF-8";
+                case BOMType.UTF16LE: return "UTF-16LE";
+                case BOMType.UTF16BE: return "UTF-16BE";
+                default: return null;
+            }
         }
 
         private static string DetectCharacterSetFromContent(byte[] bytes, string httpContentType) {
