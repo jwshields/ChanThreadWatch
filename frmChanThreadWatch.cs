@@ -1497,6 +1497,7 @@ namespace JDP {
                         threadWatcher.Start();
                     }
                 }
+                UpdateWindowTitle(GetMonitoringInfo());
                 if (Settings.ChildThreadsAreNewFormat != true) {
                     foreach (ThreadWatcher threadWatcher in ThreadWatchers) {
                         if (threadWatcher.ChildThreads.Count == 0 || threadWatcher.ParentThread != null) continue;
