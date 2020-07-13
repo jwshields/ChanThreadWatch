@@ -653,12 +653,12 @@
             // lblFilterThreadsTxt
             // 
             this.lblFilterThreadsTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblFilterThreadsTxt.AutoSize = true;
-            this.lblFilterThreadsTxt.Location = new System.Drawing.Point(629, 298);
+            this.lblFilterThreadsTxt.Location = new System.Drawing.Point(588, 298);
             this.lblFilterThreadsTxt.Name = "lblFilterThreadsTxt";
-            this.lblFilterThreadsTxt.Size = new System.Drawing.Size(74, 13);
+            this.lblFilterThreadsTxt.Size = new System.Drawing.Size(167, 13);
             this.lblFilterThreadsTxt.TabIndex = 3;
-            this.lblFilterThreadsTxt.Text = "Filter Threads:";
+            //this.lblFilterThreadsTxt.Text = "Filter Threads: All (#)";
+            this.lblFilterThreadsTxt.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // frmChanThreadWatch
             // 
@@ -682,6 +682,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chan Thread Watch";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmChanThreadWatch_FormClosed);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmChanThreadWatch_OnFormClosing);
             this.Shown += new System.EventHandler(this.frmChanThreadWatch_Shown);
             this.ResizeBegin += new System.EventHandler(this.frmChanThreadWatch_ResizeBegin);
             this.ResizeEnd += new System.EventHandler(this.frmChanThreadWatch_ResizeEnd);

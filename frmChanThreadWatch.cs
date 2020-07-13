@@ -192,10 +192,23 @@ namespace JDP {
             lvThreads.BeginUpdate();
             thread.Start();
             lvThreads.EndUpdate();
+            while (thread.IsAlive) {
+                Thread.Sleep(5);
+                Application.DoEvents();
+            }
+            UpdateWindowTitle(GetMonitoringInfo());
+            lblFilterThreadsTxt.Text = $"Filter Threads: All ({_watchers.Count})";
+        }
+
+        private void frmChanThreadWatch_OnFormClosing(object sender, FormClosingEventArgs e)  {
+            if (MessageBox.Show("Are you sure you want to exit?", "Confirm exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) {
+                e.Cancel = true;
+            }
         }
 
         private void frmChanThreadWatch_FormClosed(object sender, FormClosedEventArgs e) {
             if (IsDisposed) return;
+
             Settings.UsePageAuth = chkPageAuth.Checked;
             Settings.PageAuth = txtPageAuth.Text;
             Settings.UseImageAuth = chkImageAuth.Checked;
@@ -620,7 +633,7 @@ namespace JDP {
 
         private void btnAbout_Click(object sender, EventArgs e) {
             MessageBox.Show(this, String.Format("Chan Thread Watch{0}Version {1} ({2}){0}{0}Original Author: JDP (jart1126@yahoo.com){0}http://sites.google.com/site/chanthreadwatch/" +
-                                                "{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}{3}{0}Maintained by: noodle (https://github.com/jwshields){0}https://github.com/jwshields/ChanThreadWatch",
+                                                "{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}{3}{0}{0}Maintained by: noodle (https://github.com/jwshields){0}https://github.com/jwshields/ChanThreadWatch",
                 Environment.NewLine, General.Version, General.ReleaseDate, General.ProgramURL), "About",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -751,22 +764,29 @@ namespace JDP {
 
         private void txtBoxThreadFilter_TextChanged(object sender, EventArgs e) {
             string filterThreadsValue = txtBoxThreadFilter.Text;
+            int threadCount = _watchers.Count;
             lvThreads.BeginUpdate();
             lvThreads.Items.Clear();
-            if (filterThreadsValue == "") {
+            string lblFilterTextOut = "";
+            if (String.IsNullOrEmpty(filterThreadsValue)) {
+                lblFilterTextOut = $"All ({threadCount})";
                 foreach (KeyValuePair<String,ThreadWatcher> watcher in _watchers) {
                     WatcherExtraData watcherextra = (WatcherExtraData)watcher.Value.Tag;
                     lvThreads.Items.Add(watcherextra.ListViewItem);
                 }
             }
             else {
+                int shownThreadCount = 0;
                 foreach (KeyValuePair<String, ThreadWatcher> watcher in _watchers) {
                     if (watcher.Value.Description.Contains(filterThreadsValue)) {
+                        shownThreadCount++;
                         WatcherExtraData watcherextra = (WatcherExtraData)watcher.Value.Tag;
                         lvThreads.Items.Add(watcherextra.ListViewItem);
                     }
                 }
+                lblFilterTextOut = $"({shownThreadCount} of {threadCount})";
             }
+            lblFilterThreadsTxt.Text = $"Filter Threads: {lblFilterTextOut}";
             lvThreads.EndUpdate();
             return;
         }
@@ -812,10 +832,10 @@ namespace JDP {
         private void tmrMonitor_Tick(object sender, EventArgs e) {
             MonitoringInfo monitoringInfo = GetMonitoringInfo();
             UpdateWindowTitle(monitoringInfo);
-            miMonitorTotal.Text = String.Format("Watching {0} thread{1}", monitoringInfo.TotalThreads, monitoringInfo.TotalThreads != 1 ? "s" : String.Empty);
-            miMonitorRunning.Text = String.Format("    {0} running", monitoringInfo.RunningThreads);
-            miMonitorDead.Text = String.Format("    {0} dead", monitoringInfo.DeadThreads);
-            miMonitorStopped.Text = String.Format("    {0} stopped", monitoringInfo.StoppedThreads);
+            miMonitorTotal.Text = string.Format("Watching {0} thread{1}", monitoringInfo.TotalThreads, monitoringInfo.TotalThreads != 1 ? "s" : String.Empty);
+            miMonitorRunning.Text = string.Format("    {0} running", monitoringInfo.RunningThreads);
+            miMonitorDead.Text = string.Format("    {0} dead", monitoringInfo.DeadThreads);
+            miMonitorStopped.Text = string.Format("    {0} stopped", monitoringInfo.StoppedThreads);
         }
 
         private void tmrBackupThreadList_Tick(object sender, EventArgs e) {
@@ -1227,7 +1247,7 @@ namespace JDP {
             }
             int percComplete = ((completeCount * 100) / totalCount);
             string status = hideDetail ? "Downloading " + type :
-                String.Format("Downloading {0}: {1}% ({2} of {3} completed)", type, percComplete, completeCount, totalCount);
+                string.Format("Downloading {0}: {1}% ({2} of {3} completed)", type, percComplete, completeCount, totalCount);
             DisplayStatus(watcher, status);
         }
 
@@ -1311,7 +1331,7 @@ namespace JDP {
                     return;
             }
             string status = hideDetail ? "Reparsing " + type :
-                String.Format("Reparsing {0}: {1} of {2} completed", type, completeCount, totalCount);
+                string.Format("Reparsing {0}: {1} of {2} completed", type, completeCount, totalCount);
             DisplayStatus(watcher, status);
         }
 
@@ -1497,7 +1517,6 @@ namespace JDP {
                         threadWatcher.Start();
                     }
                 }
-                UpdateWindowTitle(GetMonitoringInfo());
                 if (Settings.ChildThreadsAreNewFormat != true) {
                     foreach (ThreadWatcher threadWatcher in ThreadWatchers) {
                         if (threadWatcher.ChildThreads.Count == 0 || threadWatcher.ParentThread != null) continue;
