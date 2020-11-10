@@ -14,12 +14,12 @@ namespace JDP {
         public static string Version {
             get {
                 Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-                return ver.Major + "." + ver.Minor + "." + ver.Revision;
+                return ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
             }
         }
 
         public static string ReleaseDate {
-            get { return "2020-07-04"; }
+            get { return "2020-11-09"; }
         }
 
         public static string ProgramURL {
