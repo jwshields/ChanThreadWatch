@@ -383,6 +383,7 @@ namespace JDP {
                 }
             }
             _saveThreadList = true;
+            UpdateWindowTitle(GetMonitoringInfo());
         }
 
         private void btnRemoveCompleted_Click(object sender, EventArgs e) {
@@ -1094,6 +1095,7 @@ namespace JDP {
                 }
             }
             lvThreads.EndUpdate();
+            UpdateWindowTitle(GetMonitoringInfo());
             _saveThreadList = true;
         }
 
@@ -1238,9 +1240,11 @@ namespace JDP {
                     break;
                 case DownloadType.Image:
                     type = "images";
+                    //int percComplete = ((completeCount * 100) / totalCount);
                     break;
                 case DownloadType.Thumbnail:
                     type = "thumbnails";
+                    //int percComplete = ((completeCount * 100) / totalCount);
                     break;
                 default:
                     return;
@@ -1266,6 +1270,7 @@ namespace JDP {
             }
             DisplayStatus(watcher, statusStringOut);
         }
+
         private static void SetWaitStatusString(int remainingSeconds, out string templateStatusStringOut) {
             string outNum = remainingSeconds.ToString();
             string outTimeScale = "Second";
@@ -1307,7 +1312,7 @@ namespace JDP {
                     status += "Error writing to disk";
                     break;
                 case StopReason.DirtyShutdown:
-                    status += "CTW experienced an unsafe shutdown";
+                    status += "Unsafe shutdown";
                     break;
                 default:
                     status += "Unknown error";
@@ -1347,77 +1352,12 @@ namespace JDP {
                 XmlElement threadsElement = _tmpThreadsDoc.CreateElement(String.Empty, "Threads", String.Empty);
                 foreach (ThreadWatcher watcher in ThreadWatchers) {
                     XmlElement _tmpXmlThread = _tmpThreadsDoc.CreateElement(String.Empty, "Thread", String.Empty);
-
-                    WatcherExtraData extraData = (WatcherExtraData)watcher.Tag;
-                    string _tmpSaveDir = watcher.ThreadDownloadDirectory != null ? General.GetRelativeDirectoryPath(watcher.ThreadDownloadDirectory, watcher.MainDownloadDirectory) : String.Empty;
-                    string _tmpStopReason = (watcher.IsStopping && watcher.StopReason != StopReason.Exiting) ? ((int)watcher.StopReason).ToString() : null;
-                    string _tmpLastImageOn = extraData.LastImageOn != null ? extraData.LastImageOn.Value.ToUniversalTime().Ticks.ToString() : String.Empty;
-
-                    XmlElement threadWatcherURL = _tmpThreadsDoc.CreateElement("URL");
-                    XmlText threadWatcherURLAttr = _tmpThreadsDoc.CreateTextNode(watcher.PageURL);
-                    threadWatcherURL.AppendChild(threadWatcherURLAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherURL);
-
-                    XmlElement threadWatcherPageAuth = _tmpThreadsDoc.CreateElement("PageAuth");
-                    XmlText threadWatcherPageAuthAttr = _tmpThreadsDoc.CreateTextNode(watcher.PageAuth);
-                    threadWatcherPageAuth.AppendChild(threadWatcherPageAuthAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherPageAuth);
-
-                    XmlElement threadWatcherImageAuth = _tmpThreadsDoc.CreateElement("ImageAuth");
-                    XmlText threadWatcherImageAuthAttr = _tmpThreadsDoc.CreateTextNode(watcher.ImageAuth);
-                    threadWatcherImageAuth.AppendChild(threadWatcherImageAuthAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherImageAuth);
-
-                    XmlElement threadWatcherCheckIntervalSeconds = _tmpThreadsDoc.CreateElement("CheckIntervalSeconds");
-                    XmlText threadWatcherCheckIntervalSecondsAttr = _tmpThreadsDoc.CreateTextNode(watcher.CheckIntervalSeconds.ToString());
-                    threadWatcherCheckIntervalSeconds.AppendChild(threadWatcherCheckIntervalSecondsAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherCheckIntervalSeconds);
-
-                    XmlElement threadWatcherOneTimeDownload = _tmpThreadsDoc.CreateElement("OneTimeDownload");
-                    XmlText threadWatcherOneTimeDownloadAttr = _tmpThreadsDoc.CreateTextNode(watcher.OneTimeDownload ? "1" : "0");
-                    threadWatcherOneTimeDownload.AppendChild(threadWatcherOneTimeDownloadAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherOneTimeDownload);
-
-                    XmlElement threadWatcherSaveDir = _tmpThreadsDoc.CreateElement("SaveDir");
-                    XmlText threadWatcherSaveDirAttr = _tmpThreadsDoc.CreateTextNode(_tmpSaveDir);
-                    threadWatcherSaveDir.AppendChild(threadWatcherSaveDirAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherSaveDir);
-
-                    XmlElement threadWatcherStopReason = _tmpThreadsDoc.CreateElement("StopReason");
-                    XmlText threadWatcherStopReasonAttr = _tmpThreadsDoc.CreateTextNode(_tmpStopReason);
-                    threadWatcherStopReason.AppendChild(threadWatcherStopReasonAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherStopReason);
-
-                    XmlElement threadWatcherDescription = _tmpThreadsDoc.CreateElement("Description");
-                    XmlText threadWatcherDescriptionAttr = _tmpThreadsDoc.CreateTextNode(watcher.Description);
-                    threadWatcherDescription.AppendChild(threadWatcherDescriptionAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherDescription);
-
-                    XmlElement threadWatcherAddedOn = _tmpThreadsDoc.CreateElement("AddedOn");
-                    XmlText threadWatcherAddedOnAttr = _tmpThreadsDoc.CreateTextNode(extraData.AddedOn.ToUniversalTime().Ticks.ToString());
-                    threadWatcherAddedOn.AppendChild(threadWatcherAddedOnAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherAddedOn);
-
-                    XmlElement threadWatcherLastImageOn = _tmpThreadsDoc.CreateElement("LastImageOn");
-                    XmlText threadWatcherLastImageOnAttr = _tmpThreadsDoc.CreateTextNode(_tmpLastImageOn);
-                    threadWatcherLastImageOn.AppendChild(threadWatcherLastImageOnAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherLastImageOn);
-
-                    XmlElement threadWatcherAddedFrom = _tmpThreadsDoc.CreateElement("AddedFrom");
-                    XmlText threadWatcherAddedFromAttr = _tmpThreadsDoc.CreateTextNode(extraData.AddedFrom);
-                    threadWatcherAddedFrom.AppendChild(threadWatcherAddedFromAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherAddedFrom);
-
-                    XmlElement threadWatcherCategory = _tmpThreadsDoc.CreateElement("Category");
-                    XmlText threadWatcherCategoryAttr = _tmpThreadsDoc.CreateTextNode(watcher.Category);
-                    threadWatcherCategory.AppendChild(threadWatcherCategoryAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherCategory);
-
-                    XmlElement threadWatcherAutoFollow = _tmpThreadsDoc.CreateElement("AutoFollow");
-                    XmlText threadWatcherAutoFollowAttr = _tmpThreadsDoc.CreateTextNode(watcher.AutoFollow ? "1" : "0");
-                    threadWatcherAutoFollow.AppendChild(threadWatcherAutoFollowAttr);
-                    _tmpXmlThread.AppendChild(threadWatcherAutoFollow);
-
+                    foreach (string[] saveProp in watcher.ThreadSaveProperties()) {
+                        XmlElement savePropElem = _tmpThreadsDoc.CreateElement(saveProp[0]);
+                        XmlText savePropElemAttr = _tmpThreadsDoc.CreateTextNode(saveProp[1]);
+                        savePropElem.AppendChild(savePropElemAttr);
+                        _tmpXmlThread.AppendChild(savePropElem);
+                    }
                     threadsElement.AppendChild(_tmpXmlThread);
                 }
                 _tmpThreadsDoc.DocumentElement.AppendChild(fileVersionElement);
@@ -1469,7 +1409,7 @@ namespace JDP {
                     foreach (XmlNode childNode in xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("Threads")) {
                         if (childNode.Name != "Thread") continue;
                         ThreadInfo thread = new ThreadInfo { ExtraData = new WatcherExtraData() };
-                        thread.URL = childNode.SelectSingleNode("URL").InnerText;
+                        thread.URL = childNode.SelectSingleNode("PageURL").InnerText;
                         thread.PageAuth = childNode.SelectSingleNode("PageAuth").InnerText;
                         thread.ImageAuth = childNode.SelectSingleNode("ImageAuth").InnerText;
                         thread.CheckIntervalSeconds = Int32.Parse(childNode.SelectSingleNode("CheckIntervalSeconds").InnerText);
@@ -1580,7 +1520,7 @@ namespace JDP {
             List<Dictionary<string, string>> _tmpthreads = new List<System.Collections.Generic.Dictionary<string, string>>();
             while (i <= lines.Length - linesPerThread) {
                 Dictionary<string, string> _tmpThreadDict = new Dictionary<string, string>();
-                _tmpThreadDict.Add("URL", lines[i++]);
+                _tmpThreadDict.Add("PageURL", lines[i++]);
                 _tmpThreadDict.Add("PageAuth", lines[i++]);
                 _tmpThreadDict.Add("ImageAuth", lines[i++]);
                 _tmpThreadDict.Add("CheckIntervalSeconds", lines[i++]);

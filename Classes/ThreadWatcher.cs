@@ -64,6 +64,26 @@ namespace JDP {
             _threadName = _siteHelper.GetThreadName();
         }
 
+        public IEnumerable<string[]> ThreadSaveProperties() {
+            WatcherExtraData extraData = (WatcherExtraData)Tag;
+            string _tmpSaveDir = ThreadDownloadDirectory != null ? General.GetRelativeDirectoryPath(ThreadDownloadDirectory, MainDownloadDirectory) : string.Empty;
+            string _tmpStopReason = (IsStopping && StopReason != StopReason.Exiting) ? ((int)StopReason).ToString() : string.Empty;
+            string _tmpLastImageOn = extraData.LastImageOn != null ? extraData.LastImageOn.Value.ToUniversalTime().Ticks.ToString() : string.Empty;
+            yield return new string[] {"PageURL", PageURL};
+            yield return new string[] {"PageAuth", PageAuth};
+            yield return new string[] {"ImageAuth", ImageAuth};
+            yield return new string[] {"CheckIntervalSeconds", CheckIntervalSeconds.ToString()};
+            yield return new string[] {"OneTimeDownload", OneTimeDownload ? "1" : "0"};
+            yield return new string[] {"Description", Description};
+            yield return new string[] {"Category", Category};
+            yield return new string[] {"AutoFollow", AutoFollow ? "1" : "0"};
+            yield return new string[] {"SaveDir" , _tmpSaveDir};
+            yield return new string[] {"StopReason", _tmpStopReason};
+            yield return new string[] {"AddedOn", extraData.AddedOn.ToUniversalTime().Ticks.ToString()};
+            yield return new string[] {"LastImageOn", _tmpLastImageOn};
+            yield return new string[] {"AddedFrom", extraData.AddedFrom};
+        }
+
         public string PageURL {
             get { return _pageURL; }
         }
@@ -1200,6 +1220,7 @@ namespace JDP {
                         else if (ex is IOException || ex is UnauthorizedAccessException) {
                             // Fatal IO error, stop
                             Stop(StopReason.IOError);
+                            Logger.Log(ex.ToString());
                             endTryDownload(DownloadResult.Skipped);
                         }
                         else {
@@ -1308,6 +1329,7 @@ namespace JDP {
                         if (ex is DirectoryNotFoundException || ex is UnauthorizedAccessException) {
                             // Fatal IO error, stop
                             Stop(StopReason.IOError);
+                            Logger.Log(ex.ToString());
                             endTryDownload(DownloadResult.Skipped);
                         }
                         else if (ex is HTTP404Exception || ex is IOException) {
