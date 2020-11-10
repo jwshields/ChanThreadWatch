@@ -1409,11 +1409,11 @@ namespace JDP {
                     foreach (XmlNode childNode in xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("Threads")) {
                         if (childNode.Name != "Thread") continue;
                         ThreadInfo thread = new ThreadInfo { ExtraData = new WatcherExtraData() };
-                        string URLLine = childNode.SelectSingleNode("PageURL").InnerText;
-                        if (URLLine.Length != 0) {
-                            thread.URL = URLLine;
+                        XmlNode URLLine = childNode.SelectSingleNode("PageURL");
+                        if (URLLine.InnerText.Length != 0) {
+                            thread.URL = URLLine.InnerText;
                         }
-                        else if (URLLine.Length == 0) {
+                        else {
                             thread.URL = childNode.SelectSingleNode("URL").InnerText;
                         }
                         thread.PageAuth = childNode.SelectSingleNode("PageAuth").InnerText;
