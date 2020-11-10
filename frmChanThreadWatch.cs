@@ -1410,7 +1410,7 @@ namespace JDP {
                         if (childNode.Name != "Thread") continue;
                         ThreadInfo thread = new ThreadInfo { ExtraData = new WatcherExtraData() };
                         XmlNode URLLine = childNode.SelectSingleNode("PageURL");
-                        if (URLLine.InnerText.Length != 0) {
+                        if (URLLine != null) {
                             thread.URL = URLLine.InnerText;
                         }
                         else {
