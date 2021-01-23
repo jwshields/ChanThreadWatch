@@ -85,7 +85,7 @@
             // tmrUpdateList
             // 
             this.tmrUpdateList.Enabled = true;
-            this.tmrUpdateList.Interval = 500;
+            this.tmrUpdateList.Interval = 100;
             this.tmrUpdateList.Tick += new System.EventHandler(this.tmrUpdateList_Tick);
             // 
             // frmDownloads

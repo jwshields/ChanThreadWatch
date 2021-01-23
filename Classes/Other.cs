@@ -102,7 +102,7 @@ namespace JDP {
     }
 
     public class ConnectionManager {
-        private const int _maxConnectionsPerHost = 5;
+        private const int _maxConnectionsPerHost = 10;
 
         private static Dictionary<string, ConnectionManager> _connectionManagers = new Dictionary<string, ConnectionManager>(StringComparer.OrdinalIgnoreCase);
 
@@ -371,7 +371,7 @@ namespace JDP {
     }
 
     public class ThreadPoolManager {
-        private const int _minThreadCount = 5;
+        private const int _minThreadCount = 10;
         private const int _threadCreationDelay = 500;
         private const int _maxThreadIdleTime = 15000;
 

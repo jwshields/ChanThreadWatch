@@ -44,7 +44,7 @@ namespace JDP {
 
         static ThreadWatcher() {
             // HttpWebRequest uses ThreadPool for asynchronous calls
-            General.EnsureThreadPoolMaxThreads(500, 1000);
+            General.EnsureThreadPoolMaxThreads(500, 5000);
 
             // Shouldn't matter since the limit is supposed to be per connection group
             ServicePointManager.DefaultConnectionLimit = Int32.MaxValue;
@@ -1247,7 +1247,6 @@ namespace JDP {
             int tryNumber = 0;
             byte[] prevHash = null;
             long? prevDownloadedFileSize = null;
-
             Action tryDownload = null;
             tryDownload = () => {
                 Action<DownloadResult> endTryDownload = (result) => {

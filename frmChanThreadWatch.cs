@@ -349,6 +349,7 @@ namespace JDP {
             FocusThread(pageURL);
             txtPageURL.Clear();
             txtPageURL.Focus();
+            txtBoxThreadFilter_TextChanged();
             _saveThreadList = true;
         }
 
@@ -383,6 +384,7 @@ namespace JDP {
                 }
             }
             _saveThreadList = true;
+            txtBoxThreadFilter_TextChanged();
             UpdateWindowTitle(GetMonitoringInfo());
         }
 
@@ -414,6 +416,7 @@ namespace JDP {
                             }
                         });
             }
+            txtBoxThreadFilter_TextChanged();
             UpdateWindowTitle(GetMonitoringInfo());
         }
 
@@ -633,10 +636,7 @@ namespace JDP {
         }
 
         private void btnAbout_Click(object sender, EventArgs e) {
-            MessageBox.Show(this, String.Format("Chan Thread Watch{0}Version {1} ({2}){0}{0}Original Author: JDP (jart1126@yahoo.com){0}http://sites.google.com/site/chanthreadwatch/" +
-                                                "{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}https://github.com/SuperGouge/ChanThreadWatch{0}{0}Maintained by: noodle (https://github.com/jwshield){0}https://github.com/jwshields/ChanThreadWatch",
-                Environment.NewLine, General.Version, General.ReleaseDate, General.ProgramURL), "About",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(this, string.Format("Chan Thread Watch{0}Version {1} ({2}){0}{0}Original Author: JDP (jart1126@yahoo.com){0}http://sites.google.com/site/chanthreadwatch/{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}https://github.com/SuperGouge/ChanThreadWatch{0}{0}Maintained by: noodle (https://github.com/jwshields){0}https://github.com/jwshields/ChanThreadWatch", Environment.NewLine, General.Version, General.ReleaseDate), "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         
         private void btnHelp_Click(object sender, EventArgs e) {
@@ -762,8 +762,7 @@ namespace JDP {
                 cboCheckEvery.Enabled = true;
             }
         }
-
-        private void txtBoxThreadFilter_TextChanged(object sender, EventArgs e) {
+        private void txtBoxThreadFilter_TextChanged() {
             string filterThreadsValue = txtBoxThreadFilter.Text;
             int threadCount = _watchers.Count;
             lvThreads.BeginUpdate();
@@ -771,7 +770,7 @@ namespace JDP {
             string lblFilterTextOut = "";
             if (String.IsNullOrEmpty(filterThreadsValue)) {
                 lblFilterTextOut = $"All ({threadCount})";
-                foreach (KeyValuePair<String,ThreadWatcher> watcher in _watchers) {
+                foreach (KeyValuePair<String, ThreadWatcher> watcher in _watchers) {
                     WatcherExtraData watcherextra = (WatcherExtraData)watcher.Value.Tag;
                     lvThreads.Items.Add(watcherextra.ListViewItem);
                 }
@@ -790,6 +789,10 @@ namespace JDP {
             lblFilterThreadsTxt.Text = $"Filter Threads: {lblFilterTextOut}";
             lvThreads.EndUpdate();
             return;
+        }
+
+        private void txtBoxThreadFilter_TextChanged(object sender, EventArgs e) {
+            txtBoxThreadFilter_TextChanged();
         }
 
         private void cboCheckEvery_SelectedIndexChanged(object sender, EventArgs e) {
@@ -1097,6 +1100,7 @@ namespace JDP {
             lvThreads.EndUpdate();
             UpdateWindowTitle(GetMonitoringInfo());
             _saveThreadList = true;
+            txtBoxThreadFilter_TextChanged();
         }
 
         private void BindCheckEveryList() {
@@ -1233,6 +1237,7 @@ namespace JDP {
         private void SetDownloadStatus(ThreadWatcher watcher, DownloadType downloadType, int completeCount, int totalCount) {
             string type;
             bool hideDetail = false;
+            int percComplete = 100;
             switch (downloadType) {
                 case DownloadType.Page:
                     type = totalCount == 1 ? "page" : "pages";
@@ -1240,16 +1245,17 @@ namespace JDP {
                     break;
                 case DownloadType.Image:
                     type = "images";
-                    //int percComplete = ((completeCount * 100) / totalCount);
                     break;
                 case DownloadType.Thumbnail:
                     type = "thumbnails";
-                    //int percComplete = ((completeCount * 100) / totalCount);
                     break;
                 default:
                     return;
             }
-            int percComplete = ((completeCount * 100) / totalCount);
+            if (totalCount > 0) {
+                percComplete = ((completeCount * 100) / totalCount);
+            }
+            else { }
             string status = hideDetail ? "Downloading " + type :
                 string.Format("Downloading {0}: {1}% ({2} of {3} completed)", type, percComplete, completeCount, totalCount);
             DisplayStatus(watcher, status);
