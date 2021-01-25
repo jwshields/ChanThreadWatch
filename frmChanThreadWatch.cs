@@ -1186,6 +1186,9 @@ namespace JDP {
                 if (watcher.IsWaiting) {
                     SetWaitStatus(watcher);
                 }
+                if (((WatcherExtraData)watcher.Tag).ListViewItem.SubItems[(int)ColumnIndex.Status].Text == "Downloading page" && TickCount.Now >= watcher.NextCheckTicks + 60000) {
+                    watcher.Check();
+                }
             }
         }
 

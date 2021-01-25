@@ -195,7 +195,7 @@ namespace JDP {
             set { NextCheckTicks = TickCount.Now + value; }
         }
 
-        private long NextCheckTicks {
+        public long NextCheckTicks {
             get { lock (_settingsSync) { return _nextCheckTicks; } }
             set {
                 lock (_settingsSync) {
@@ -627,7 +627,7 @@ namespace JDP {
         private int _maxFileNameLengthBaseDir;
         private string _threadName;
 
-        private void Check() {
+        public void Check() {
             try {
                 SiteHelper siteHelper = SiteHelpers.GetInstance(PageHost);
 
