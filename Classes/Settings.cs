@@ -30,6 +30,11 @@ namespace JDP {
             set { SetBool("UsePageAuth", value); }
         }
 
+        public static bool? SlowLoadThreads {
+            get { return GetBool("SlowLoadThreads"); }
+            set { SetBool("SlowLoadThreads", value); }
+        }
+
         public static string PageAuth {
             get { return Get("PageAuth"); }
             set { Set("PageAuth", value); }
@@ -481,7 +486,7 @@ namespace JDP {
             }
 
             try {
-                XmlTextReader xmlSettingsReader = new XmlTextReader(path){WhitespaceHandling = WhitespaceHandling.All};
+                XmlTextReader xmlSettingsReader = new XmlTextReader(path) { WhitespaceHandling = WhitespaceHandling.All };
                 XmlDocument settingsDoc = new XmlDocument();
                 settingsDoc.Load(xmlSettingsReader);
                 xmlSettingsReader.Close();

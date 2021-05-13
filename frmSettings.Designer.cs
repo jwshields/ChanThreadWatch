@@ -84,6 +84,7 @@
             this.chkCompletedFolder = new System.Windows.Forms.CheckBox();
             this.chkCompletedFolderRelative = new System.Windows.Forms.CheckBox();
             this.frmSettingsToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.chkSlowLoadThreads = new System.Windows.Forms.CheckBox();
             this.pnlSlug.SuspendLayout();
             this.grpThreadFolderNaming.SuspendLayout();
             this.pnlParentThreadDescriptionFormat.SuspendLayout();
@@ -417,6 +418,7 @@
             // 
             // grpGeneral
             // 
+            this.grpGeneral.Controls.Add(this.chkSlowLoadThreads);
             this.grpGeneral.Controls.Add(this.chkSaveURLsEncountered);
             this.grpGeneral.Controls.Add(this.grpThreadStatus);
             this.grpGeneral.Controls.Add(this.txtMaximumKilobytesPerSecond);
@@ -454,7 +456,7 @@
             this.grpThreadStatus.Location = new System.Drawing.Point(6, 114);
             this.grpThreadStatus.Name = "grpThreadStatus";
             this.grpThreadStatus.Size = new System.Drawing.Size(172, 52);
-            this.grpThreadStatus.TabIndex = 7;
+            this.grpThreadStatus.TabIndex = 8;
             this.grpThreadStatus.TabStop = false;
             this.grpThreadStatus.Text = "Thread Status Format";
             this.frmSettingsToolTip.SetToolTip(this.grpThreadStatus, resources.GetString("grpThreadStatus.ToolTip"));
@@ -487,7 +489,7 @@
             this.txtMaximumKilobytesPerSecond.Location = new System.Drawing.Point(241, 178);
             this.txtMaximumKilobytesPerSecond.Name = "txtMaximumKilobytesPerSecond";
             this.txtMaximumKilobytesPerSecond.Size = new System.Drawing.Size(56, 20);
-            this.txtMaximumKilobytesPerSecond.TabIndex = 9;
+            this.txtMaximumKilobytesPerSecond.TabIndex = 10;
             this.txtMaximumKilobytesPerSecond.Leave += new System.EventHandler(this.txtMaximumKilobytesPerSecond_Leave);
             // 
             // lblMaximumKilobytesPerSecond
@@ -496,7 +498,7 @@
             this.lblMaximumKilobytesPerSecond.Location = new System.Drawing.Point(3, 181);
             this.lblMaximumKilobytesPerSecond.Name = "lblMaximumKilobytesPerSecond";
             this.lblMaximumKilobytesPerSecond.Size = new System.Drawing.Size(232, 13);
-            this.lblMaximumKilobytesPerSecond.TabIndex = 8;
+            this.lblMaximumKilobytesPerSecond.TabIndex = 9;
             this.lblMaximumKilobytesPerSecond.Text = "Maximum download speed (kB/s, 0 = unlimited):";
             // 
             // chkBlacklistWildcards
@@ -515,7 +517,7 @@
             this.chkMinimizeToTray.Location = new System.Drawing.Point(333, 181);
             this.chkMinimizeToTray.Name = "chkMinimizeToTray";
             this.chkMinimizeToTray.Size = new System.Drawing.Size(98, 17);
-            this.chkMinimizeToTray.TabIndex = 10;
+            this.chkMinimizeToTray.TabIndex = 11;
             this.chkMinimizeToTray.Text = "Minimize to tray";
             this.chkMinimizeToTray.UseVisualStyleBackColor = true;
             // 
@@ -713,6 +715,17 @@
             this.chkCompletedFolderRelative.UseVisualStyleBackColor = true;
             this.chkCompletedFolderRelative.CheckedChanged += new System.EventHandler(this.chkCompletedFolderRelative_CheckedChanged);
             // 
+            // chkSlowLoadThreads
+            // 
+            this.chkSlowLoadThreads.AutoSize = true;
+            this.chkSlowLoadThreads.Location = new System.Drawing.Point(206, 124);
+            this.chkSlowLoadThreads.Name = "chkSlowLoadThreads";
+            this.chkSlowLoadThreads.Size = new System.Drawing.Size(180, 17);
+            this.chkSlowLoadThreads.TabIndex = 7;
+            this.chkSlowLoadThreads.Text = "On Startup, Slowly Start Threads";
+            this.frmSettingsToolTip.SetToolTip(this.chkSlowLoadThreads, resources.GetString("chkSlowLoadThreads.ToolTip"));
+            this.chkSlowLoadThreads.UseVisualStyleBackColor = true;
+            // 
             // frmSettings
             // 
             this.AcceptButton = this.btnOK;
@@ -833,5 +846,6 @@
         private System.Windows.Forms.GroupBox grpThreadStatus;
         private System.Windows.Forms.CheckBox chkThreadStatus;
         private System.Windows.Forms.CheckBox chkSaveURLsEncountered;
+        private System.Windows.Forms.CheckBox chkSlowLoadThreads;
     }
 }

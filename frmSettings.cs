@@ -29,6 +29,7 @@ namespace JDP {
             chkInterBoardAutoFollow.Checked = Settings.InterBoardAutoFollow ?? true;
             chkUseOriginalFileNames.Checked = Settings.UseOriginalFileNames ?? false;
             chkVerifyImageHashes.Checked = Settings.VerifyImageHashes ?? true;
+            chkSlowLoadThreads.Checked = Settings.SlowLoadThreads ?? false;
             chkUseSlug.Checked = Settings.UseSlug ?? false;
             pnlSlug.Enabled = chkUseSlug.Checked;
             rbSlugFirst.Checked = Settings.SlugType == SlugType.First;
@@ -152,6 +153,7 @@ namespace JDP {
                 Settings.BackupEvery = Int32.Parse(txtBackupEvery.Text);
                 Settings.SaveURLs = chkSaveURLsEncountered.Checked;
                 Settings.ThreadStatusSimple = txtThreadStatusBoxThreshold.Enabled;
+                Settings.SlowLoadThreads = chkSlowLoadThreads.Checked;
                 Int32.TryParse(txtThreadStatusBoxThreshold.Text, out int tmpThreadStatusThreshold);
                 Settings.ThreadStatusThreshold = tmpThreadStatusThreshold;
                 Settings.BackupCheckSize = chkBackupCheckSize.Checked;
@@ -216,9 +218,6 @@ namespace JDP {
 
         private void chkUseSlug_CheckedChanged(object sender, EventArgs e) {
             pnlSlug.Enabled = chkUseSlug.Checked;
-        }
-        private void chkSaveURLsEncountered_CheckedChanged(object sender, EventArgs e) {
-            chkSaveURLsEncountered.Enabled = chkSaveURLsEncountered.Checked;
         }
 
         private void chkRenameDownloadFolderWithParentThreadDescription_CheckedChanged(object sender, EventArgs e) {

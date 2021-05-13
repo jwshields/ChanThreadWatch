@@ -120,6 +120,14 @@
   <metadata name="frmSettingsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="chkSlowLoadThreads.ToolTip" xml:space="preserve">
+    <value>If this option is disabled, ChanThreadWatch will load all threads, and immediately begin watching threads that were not stopped at last close time.
+If this option is enabled, ChanThreadWatch will load all threads, and start groups of threads until all threads that were not stopped, are running.
+This only applies to threads that were running at last shutdown, and will not start any threads that were in a stopped state.
+
+This option is generally useful if you have more than a few dozen threads being watched (A rough number being over 50-100 threads)
+The purpose of this is to limit memory usage, CPU utilization, and disk utilization, as well as to not isse hundreds of web requests at once.</value>
+  </data>
   <data name="chkThreadStatus.ToolTip" xml:space="preserve">
     <value>Select the "Thread Status Threshold"
 This checkbox allows for enabling or disabling a "Simple" status for threads.

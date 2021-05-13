@@ -21,7 +21,7 @@ namespace JDP {
         private object _cboCheckEveryLastValue;
         private bool _isLoadingThreadsFromFile;
         private bool _isResizing;
-        private bool _unsafeShutdown;
+        private static bool _unsafeShutdown;
         private bool _isMinimized;
         private static Dictionary<string, int> _categories = new Dictionary<string, int>();
         private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
@@ -35,12 +35,12 @@ namespace JDP {
             niTrayIcon.Icon = Resources.ChanThreadWatchIcon;
             Settings.Load();
             if (Settings.IsRunning == true) {
-                this._unsafeShutdown = true;
+                _unsafeShutdown = true;
             }
             else {
-                Settings.IsRunning = true;
-                this._unsafeShutdown = false;
+                _unsafeShutdown = false;
             }
+            Settings.IsRunning = true;
             string logPath = Path.Combine(Settings.GetSettingsDirectory(), Settings.LogFileName);
             if (!File.Exists(logPath)) {
                 try { File.Create(logPath); }
@@ -154,7 +154,7 @@ namespace JDP {
         }
 
         private void frmChanThreadWatch_Shown(object sender, EventArgs e) {
-            UseWaitCursor = true;
+            this.Cursor = Cursors.WaitCursor;
             btnAdd.Enabled = false;
             btnAddFromClipboard.Enabled = false;
             btnRemoveCompleted.Enabled = false;
@@ -174,7 +174,6 @@ namespace JDP {
                 LoadBlacklist();
 
                 Invoke(() => {
-                    UseWaitCursor = false;
                     btnAdd.Enabled = true;
                     btnAddFromClipboard.Enabled = true;
                     btnRemoveCompleted.Enabled = true;
@@ -196,11 +195,12 @@ namespace JDP {
                 Thread.Sleep(5);
                 Application.DoEvents();
             }
+            this.Cursor = Cursors.Default;
             UpdateWindowTitle(GetMonitoringInfo());
             lblFilterThreadsTxt.Text = $"Filter Threads: All ({_watchers.Count})";
         }
 
-        private void frmChanThreadWatch_OnFormClosing(object sender, FormClosingEventArgs e)  {
+        private void frmChanThreadWatch_OnFormClosing(object sender, FormClosingEventArgs e) {
             if (MessageBox.Show("Are you sure you want to exit?", "Confirm exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) {
                 e.Cancel = true;
             }
@@ -209,6 +209,7 @@ namespace JDP {
         private void frmChanThreadWatch_FormClosed(object sender, FormClosedEventArgs e) {
             if (IsDisposed) return;
 
+            tmrUpdateWaitStatus.Stop();
             Settings.UsePageAuth = chkPageAuth.Checked;
             Settings.PageAuth = txtPageAuth.Text;
             Settings.UseImageAuth = chkImageAuth.Checked;
@@ -259,8 +260,7 @@ namespace JDP {
 
         private void frmChanThreadWatch_DragEnter(object sender, DragEventArgs e) {
             if (e.Data.GetDataPresent("UniformResourceLocatorW") ||
-                e.Data.GetDataPresent("UniformResourceLocator"))
-            {
+                e.Data.GetDataPresent("UniformResourceLocator")) {
                 if ((e.AllowedEffect & DragDropEffects.Copy) != 0) {
                     e.Effect = DragDropEffects.Copy;
                 }
@@ -312,7 +312,7 @@ namespace JDP {
             }
             return;
         }
-        
+
         private void frmChanThreadWatch_ResizeEnd(object sender, EventArgs e) {
             _isResizing = false;
             Settings.WindowSize = RestoreBounds.Size;
@@ -389,6 +389,7 @@ namespace JDP {
         }
 
         private void btnRemoveCompleted_Click(object sender, EventArgs e) {
+            this.Cursor = Cursors.WaitCursor;
             if (Settings.MoveToCompletedFolder != true) {
                 RemoveThreads(true, false);
             }
@@ -418,6 +419,7 @@ namespace JDP {
             }
             txtBoxThreadFilter_TextChanged();
             UpdateWindowTitle(GetMonitoringInfo());
+            this.Cursor = Cursors.Default;
         }
 
         private void miStop_Click(object sender, EventArgs e) {
@@ -480,8 +482,7 @@ namespace JDP {
         private void miOpenFolder_Click(object sender, EventArgs e) {
             int selectedCount = lvThreads.SelectedItems.Count;
             if (selectedCount > 5 && MessageBox.Show(this, "Do you want to open the folders of all " + selectedCount + " selected items?",
-                "Open Folders", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-            {
+                "Open Folders", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) {
                 return;
             }
             foreach (ThreadWatcher watcher in SelectedThreadWatchers) {
@@ -510,8 +511,7 @@ namespace JDP {
         private void miOpenURL_Click(object sender, EventArgs e) {
             int selectedCount = lvThreads.SelectedItems.Count;
             if (selectedCount > 5 && MessageBox.Show(this, "Do you want to open the URLs of all " + selectedCount + " selected items?",
-                "Open URLs", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-            {
+                "Open URLs", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) {
                 return;
             }
             foreach (ThreadWatcher watcher in SelectedThreadWatchers) {
@@ -638,7 +638,7 @@ namespace JDP {
         private void btnAbout_Click(object sender, EventArgs e) {
             _ = MessageBox.Show(this, string.Format("Chan Thread Watch{0}Version {1} ({2}){0}{0}Original Author: JDP (jart1126@yahoo.com){0}http://sites.google.com/site/chanthreadwatch/{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}https://github.com/SuperGouge/ChanThreadWatch{0}{0}Maintained by: noodle (https://github.com/jwshields){0}https://github.com/jwshields/ChanThreadWatch", Environment.NewLine, General.Version, General.ReleaseDate), "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        
+
         private void btnHelp_Click(object sender, EventArgs e) {
             Process.Start(General.WikiURL);
         }
@@ -832,7 +832,7 @@ namespace JDP {
                 }
             }
         }
-        
+
         private void tmrMonitor_Tick(object sender, EventArgs e) {
             MonitoringInfo monitoringInfo = GetMonitoringInfo();
             UpdateWindowTitle(monitoringInfo);
@@ -1186,9 +1186,6 @@ namespace JDP {
                 if (watcher.IsWaiting) {
                     SetWaitStatus(watcher);
                 }
-                if (((WatcherExtraData)watcher.Tag).ListViewItem.SubItems[(int)ColumnIndex.Status].Text == "Downloading page" && TickCount.Now >= watcher.NextCheckTicks + 60000) {
-                    watcher.Check();
-                }
             }
         }
 
@@ -1435,7 +1432,7 @@ namespace JDP {
                         if (stopReasonLine.Length != 0) {
                             thread.StopReason = (StopReason)Int32.Parse(stopReasonLine);
                         }
-                        else if (stopReasonLine.Length == 0 && this._unsafeShutdown) {
+                        else if (stopReasonLine.Length == 0 && _unsafeShutdown) {
                             thread.StopReason = (StopReason)6;
                         }
                         else { };
@@ -1578,7 +1575,7 @@ namespace JDP {
                 }
                 _tmpthreads.Add(_tmpThreadDict);
             }
-            XmlDocument _tmpThreadsDoc= new XmlDocument();
+            XmlDocument _tmpThreadsDoc = new XmlDocument();
             XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
             _tmpThreadsDoc.AppendChild(rootElem);
             XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1677,8 +1674,7 @@ namespace JDP {
                     Settings.LatestUpdateVersion = latestStr;
                     Invoke(() => {
                         if (MessageBox.Show(this, "A newer version of Chan Thread Watch is available.  Would you like to open the Chan Thread Watch website?",
-                            "Newer Version Found", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                        {
+                            "Newer Version Found", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) {
                             Process.Start(General.ProgramURL);
                         }
                     });

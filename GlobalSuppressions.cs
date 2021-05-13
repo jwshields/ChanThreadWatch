@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Many methods do not start with capitals in order to align with components of the forms.", Scope = "namespaceanddescendants", Target = "JDP")]
+[assembly: SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "Strings", Scope = "namespaceanddescendants", Target = "JDP")]

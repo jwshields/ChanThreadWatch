@@ -38,7 +38,8 @@ namespace JDP {
         private object _tag;
         private SiteHelper _siteHelper;
         private Dictionary<string, ThreadWatcher> _childThreads = new Dictionary<string, ThreadWatcher>();
-        private string _pageID;
+        private PageIDObject _pageID;
+        //private string _pageID;
         private string _category = String.Empty;
         private bool _autoFollow;
 
@@ -60,7 +61,7 @@ namespace JDP {
             _pageURL = pageURL;
             _siteHelper = SiteHelpers.GetInstance(PageHost);
             _siteHelper.SetURL(PageURL);
-            _pageID = _siteHelper.GetPageID();
+            _pageID = new PageIDObject(_siteHelper.GetPageID());
             _threadName = _siteHelper.GetThreadName();
         }
 
@@ -93,7 +94,7 @@ namespace JDP {
         }
 
         public string PageID {
-            get { return _pageID; }
+            get { return _pageID.ToString(); }
         }
 
         public string ThreadName {

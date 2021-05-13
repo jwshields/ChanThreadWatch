@@ -18,9 +18,7 @@ namespace JDP {
             }
         }
 
-        public static string ReleaseDate {
-            get { return "2021-01-23"; }
-        }
+        public static string ReleaseDate => "2021-05-12";
 
         public static string ProgramURL {
             get { return "https://github.com/jwshields/ChanThreadWatch/releases"; }

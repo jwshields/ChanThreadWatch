@@ -920,6 +920,37 @@ namespace JDP {
         }
     }
 
+    public class PageIDObject : Object {
+        private string _siteName;
+        private string _boardName;
+        private string _threadID;
+
+        public PageIDObject(string pageId) {
+            string[] tempout = pageId.Split('/');
+            _siteName = tempout[0];
+            _boardName = tempout[1];
+            _threadID = tempout[2];
+        }
+
+        public string ThreadID {
+            get { return _threadID; }
+            set { _threadID = value; }
+        }
+        public string BoardName {
+            get { return _boardName; }
+            set { _boardName = value; }
+        }
+
+        public string SiteName {
+            get { return _siteName; }
+            set { _siteName = value; }
+        }
+
+        public override string ToString() {
+            return string.Join("/", new[] { _siteName, _boardName, _threadID });
+        }
+    }
+
     public class DownloadEndEventArgs : EventArgs {
         public long DownloadID { get; private set; }
         public long DownloadedSize { get; private set; }
