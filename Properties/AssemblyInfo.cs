@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright 2012 JDP")]
+[assembly: AssemblyCopyright("Copyright 2022 JDP/SuperGouge/Noodle")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 
-[assembly: AssemblyVersion("1.19.1.0")]
-[assembly: AssemblyFileVersion("1.19.1.0")]
+[assembly: AssemblyVersion("1.19.3.0")]
+[assembly: AssemblyFileVersion("1.19.3.0")]

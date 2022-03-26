@@ -83,7 +83,7 @@ namespace JDP {
     public class HTTP304Exception : Exception { }
 
     public static class TickCount {
-        private static object _sync = new object();
+        private static readonly object _sync = new();
         private static int _lastTickCount;
         private static long _correction;
 
@@ -335,10 +335,10 @@ namespace JDP {
 
         public class WorkItem {
             private bool _hasStarted;
-            private WorkScheduler _scheduler;
+            private readonly WorkScheduler _scheduler;
             private long _runAtTicks;
-            private Action _action;
-            private string _group;
+            private readonly Action _action;
+            private readonly string _group;
 
             public WorkItem(WorkScheduler scheduler, long runAtTicks, Action action, string group) {
                 _scheduler = scheduler;
@@ -444,11 +444,11 @@ namespace JDP {
         }
 
         private class ThreadPoolThread {
-            private object _sync = new object();
-            private ThreadPoolManager _manager;
+            private readonly object _sync = new();
+            private readonly ThreadPoolManager _manager;
             private Thread _thread;
             private ManualResetEvent _newWorkItem;
-            private Queue<Action> _workItems = new Queue<Action>();
+            private readonly Queue<Action> _workItems = new();
 
             internal ThreadPoolThread(ThreadPoolManager manager) {
                 _manager = manager;
@@ -639,16 +639,16 @@ namespace JDP {
         public const long Infinite = 0;
 
         private static int _concurrentDownloads;
-        private static readonly object _downloadsSync = new object();
+        private static readonly object _downloadsSync = new();
 
-        private Stream _baseStream;
+        private readonly Stream _baseStream;
         private long _maximumBytesPerSecond;
         private long _byteCount;
         private long _start;
         private bool _hasStarted;
-        private readonly object _throttleSync = new object();
+        private readonly object _throttleSync = new();
 
-        protected long CurrentMilliseconds {
+        protected static long CurrentMilliseconds {
             get { return Environment.TickCount; }
         }
 
@@ -920,12 +920,15 @@ namespace JDP {
         }
     }
 
-    public class PageIDObject : Object {
+    public class PageIDObject : object {
         private string _siteName;
         private string _boardName;
         private string _threadID;
 
         public PageIDObject(string pageId) {
+            if (pageId == null) {
+                throw new ArgumentException("`pageId` is invalid.");
+            }
             string[] tempout = pageId.Split('/');
             _siteName = tempout[0];
             _boardName = tempout[1];
@@ -947,7 +950,7 @@ namespace JDP {
         }
 
         public override string ToString() {
-            return string.Join("/", new[] { _siteName, _boardName, _threadID });
+            return string.Join("/", new[] { SiteName, BoardName, ThreadID });
         }
     }
 

@@ -265,7 +265,7 @@ namespace JDP {
         public ThreadWatcher RootThread {
             get {
                 ThreadWatcher thread = this;
-                while (thread.IsCrossLink) {
+                if (thread.IsCrossLink) {
                     thread = thread.ParentThread;
                 }
                 return thread;

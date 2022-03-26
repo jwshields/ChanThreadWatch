@@ -52,7 +52,7 @@ namespace JDP {
     }
 
     public class SiteHelper {
-        protected string _url = String.Empty;
+        protected string _url = string.Empty;
         protected HTMLParser _htmlParser;
 
         public void SetURL(string url) {
@@ -71,7 +71,7 @@ namespace JDP {
             return SplitURL(_url);
         }
 
-        protected string[] SplitURL(string url) {
+        protected static string[] SplitURL(string url) {
             int pos = url.IndexOf("://", StringComparison.Ordinal);
             if (pos == -1) return new string[0];
             return url.Substring(pos + 3).Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -481,7 +481,7 @@ namespace JDP {
         }
 
         public override bool IsBoardHighTurnover() {
-            List<string> highTurnoveBoards =  new List<string> { "b", "pol" };
+            List<string> highTurnoveBoards = new List<string> { "b", "pol" };
             return highTurnoveBoards.Contains(GetBoardName().ToLower());
         }
     }

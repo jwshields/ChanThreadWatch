@@ -11,9 +11,9 @@ using JDP.Properties;
 
 namespace JDP {
     public partial class frmChanThreadWatch : Form {
-        private Dictionary<long, DownloadProgressInfo> _downloadProgresses = new Dictionary<long, DownloadProgressInfo>();
+        private Dictionary<long, DownloadProgressInfo> _downloadProgresses = new();
         private frmDownloads _downloadForm;
-        private object _startupPromptSync = new object();
+        private object _startupPromptSync = new();
         private bool _isExiting;
         private bool _saveThreadList;
         private int _itemAreaY;
@@ -23,9 +23,9 @@ namespace JDP {
         private bool _isResizing;
         private static bool _unsafeShutdown;
         private bool _isMinimized;
-        private static Dictionary<string, int> _categories = new Dictionary<string, int>();
-        private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
-        private static HashSet<string> _blacklist = new HashSet<string>();
+        private static Dictionary<string, int> _categories = new();
+        private static Dictionary<string, ThreadWatcher> _watchers = new();
+        private static HashSet<string> _blacklist = new();
 
         // ReleaseDate property and version in AssemblyInfo.cs should be updated for each release.
 
@@ -1349,7 +1349,7 @@ namespace JDP {
         private void SaveThreadList() {
             if (_isLoadingThreadsFromFile) return;
             try {
-                XmlDocument _tmpThreadsDoc = new XmlDocument();
+                XmlDocument _tmpThreadsDoc = new XmlDocument { XmlResolver = null };
                 XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
                 _tmpThreadsDoc.AppendChild(rootElem);
                 XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1370,12 +1370,11 @@ namespace JDP {
                 _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
                 string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
                 try {
-                    using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
-                        writer.Formatting = Formatting.Indented;
-                        _tmpThreadsDoc.Save(writer);
-                        writer.Flush();
-                        writer.Close();
-                    }
+                    XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings { Indent = true };
+                    XmlWriter writer = XmlWriter.Create(path, _tmpThreadsDocSettings);
+                    _tmpThreadsDoc.Save(writer);
+                    writer.Flush();
+                    writer.Close();
                 }
                 catch (Exception ex) {
                     Logger.Log(ex.ToString());
@@ -1406,9 +1405,9 @@ namespace JDP {
                     UpdateCategories(String.Empty);
                 });
                 try {
-                    XmlTextReader xmlThreadsReader = new XmlTextReader(path);
-                    xmlThreadsReader.WhitespaceHandling = WhitespaceHandling.All;
-                    XmlDocument xmlThreadsDoc = new XmlDocument();
+                    //XmlText _xmlThreadsReader = new XmlText;
+                    XmlTextReader xmlThreadsReader = new XmlTextReader(path) { XmlResolver = null, WhitespaceHandling = WhitespaceHandling.All };
+                    XmlDocument xmlThreadsDoc = new XmlDocument { XmlResolver = null };
                     xmlThreadsDoc.Load(xmlThreadsReader);
                     xmlThreadsReader.Close();
                     int fileVersion = Int32.Parse(xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("FileVersion").InnerText);
@@ -1575,7 +1574,7 @@ namespace JDP {
                 }
                 _tmpthreads.Add(_tmpThreadDict);
             }
-            XmlDocument _tmpThreadsDoc = new XmlDocument();
+            XmlDocument _tmpThreadsDoc = new XmlDocument { XmlResolver = null };
             XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
             _tmpThreadsDoc.AppendChild(rootElem);
             XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1596,24 +1595,23 @@ namespace JDP {
             _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
             string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
             try {
-                using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
-                    writer.Formatting = Formatting.Indented;
-                    _tmpThreadsDoc.Save(writer);
-                    writer.Flush();
-                    writer.Close();
-                    string threadsTxtBakPath = $"{txtPath}.bak";
-                    if (File.Exists(threadsTxtBakPath)) {
-                        try {
-                            File.Delete(threadsTxtBakPath);
-                        }
-                        catch (Exception ex) {
-                            Logger.Log(ex.ToString());
-                        }
+                XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings { Indent = true };
+                XmlWriter writer = XmlWriter.Create(path, _tmpThreadsDocSettings);
+                _tmpThreadsDoc.Save(writer);
+                writer.Flush();
+                writer.Close();
+                string threadsTxtBakPath = $"{txtPath}.bak";
+                if (File.Exists(threadsTxtBakPath)) {
+                    try {
+                        File.Delete(threadsTxtBakPath);
                     }
-                    else { }
-                    string txtBackupPath = $"{txtPath}.xmlConversion.bak";
-                    File.Move(txtPath, txtBackupPath);
+                    catch (Exception ex) {
+                        Logger.Log(ex.ToString());
+                    }
                 }
+                else { }
+                string txtBackupPath = $"{txtPath}.xmlConversion.bak";
+                File.Move(txtPath, txtBackupPath);
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());
@@ -1662,11 +1660,11 @@ namespace JDP {
                 htmlParser.FindStartTags(labelLatestDivTagRange, "span"), t => HTMLParser.ClassAttributeValueHas(t, "css-truncate-target"))));
             if (versionSpanTagRange == null) return;
             string latestStr = htmlParser.GetInnerHTML(versionSpanTagRange).Replace("v", "");
-            int latest = ParseVersionNumber(latestStr);
+            int latest = General.ParseVersionNumber(latestStr);
             if (latest == -1) return;
-            int current = ParseVersionNumber(General.Version);
+            int current = General.ParseVersionNumber(General.Version);
             if (!String.IsNullOrEmpty(Settings.LatestUpdateVersion)) {
-                current = Math.Max(current, ParseVersionNumber(Settings.LatestUpdateVersion));
+                current = Math.Max(current, General.ParseVersionNumber(Settings.LatestUpdateVersion));
             }
             if (latest > current) {
                 lock (_startupPromptSync) {
@@ -1679,21 +1677,6 @@ namespace JDP {
                         }
                     });
                 }
-            }
-        }
-
-        private int ParseVersionNumber(string str) {
-            string[] split = str.Split('.');
-            int num = 0;
-            try {
-                if (split.Length >= 1) num |= (Int32.Parse(split[0]) & 0x7F) << 24;
-                if (split.Length >= 2) num |= (Int32.Parse(split[1]) & 0xFF) << 16;
-                if (split.Length >= 3) num |= (Int32.Parse(split[2]) & 0xFF) << 8;
-                if (split.Length >= 4) num |= (Int32.Parse(split[3]) & 0xFF);
-                return num;
-            }
-            catch {
-                return -1;
             }
         }
 

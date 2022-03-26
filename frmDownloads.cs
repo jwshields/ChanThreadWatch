@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 namespace JDP {
     public partial class frmDownloads : Form {
-        private frmChanThreadWatch _parentForm;
-        private Dictionary<long, ListViewItem> _items = new Dictionary<long, ListViewItem>();
-        private Dictionary<long, List<DownloadedSizeSnapshot>> _snapshotLists = new Dictionary<long, List<DownloadedSizeSnapshot>>();
+        private readonly frmChanThreadWatch _parentForm;
+        private Dictionary<long, ListViewItem> _items = new();
+        private Dictionary<long, List<DownloadedSizeSnapshot>> _snapshotLists = new();
 
         public frmDownloads(frmChanThreadWatch parentForm) {
             InitializeComponent();
@@ -32,7 +32,7 @@ namespace JDP {
                     snapshotList.Add(new DownloadedSizeSnapshot(info.StartTicks, 0));
                     _snapshotLists[info.DownloadID] = snapshotList;
                 }
-                while (snapshotList.Count != 0 && ticksNow - snapshotList[0].Ticks > 0) {
+                while (snapshotList.Count != 0 && ticksNow - snapshotList[0].Ticks > 5000) {
                     snapshotList.RemoveAt(0);
                 }
                 snapshotList.Add(new DownloadedSizeSnapshot(ticksNow, info.DownloadedSize));
@@ -101,12 +101,12 @@ namespace JDP {
             _items.Remove(downloadID);
         }
 
-        private string GetKilobytesString(long? byteSize, string units) {
+        private static string GetKilobytesString(long? byteSize, string units) {
             if (byteSize == null) return String.Empty;
             return (byteSize.Value / 1024).ToString("#,##0") + " " + units;
         }
 
-        private void SetSubItemText(ListViewItem item, ColumnIndex columnIndex, string text) {
+        private static void SetSubItemText(ListViewItem item, ColumnIndex columnIndex, string text) {
             var subItem = item.SubItems[(int)columnIndex];
             if (subItem.Text != text) {
                 subItem.Text = text;

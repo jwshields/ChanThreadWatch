@@ -486,8 +486,8 @@ namespace JDP {
             }
 
             try {
-                XmlTextReader xmlSettingsReader = new XmlTextReader(path) { WhitespaceHandling = WhitespaceHandling.All };
-                XmlDocument settingsDoc = new XmlDocument();
+                XmlTextReader xmlSettingsReader = new(path) { WhitespaceHandling = WhitespaceHandling.All };
+                XmlDocument settingsDoc = new XmlDocument() { XmlResolver = null };
                 settingsDoc.Load(xmlSettingsReader);
                 xmlSettingsReader.Close();
                 foreach (XmlNode childNode in settingsDoc.SelectSingleNode("Settings")) {
@@ -505,7 +505,7 @@ namespace JDP {
 
         public static void Save() {
             string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
-            XmlDocument tempsettingsDoc = new XmlDocument();
+            XmlDocument tempsettingsDoc = new XmlDocument { XmlResolver = null };
             XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
             foreach (KeyValuePair<string, string> kvp in _settings) {
                 XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
@@ -515,10 +515,11 @@ namespace JDP {
             }
             tempsettingsDoc.AppendChild(settingsElement);
             try {
-                using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
-                    writer.Formatting = Formatting.Indented;
-                    tempsettingsDoc.Save(writer);
-                }
+                XmlWriterSettings _tmpSettingsDocSettings = new() { Indent = true };
+                XmlWriter writer = XmlWriter.Create(path, _tmpSettingsDocSettings);
+                tempsettingsDoc.Save(writer);
+                writer.Flush();
+                writer.Close();
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());
