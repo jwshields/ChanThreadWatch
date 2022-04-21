@@ -12,7 +12,12 @@ namespace JDP {
         private static readonly Dictionary<string, Type> _siteHelpers = new Dictionary<string, Type> {
             { "4chan.org", typeof(FourChanSiteHelper) },
             { "4channel.org", typeof(FourChanSiteHelper) },
+
+            { "archive.b-stats.org", typeof(FourChanLookAlikeSiteHelper) },
+            { "4chanarchives.cu.cc", typeof(FourChanLookAlikeSiteHelper) },
+
             { "8kun.top", typeof(InfinitechanSiteHelper) },
+
             { "krautchan.net", typeof(KrautchanSiteHelper) },
             
             { "warosu.org", typeof(FuukaSiteHelper) },
@@ -29,10 +34,7 @@ namespace JDP {
             { "archive.rebeccablacktech.com", typeof(FoolFuukaSiteHelper) },
             { "rbt.asia", typeof(FoolFuukaSiteHelper) },
 
-            { "endchan.xyz", typeof(LynxChanSiteHelper) },
-
-            { "archive.b-stats.org", typeof(FourChanLookAlikeSiteHelper) },
-            { "4chanarchives.cu.cc", typeof(FourChanLookAlikeSiteHelper) }
+            { "endchan.xyz", typeof(LynxChanSiteHelper) }
         };
 
         public static SiteHelper GetInstance(string host) {
@@ -52,8 +54,8 @@ namespace JDP {
     }
 
     public class SiteHelper {
-        protected string _url = string.Empty;
-        protected HTMLParser _htmlParser;
+        protected private string _url = string.Empty;
+        protected private HTMLParser _htmlParser;
 
         public void SetURL(string url) {
             _url = url;
@@ -342,8 +344,7 @@ namespace JDP {
             Regex reg = new Regex(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (HTMLTagRange postMessageTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("blockquote"),
                 t => HTMLParser.ClassAttributeValueHas(t, "postMessage")), t => _htmlParser.CreateTagRange(t)), r => r != null)) {
-                string tempval = _htmlParser.GetInnerHTML(postMessageTagRange);
-                tempval = tempval.Replace("<wbr>", "");
+                string tempval = _htmlParser.GetInnerHTML(postMessageTagRange).Replace("<wbr>", "");
                 MatchCollection outmatches = reg.Matches(tempval);
                 foreach (Match match in outmatches) {
                     urlList.Add(match.Value);

@@ -83,7 +83,7 @@ namespace JDP {
     public class HTTP304Exception : Exception { }
 
     public static class TickCount {
-        private static readonly object _sync = new();
+        private static readonly object _sync = new object();
         private static int _lastTickCount;
         private static long _correction;
 
@@ -159,10 +159,10 @@ namespace JDP {
 
         public FIFOSemaphore(int initialCount, int maximumCount) {
             if (initialCount > maximumCount) {
-                throw new ArgumentException();
+                throw new ArgumentException("Initial Count is greater than Maximum Count", nameof(initialCount));
             }
             if (initialCount < 0 || maximumCount < 1) {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(initialCount), "Initial Count is less than 0");
             }
             _currentCount = initialCount;
             _maximumCount = maximumCount;
@@ -261,8 +261,7 @@ namespace JDP {
                 }
                 _scheduleChanged.Set();
                 if (_schedulerThread == null) {
-                    _schedulerThread = new Thread(SchedulerThread);
-                    _schedulerThread.IsBackground = true;
+                    _schedulerThread = new Thread(SchedulerThread) {IsBackground = true};
                     _schedulerThread.Start();
                 }
             }
@@ -444,11 +443,11 @@ namespace JDP {
         }
 
         private class ThreadPoolThread {
-            private readonly object _sync = new();
+            private readonly object _sync = new object();
             private readonly ThreadPoolManager _manager;
             private Thread _thread;
             private ManualResetEvent _newWorkItem;
-            private readonly Queue<Action> _workItems = new();
+            private readonly Queue<Action> _workItems = new Queue<Action>();
 
             internal ThreadPoolThread(ThreadPoolManager manager) {
                 _manager = manager;
@@ -458,8 +457,7 @@ namespace JDP {
                 lock (_sync) {
                     if (_thread == null) {
                         _newWorkItem = new ManualResetEvent(false);
-                        _thread = new Thread(WorkThread);
-                        _thread.IsBackground = true;
+                        _thread = new Thread(WorkThread) {IsBackground = true};
                         _thread.Start();
                     }
                     _workItems.Enqueue(action);
@@ -516,15 +514,11 @@ namespace JDP {
             _dict = new Dictionary<T, int>(comparer);
         }
 
-        public HashSet(IEnumerable<T> collection) :
-            this()
-        {
+        public HashSet(IEnumerable<T> collection) : this() {
             AddRange(collection);
         }
 
-        public HashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) :
-            this(comparer)
-        {
+        public HashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) : this(comparer) {
             AddRange(collection);
         }
 
@@ -639,14 +633,14 @@ namespace JDP {
         public const long Infinite = 0;
 
         private static int _concurrentDownloads;
-        private static readonly object _downloadsSync = new();
+        private static readonly object _downloadsSync = new object();
 
         private readonly Stream _baseStream;
         private long _maximumBytesPerSecond;
         private long _byteCount;
         private long _start;
         private bool _hasStarted;
-        private readonly object _throttleSync = new();
+        private readonly object _throttleSync = new object();
 
         protected static long CurrentMilliseconds {
             get { return Environment.TickCount; }
@@ -689,11 +683,11 @@ namespace JDP {
 
         public ThrottledStream(Stream baseStream, long maximumBytesPerSecond = Infinite) {
             if (baseStream == null) {
-                throw new ArgumentNullException("baseStream");
+                throw new ArgumentNullException(nameof(baseStream));
             }
 
             if (maximumBytesPerSecond < 0) {
-                throw new ArgumentOutOfRangeException("maximumBytesPerSecond", maximumBytesPerSecond, "The maximum number of bytes per second can't be negative.");
+                throw new ArgumentOutOfRangeException(nameof(maximumBytesPerSecond), maximumBytesPerSecond, "The maximum number of bytes per second can't be negative.");
             }
 
             _baseStream = baseStream;

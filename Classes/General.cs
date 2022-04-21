@@ -14,11 +14,11 @@ namespace JDP {
         public static string Version {
             get {
                 Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-                return ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
+                return string.Format("{0}.{1}.{2}", ver.Major, ver.Minor, ver.Build);
             }
         }
 
-        public static string ReleaseDate => "2022-03-26";
+        public static string ReleaseDate => "2022-04-20";
 
         public static string ProgramURL {
             get { return "https://github.com/jwshields/ChanThreadWatch/releases"; }
@@ -44,12 +44,16 @@ namespace JDP {
                 }
                 if (responseStream != null) {
                     try { responseStream.Close(); }
-                    catch { }
+                    catch (IOException ex) {
+                        Logger.Log(ex.ToString());
+                    }
                     responseStream = null;
                 }
                 if (response != null) {
                     try { response.Close(); }
-                    catch { }
+                    catch (WebException ex) {
+                        Logger.Log(ex.ToString());
+                    }
                     response = null;
                 }
             };
@@ -173,8 +177,7 @@ namespace JDP {
                     while (metaContent.Length > currentPosition && (metaContent[currentPosition] >= 48 && metaContent[currentPosition] <= 57 || metaContent[currentPosition] == 46)) {
                         timeString.Append(metaContent[currentPosition++]);
                     }
-                    int time;
-                    int.TryParse(timeString.ToString(), out time);
+                    _ = int.TryParse(timeString.ToString(), out int time);
                     if (time < 0) {
                         return null;
                     }
@@ -449,8 +452,7 @@ namespace JDP {
 
         public static string GetAbsoluteURL(string baseURL, string relativeURL) {
             try {
-                Uri uri;
-                if (!Uri.TryCreate(new Uri(baseURL), relativeURL, out uri)) {
+                if (!Uri.TryCreate(new Uri(baseURL), relativeURL, out Uri uri)) {
                     return null;
                 }
                 // AbsoluteUri can throw undocumented Exception (e.g. for "mailto:+")
@@ -477,8 +479,7 @@ namespace JDP {
             }
             if (url.IndexOf('/', url.IndexOf("//", StringComparison.Ordinal) + 2) == -1) return null;
             try {
-                Uri uri;
-                if (!Uri.TryCreate(url, UriKind.Absolute, out uri)) return null;
+                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri)) return null;
                 return uri.AbsoluteUri;
             }
             catch {
@@ -580,7 +581,9 @@ namespace JDP {
             try {
                 using (File.Create(path)) { }
                 try { File.Delete(path); }
-                catch { }
+                catch (IOException ex) {
+                    Logger.Log(ex.ToString());
+                }
                 return false;
             }
             catch (PathTooLongException) {
@@ -593,9 +596,7 @@ namespace JDP {
         }
 
         public static void EnsureThreadPoolMaxThreads(int minWorkerThreads, int minCompletionPortThreads) {
-            int workerThreads;
-            int completionPortThreads;
-            ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
+            ThreadPool.GetMaxThreads(out int workerThreads, out int completionPortThreads);
             if (workerThreads < minWorkerThreads || completionPortThreads < minCompletionPortThreads) {
                 ThreadPool.SetMaxThreads(Math.Max(workerThreads, minWorkerThreads), Math.Max(completionPortThreads, minCompletionPortThreads));
             }
@@ -605,7 +606,10 @@ namespace JDP {
             try {
                 return Convert.FromBase64String(s);
             }
-            catch {
+            catch (ArgumentNullException) {
+                return null;
+            }
+            catch (FormatException) {
                 return null;
             }
         }

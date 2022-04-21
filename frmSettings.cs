@@ -18,7 +18,11 @@ namespace JDP {
             chkCompletedFolderRelative.Checked = Settings.CompletedFolderIsRelative ?? false;
             chkCustomUserAgent.Checked = Settings.UseCustomUserAgent ?? false;
             txtCustomUserAgent.Text = Settings.CustomUserAgent ?? String.Empty;
-            chkSaveThumbnails.Checked = Settings.SaveThumbnails ?? true;
+            if (Settings.SaveThumbnails != null) {
+                chkSaveThumbnails.CheckState = (CheckState)Settings.SaveThumbnails;
+            } else {
+                chkSaveThumbnails.CheckState = CheckState.Unchecked;
+            }
             chkRenameDownloadFolderWithDescription.Checked = Settings.RenameDownloadFolderWithDescription ?? false;
             chkRenameDownloadFolderWithCategory.Checked = Settings.RenameDownloadFolderWithCategory ?? false;
             chkRenameDownloadFolderWithParentThreadDescription.Checked = Settings.RenameDownloadFolderWithParentThreadDescription ?? false;
@@ -107,7 +111,9 @@ namespace JDP {
                             byte[] contents = File.ReadAllBytes(oldPath);
                             File.WriteAllBytes(newPath, contents);
                             try { File.Delete(oldPath); }
-                            catch { }
+                            catch (IOException ex) {
+                                Logger.Log(ex.ToString());
+                            }
                         }
                     }
                     catch {
@@ -126,7 +132,7 @@ namespace JDP {
                 Settings.CompletedFolderIsRelative = chkCompletedFolderRelative.Checked;
                 Settings.UseCustomUserAgent = chkCustomUserAgent.Checked;
                 Settings.CustomUserAgent = txtCustomUserAgent.Text;
-                Settings.SaveThumbnails = chkSaveThumbnails.Checked;
+                Settings.SaveThumbnails = (int)chkSaveThumbnails.CheckState;
                 Settings.RenameDownloadFolderWithDescription = chkRenameDownloadFolderWithDescription.Checked;
                 Settings.RenameDownloadFolderWithCategory = chkRenameDownloadFolderWithCategory.Checked;
                 Settings.RenameDownloadFolderWithParentThreadDescription = chkRenameDownloadFolderWithParentThreadDescription.Checked;
@@ -219,6 +225,19 @@ namespace JDP {
         private void chkUseSlug_CheckedChanged(object sender, EventArgs e) {
             pnlSlug.Enabled = chkUseSlug.Checked;
         }
+        
+        private void chkSaveThumbnails_CheckedChanged(object sender, EventArgs e) {
+            string chkSaveThumbnails_Text = "";
+            switch (chkSaveThumbnails.CheckState) {
+                case CheckState.Indeterminate:
+                    chkSaveThumbnails_Text = "Only post-process HTML";
+                    break;
+                default:
+                    chkSaveThumbnails_Text = "Save thumbnails + post-process HTML";
+                    break;
+            }
+            chkSaveThumbnails.Text = chkSaveThumbnails_Text;
+        }
 
         private void chkRenameDownloadFolderWithParentThreadDescription_CheckedChanged(object sender, EventArgs e) {
             pnlParentThreadDescriptionFormat.Enabled = chkRenameDownloadFolderWithParentThreadDescription.Checked;
@@ -230,15 +249,13 @@ namespace JDP {
         }
 
         private void txtBackupEvery_Leave(object sender, EventArgs e) {
-            int minutes;
-            if (!Int32.TryParse(txtBackupEvery.Text, out minutes) || minutes < 1) {
+            if (!Int32.TryParse(txtBackupEvery.Text, out int minutes) || minutes < 1) {
                 txtBackupEvery.Text = "1";
             }
         }
 
         private void txtMaximumKilobytesPerSecond_Leave(object sender, EventArgs e) {
-            long kbps;
-            if (!Int64.TryParse(txtMaximumKilobytesPerSecond.Text, out kbps) || kbps < 0 || kbps > Int64.MaxValue / 1024) {
+            if (!Int64.TryParse(txtMaximumKilobytesPerSecond.Text, out long kbps) || kbps < 0 || kbps > Int64.MaxValue / 1024) {
                 txtMaximumKilobytesPerSecond.Text = "0";
             }
         }

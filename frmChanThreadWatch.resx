@@ -117,28 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="cmThreads.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="cmThreads.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
-  <metadata name="tmrUpdateWaitStatus.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="tmrUpdateWaitStatus.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>128, 17</value>
-  </metadata>
-  <metadata name="tmrSaveThreadList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="tmrSaveThreadList.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>297, 17</value>
-  </metadata>
-  <metadata name="tmrMaintenance.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="tmrMaintenance.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>449, 17</value>
-  </metadata>
-  <metadata name="niTrayIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="niTrayIcon.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>592, 15</value>
-  </metadata>
-  <metadata name="cmTrayIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="cmTrayIcon.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>700, 17</value>
-  </metadata>
-  <metadata name="tmrMonitor.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="tmrMonitor.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>814, 17</value>
-  </metadata>
-  <metadata name="tmrBackupThreadList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="tmrBackupThreadList.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>929, 17</value>
-  </metadata>
+  </data>
 </root>

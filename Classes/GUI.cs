@@ -15,7 +15,7 @@ namespace JDP {
         public string AddedFrom { get; set; }
     }
 
-    public struct DownloadProgressInfo {
+    public class DownloadProgressInfo {
         public long DownloadID { get; set; }
         public string URL { get; set; }
         public int TryNumber { get; set; }

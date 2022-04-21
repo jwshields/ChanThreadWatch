@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -33,5 +34,6 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 
-[assembly: AssemblyVersion("1.19.3.0")]
-[assembly: AssemblyFileVersion("1.19.3.0")]
+[assembly: AssemblyVersion("1.19.5.0")]
+[assembly: AssemblyFileVersion("1.19.5.0")]
+[assembly: NeutralResourcesLanguage("en-US")]

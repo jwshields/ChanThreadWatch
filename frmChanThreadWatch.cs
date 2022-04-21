@@ -11,9 +11,10 @@ using JDP.Properties;
 
 namespace JDP {
     public partial class frmChanThreadWatch : Form {
-        private Dictionary<long, DownloadProgressInfo> _downloadProgresses = new();
+        private Dictionary<long, DownloadProgressInfo> _downloadProgresses = new Dictionary<long, DownloadProgressInfo>();
         private frmDownloads _downloadForm;
-        private object _startupPromptSync = new();
+        private frmCTWAbout _frmCTWAbout;
+        private object _startupPromptSync = new object();
         private bool _isExiting;
         private bool _saveThreadList;
         private int _itemAreaY;
@@ -23,9 +24,9 @@ namespace JDP {
         private bool _isResizing;
         private static bool _unsafeShutdown;
         private bool _isMinimized;
-        private static Dictionary<string, int> _categories = new();
-        private static Dictionary<string, ThreadWatcher> _watchers = new();
-        private static HashSet<string> _blacklist = new();
+        private static Dictionary<string, int> _categories = new Dictionary<string, int>();
+        private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
+        private static HashSet<string> _blacklist = new HashSet<string>();
 
         // ReleaseDate property and version in AssemblyInfo.cs should be updated for each release.
 
@@ -44,7 +45,9 @@ namespace JDP {
             string logPath = Path.Combine(Settings.GetSettingsDirectory(), Settings.LogFileName);
             if (!File.Exists(logPath)) {
                 try { File.Create(logPath); }
-                catch { }
+                catch (IOException ex) {
+                    Logger.Log(ex.ToString());
+                }
             }
             int initialWidth = ClientSize.Width;
             GUI.SetFontAndScaling(this);
@@ -377,8 +380,7 @@ namespace JDP {
                 else {
                     SiteHelper siteHelper = SiteHelpers.GetInstance((new Uri(url)).Host);
                     siteHelper.SetURL(url);
-                    ThreadWatcher watcher;
-                    if (_watchers.TryGetValue(siteHelper.GetPageID(), out watcher)) {
+                    if (_watchers.TryGetValue(siteHelper.GetPageID(), out ThreadWatcher watcher)) {
                         (((WatcherExtraData)watcher.Tag).ListViewItem).Selected = true;
                     }
                 }
@@ -606,7 +608,7 @@ namespace JDP {
         private void miReparse_Click(object sender, EventArgs e) {
             if (_isExiting) return;
             foreach (ThreadWatcher watcher in SelectedThreadWatchers) {
-                if (!watcher.IsRunning && !watcher.IsReparsing && Settings.SaveThumbnails != false) {
+                if (!watcher.IsRunning && !watcher.IsReparsing && Settings.SaveThumbnails != 0) {
                     watcher.BeginReparse();
                 }
             }
@@ -636,7 +638,16 @@ namespace JDP {
         }
 
         private void btnAbout_Click(object sender, EventArgs e) {
-            _ = MessageBox.Show(this, string.Format("Chan Thread Watch{0}Version {1} ({2}){0}{0}Original Author: JDP (jart1126@yahoo.com){0}http://sites.google.com/site/chanthreadwatch/{0}{0}Maintained by: SuperGouge (https://github.com/SuperGouge){0}https://github.com/SuperGouge/ChanThreadWatch{0}{0}Maintained by: noodle (https://github.com/jwshields){0}https://github.com/jwshields/ChanThreadWatch", Environment.NewLine, General.Version, General.ReleaseDate), "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (_frmCTWAbout != null && !_frmCTWAbout.IsDisposed) {
+                GUI.CenterChildForm(this, _frmCTWAbout);
+                _frmCTWAbout.ShowDialog(this);
+            }
+            else {
+                _frmCTWAbout = new frmCTWAbout();
+                GUI.CenterChildForm(this, _frmCTWAbout);
+                _frmCTWAbout.ShowDialog(this);
+
+            }
         }
 
         private void btnHelp_Click(object sender, EventArgs e) {
@@ -725,8 +736,7 @@ namespace JDP {
         }
 
         private void txtCheckEvery_TextChanged(object sender, EventArgs e) {
-            int checkEvery;
-            if (Int32.TryParse(txtCheckEvery.Text, out checkEvery)) {
+            if (Int32.TryParse(txtCheckEvery.Text, out _)) {
                 cboCheckEvery.SelectedIndex = -1;
                 cboCheckEvery.Enabled = false;
             }
@@ -767,7 +777,7 @@ namespace JDP {
             int threadCount = _watchers.Count;
             lvThreads.BeginUpdate();
             lvThreads.Items.Clear();
-            string lblFilterTextOut = "";
+            string lblFilterTextOut;
             if (String.IsNullOrEmpty(filterThreadsValue)) {
                 lblFilterTextOut = $"All ({threadCount})";
                 foreach (KeyValuePair<String, ThreadWatcher> watcher in _watchers) {
@@ -921,12 +931,13 @@ namespace JDP {
         }
 
         private void ThreadWatcher_DownloadStart(ThreadWatcher watcher, DownloadStartEventArgs args) {
-            DownloadProgressInfo info = new DownloadProgressInfo();
-            info.DownloadID = args.DownloadID;
-            info.URL = args.URL;
-            info.TryNumber = args.TryNumber;
-            info.StartTicks = TickCount.Now;
-            info.TotalSize = args.TotalSize;
+            DownloadProgressInfo info = new DownloadProgressInfo {
+                DownloadID = args.DownloadID,
+                URL = args.URL,
+                TryNumber = args.TryNumber,
+                StartTicks = TickCount.Now,
+                TotalSize = args.TotalSize
+            };
             lock (_downloadProgresses) {
                 _downloadProgresses[args.DownloadID] = info;
             }
@@ -934,8 +945,7 @@ namespace JDP {
 
         private void ThreadWatcher_DownloadProgress(ThreadWatcher watcher, DownloadProgressEventArgs args) {
             lock (_downloadProgresses) {
-                DownloadProgressInfo info;
-                if (!_downloadProgresses.TryGetValue(args.DownloadID, out info)) return;
+                if (!_downloadProgresses.TryGetValue(args.DownloadID, out DownloadProgressInfo info)) return;
                 info.DownloadedSize = args.DownloadedSize;
                 _downloadProgresses[args.DownloadID] = info;
             }
@@ -943,8 +953,7 @@ namespace JDP {
 
         private void ThreadWatcher_DownloadEnd(ThreadWatcher watcher, DownloadEndEventArgs args) {
             lock (_downloadProgresses) {
-                DownloadProgressInfo info;
-                if (!_downloadProgresses.TryGetValue(args.DownloadID, out info)) return;
+                if (!_downloadProgresses.TryGetValue(args.DownloadID, out DownloadProgressInfo info)) return;
                 info.EndTicks = TickCount.Now;
                 info.DownloadedSize = args.DownloadedSize;
                 info.TotalSize = args.DownloadedSize;
@@ -1119,7 +1128,7 @@ namespace JDP {
         private void BuildCheckEverySubMenu() {
             for (int i = 0; i < cboCheckEvery.Items.Count; i++) {
                 int minutes = ((ListItemInt32)cboCheckEvery.Items[i]).Value;
-                MenuItem menuItem = new MenuItem {
+                MenuItem menuItem = new MenuItem() {
                     Index = i,
                     Tag = minutes,
                     Text = minutes > 0 ? minutes + " Minutes" : "1 Minute or <"
@@ -1217,8 +1226,7 @@ namespace JDP {
         }
 
         private void DisplayAddedFrom(ThreadWatcher watcher) {
-            ThreadWatcher fromWatcher;
-            _watchers.TryGetValue(((WatcherExtraData)watcher.Tag).AddedFrom ?? String.Empty, out fromWatcher);
+            _watchers.TryGetValue(((WatcherExtraData)watcher.Tag).AddedFrom ?? String.Empty, out ThreadWatcher fromWatcher);
             SetSubItemText(watcher, ColumnIndex.AddedFrom, fromWatcher != null ? fromWatcher.Description : String.Empty);
         }
 
@@ -1349,7 +1357,7 @@ namespace JDP {
         private void SaveThreadList() {
             if (_isLoadingThreadsFromFile) return;
             try {
-                XmlDocument _tmpThreadsDoc = new XmlDocument { XmlResolver = null };
+                XmlDocument _tmpThreadsDoc = new XmlDocument() {XmlResolver = null};
                 XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
                 _tmpThreadsDoc.AppendChild(rootElem);
                 XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1370,7 +1378,7 @@ namespace JDP {
                 _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
                 string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
                 try {
-                    XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings { Indent = true };
+                    XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings() {Indent = true};
                     XmlWriter writer = XmlWriter.Create(path, _tmpThreadsDocSettings);
                     _tmpThreadsDoc.Save(writer);
                     writer.Flush();
@@ -1405,15 +1413,15 @@ namespace JDP {
                     UpdateCategories(String.Empty);
                 });
                 try {
-                    //XmlText _xmlThreadsReader = new XmlText;
-                    XmlTextReader xmlThreadsReader = new XmlTextReader(path) { XmlResolver = null, WhitespaceHandling = WhitespaceHandling.All };
-                    XmlDocument xmlThreadsDoc = new XmlDocument { XmlResolver = null };
+                    XmlReaderSettings xmlThreadsReadersettings = new XmlReaderSettings() {XmlResolver = null};
+                    XmlReader xmlThreadsReader = XmlReader.Create(path, xmlThreadsReadersettings);
+                    XmlDocument xmlThreadsDoc = new XmlDocument() {XmlResolver = null};
                     xmlThreadsDoc.Load(xmlThreadsReader);
                     xmlThreadsReader.Close();
                     int fileVersion = Int32.Parse(xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("FileVersion").InnerText);
                     foreach (XmlNode childNode in xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("Threads")) {
                         if (childNode.Name != "Thread") continue;
-                        ThreadInfo thread = new ThreadInfo { ExtraData = new WatcherExtraData() };
+                        ThreadInfo thread = new ThreadInfo() {ExtraData = new WatcherExtraData()};
                         XmlNode URLLine = childNode.SelectSingleNode("PageURL");
                         if (URLLine != null) {
                             thread.URL = URLLine.InnerText;
@@ -1454,8 +1462,7 @@ namespace JDP {
                 }
                 List<StopReason> _stopReasons = new List<StopReason> { StopReason.PageNotFound, StopReason.UserRequest, StopReason.DirtyShutdown };
                 foreach (ThreadWatcher threadWatcher in ThreadWatchers) {
-                    ThreadWatcher parentThread;
-                    _watchers.TryGetValue(((WatcherExtraData)threadWatcher.Tag).AddedFrom, out parentThread);
+                    _watchers.TryGetValue(((WatcherExtraData)threadWatcher.Tag).AddedFrom, out ThreadWatcher parentThread);
                     threadWatcher.ParentThread = parentThread;
                     if (parentThread != null && !parentThread.ChildThreads.ContainsKey(threadWatcher.PageID) && !parentThread.ChildThreads.ContainsKey(parentThread.PageID)) {
                         parentThread.ChildThreads.Add(threadWatcher.PageID, threadWatcher);
@@ -1513,7 +1520,7 @@ namespace JDP {
             }
         }
 
-        private bool ConvertThreadsTxttoXml() {
+        private static bool ConvertThreadsTxttoXml() {
             string txtPath = Path.Combine(Settings.GetSettingsDirectory(), "threads.txt");
             string[] lines = File.ReadAllLines(txtPath);
             if (lines.Length < 1) return false;
@@ -1574,7 +1581,7 @@ namespace JDP {
                 }
                 _tmpthreads.Add(_tmpThreadDict);
             }
-            XmlDocument _tmpThreadsDoc = new XmlDocument { XmlResolver = null };
+            XmlDocument _tmpThreadsDoc = new XmlDocument() {XmlResolver = null};
             XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
             _tmpThreadsDoc.AppendChild(rootElem);
             XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1595,7 +1602,7 @@ namespace JDP {
             _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
             string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
             try {
-                XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings { Indent = true };
+                XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings() {Indent = true};
                 XmlWriter writer = XmlWriter.Create(path, _tmpThreadsDocSettings);
                 _tmpThreadsDoc.Save(writer);
                 writer.Flush();
@@ -1638,8 +1645,7 @@ namespace JDP {
         }
 
         private void CheckForUpdates() {
-            Thread thread = new Thread(CheckForUpdateThread);
-            thread.IsBackground = true;
+            Thread thread = new Thread(CheckForUpdateThread) {IsBackground = true};
             thread.Start();
         }
 
@@ -1688,7 +1694,7 @@ namespace JDP {
             return Invoke((Delegate)method);
         }
 
-        private IEnumerable<ThreadWatcher> ThreadWatchers {
+        private static IEnumerable<ThreadWatcher> ThreadWatchers {
             get { return _watchers.Values; }
         }
 
@@ -1729,8 +1735,7 @@ namespace JDP {
         private void FocusThread(string pageURL) {
             SiteHelper siteHelper = SiteHelpers.GetInstance((new Uri(pageURL)).Host);
             siteHelper.SetURL(pageURL);
-            ThreadWatcher watcher;
-            if (_watchers.TryGetValue(siteHelper.GetPageID(), out watcher)) {
+            if (_watchers.TryGetValue(siteHelper.GetPageID(), out ThreadWatcher watcher)) {
                 FocusThread(watcher);
             }
         }
@@ -1749,7 +1754,7 @@ namespace JDP {
             }
         }
 
-        private bool IsBlacklisted(string pageID) {
+        private static bool IsBlacklisted(string pageID) {
             if (_blacklist.Contains(pageID)) return true;
             if (Settings.BlacklistWildcards != true) return false;
             string[] pageIDSplit = pageID.Split('/');
@@ -1765,7 +1770,7 @@ namespace JDP {
             return false;
         }
 
-        private MonitoringInfo GetMonitoringInfo() {
+        private static MonitoringInfo GetMonitoringInfo() {
             int running = 0;
             int dead = 0;
             int stopped = 0;

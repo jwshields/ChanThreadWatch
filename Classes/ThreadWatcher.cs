@@ -39,7 +39,6 @@ namespace JDP {
         private SiteHelper _siteHelper;
         private Dictionary<string, ThreadWatcher> _childThreads = new Dictionary<string, ThreadWatcher>();
         private PageIDObject _pageID;
-        //private string _pageID;
         private string _category = String.Empty;
         private bool _autoFollow;
 
@@ -50,8 +49,10 @@ namespace JDP {
             // Shouldn't matter since the limit is supposed to be per connection group
             ServicePointManager.DefaultConnectionLimit = Int32.MaxValue;
 
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
             // Ignore invalid certificates (workaround for Mono)
             ServicePointManager.ServerCertificateValidationCallback = (s, cert, chain, errors) => true;
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
 
             // Enable TLS 1.2 on supported environments
             ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
@@ -715,7 +716,7 @@ namespace JDP {
                             pageParser = new HTMLParser(content);
                             pageInfo.CacheTime = lastModifiedTime;
                             pageInfo.Encoding = encoding;
-                            pageInfo.ReplaceList = (Settings.SaveThumbnails != false) ? new List<ReplaceInfo>() : null;
+                            pageInfo.ReplaceList = (Settings.SaveThumbnails != 0) ? new List<ReplaceInfo>() : null;
                         }
                         downloadEndEvent.Set();
                     };
@@ -739,24 +740,24 @@ namespace JDP {
 
                         if (Settings.SaveURLs == true) {
                             string urlListFile = Path.Combine(threadDir, "urls.txt");
-                            HashSet<string> previousURLs = new HashSet<string>();
+                            HashSet<string> threadURLs = new HashSet<string>();
                             if (File.Exists(urlListFile)) {
                                 try {
                                     string[] tempURLsFile = File.ReadAllLines(urlListFile);
-                                    previousURLs = new HashSet<string>(tempURLsFile);
+                                    threadURLs = new HashSet<string>(tempURLsFile);
                                 }
                                 catch { }
                             }
                             foreach (string urlFound in siteHelper.GetURLs()) {
-                                previousURLs.Add(urlFound);
+                                threadURLs.Add(urlFound);
                             }
-                            if (previousURLs.Count > 0) {
-                                List<string> outList = new List<string>();
-                                foreach (string url in previousURLs) {
-                                    outList.Add(url);
+                            if (threadURLs.Count > 0) {
+                                List<string> urlOutList = new List<string>();
+                                foreach (string url in threadURLs) {
+                                    urlOutList.Add(url);
                                 }
                                 try {
-                                    File.WriteAllLines(urlListFile, outList.ToArray(), Encoding.UTF8);
+                                    File.WriteAllLines(urlListFile, urlOutList.ToArray(), Encoding.UTF8);
                                 }
                                 catch (Exception ex) {
                                     Logger.Log(ex.ToString());
@@ -924,7 +925,7 @@ namespace JDP {
                     }
                 }
 
-                if (Settings.SaveThumbnails != false) {
+                if (Settings.SaveThumbnails != 0) {
                     if (pendingThumbs.Count != 0 && !IsStopping) {
                         if (!Directory.Exists(thumbDir)) {
                             try {
@@ -1017,7 +1018,6 @@ namespace JDP {
             for (int i = 0; i < pageInfo.ReplaceList.Count; i++) {
                 ReplaceInfo replace = pageInfo.ReplaceList[i];
                 DownloadInfo downloadInfo = null;
-                ThreadWatcher watcher;
                 Func<string, string> getRelativeDownloadPath = (fileDownloadDir) => {
                     return General.GetRelativeFilePath(Path.Combine(fileDownloadDir, downloadInfo.Path),
                         threadDir).Replace(Path.DirectorySeparatorChar, '/');
@@ -1028,7 +1028,7 @@ namespace JDP {
                 if (replace.Type == ReplaceType.ImageSrc && completedThumbs.TryGetValue(replace.Tag, out downloadInfo)) {
                     replace.Value = "src=\"" + General.HtmlAttributeEncode(getRelativeDownloadPath(thumbDir), false) + "\"";
                 }
-                if (RootThread.DescendantThreads.TryGetValue(replace.Tag, out watcher)) {
+                if (RootThread.DescendantThreads.TryGetValue(replace.Tag, out ThreadWatcher watcher)) {
                     if (watcher._hasInitialized) {
                         switch (replace.Type) {
                             case ReplaceType.QuoteLinkHref:

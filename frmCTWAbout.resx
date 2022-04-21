@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,50 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="frmSettingsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+  <metadata name="pictureBoxCTWLogo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
-  <metadata name="frmSettingsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+  <metadata name="btnCloseAbout.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
-  <data name="chkSlowLoadThreads.ToolTip" xml:space="preserve">
-    <value>***Temporarily Disabled, feature is not fully implemented
-
-If this option is disabled, ChanThreadWatch will load all threads, and immediately begin watching threads that were not stopped at last close time.
-If this option is enabled, ChanThreadWatch will load all threads, and start groups of threads until all threads that were not stopped, are running.
-This only applies to threads that were running at last shutdown, and will not start any threads that were in a stopped state.
-
-This option is generally useful if you have more than a few dozen threads being watched (A rough number being over 50-100 threads)
-The purpose of this is to limit memory usage, CPU utilization, and disk utilization, as well as to not isse hundreds of web requests at once.</value>
-  </data>
-  <data name="grpThreadStatus.ToolTip" xml:space="preserve">
-    <value>Select the "Thread Status Threshold"
-This checkbox allows for enabling or disabling a "Simple" status for threads.
-When enabled/checked, the status of threads will be shown in minutes remaining, until the thread under the set threshold from the text box, after which it will show the number of seconds remaining.
-When disabled/unchecked, threads will always show the number of seconds remaining as their status.
-
-Default: disabled
-Default limit when enabled: 10 minute threshold
-Acceptable values for text box: any number that is 0 or greater</value>
-  </data>
-  <data name="chkThreadStatus.ToolTip" xml:space="preserve">
-    <value>Select the "Thread Status Threshold"
-This checkbox allows for enabling or disabling a "Simple" status for threads.
-When enabled/checked, the status of threads will be shown in minutes remaining, until the thread under the set threshold from the text box, after which it will show the number of seconds remaining.
-When disabled/unchecked, threads will always show the number of seconds remaining as their status.
-
-Default: disabled
-Default limit when enabled: 10 minute threshold
-Acceptable values for text box: any number that is 0 or greater</value>
-  </data>
-  <data name="txtThreadStatusBoxThreshold.ToolTip" xml:space="preserve">
-    <value>Select the "Thread Status Threshold"
-This checkbox allows for enabling or disabling a "Simple" status for threads.
-When enabled/checked, the status of threads will be shown in minutes remaining, until the thread under the set threshold from the text box, after which it will show the number of seconds remaining.
-When disabled/unchecked, threads will always show the number of seconds remaining as their status.
-
-Default: disabled
-Default limit when enabled: 10 minute threshold
-Acceptable values for text box: any number that is 0 or greater</value>
-  </data>
+  <metadata name="lblAboutTitle.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="tableLayoutPanel1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblCTWVersion.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblBuildDate.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblJDPAuthor.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblJDPURL.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblSuperGougeAuthor.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblNoodleAuthor.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblSuperGougeRepo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblNoodleRepo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblCTWVersion.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblBuildDate.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblJDPAuthor.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblJDPURL.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblSuperGougeAuthor.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblSuperGougeRepo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblNoodleAuthor.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="lblNoodleRepo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
 </root>

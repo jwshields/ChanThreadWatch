@@ -53,6 +53,7 @@
             this.lvDownloads.TabIndex = 0;
             this.lvDownloads.UseCompatibleStateImageBehavior = false;
             this.lvDownloads.View = System.Windows.Forms.View.Details;
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormKeyDown);
             // 
             // chURL
             // 
@@ -92,6 +93,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(636, 213);
             this.Controls.Add(this.lvDownloads);
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(260, 140);

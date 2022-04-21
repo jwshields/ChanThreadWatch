@@ -5,8 +5,8 @@ using System.Windows.Forms;
 namespace JDP {
     public partial class frmDownloads : Form {
         private readonly frmChanThreadWatch _parentForm;
-        private Dictionary<long, ListViewItem> _items = new();
-        private Dictionary<long, List<DownloadedSizeSnapshot>> _snapshotLists = new();
+        private Dictionary<long, ListViewItem> _items = new Dictionary<long, ListViewItem>();
+        private Dictionary<long, List<DownloadedSizeSnapshot>> _snapshotLists = new Dictionary<long, List<DownloadedSizeSnapshot>>();
 
         public frmDownloads(frmChanThreadWatch parentForm) {
             InitializeComponent();
@@ -26,10 +26,8 @@ namespace JDP {
             long minTotalDownloadedStartTicks = Int64.MaxValue;
             downloadProgresses.Sort((a, b) => a.StartTicks.CompareTo(b.StartTicks));
             foreach (DownloadProgressInfo info in downloadProgresses) {
-                List<DownloadedSizeSnapshot> snapshotList;
-                if (!_snapshotLists.TryGetValue(info.DownloadID, out snapshotList)) {
-                    snapshotList = new List<DownloadedSizeSnapshot>();
-                    snapshotList.Add(new DownloadedSizeSnapshot(info.StartTicks, 0));
+                if (!_snapshotLists.TryGetValue(info.DownloadID, out List<DownloadedSizeSnapshot> snapshotList)) {
+                    snapshotList = new List<DownloadedSizeSnapshot> {new DownloadedSizeSnapshot(info.StartTicks, 0)};
                     _snapshotLists[info.DownloadID] = snapshotList;
                 }
                 while (snapshotList.Count != 0 && ticksNow - snapshotList[0].Ticks > 5000) {
@@ -73,8 +71,7 @@ namespace JDP {
         }
 
         public void UpdateDownloadProgress(DownloadProgressInfo info, long? bytesPerSec) {
-            ListViewItem item;
-            if (!_items.TryGetValue(info.DownloadID, out item)) {
+            if (!_items.TryGetValue(info.DownloadID, out ListViewItem item)) {
                 item = new ListViewItem(String.Empty);
                 for (int i = 1; i < lvDownloads.Columns.Count; i++) {
                     item.SubItems.Add(String.Empty);
@@ -95,8 +92,7 @@ namespace JDP {
         }
 
         private void RemoveDownloadProgress(long downloadID) {
-            ListViewItem item;
-            if (!_items.TryGetValue(downloadID, out item)) return;
+            if (!_items.TryGetValue(downloadID, out ListViewItem item)) return;
             lvDownloads.Items.Remove(item);
             _items.Remove(downloadID);
         }
@@ -110,6 +106,12 @@ namespace JDP {
             var subItem = item.SubItems[(int)columnIndex];
             if (subItem.Text != text) {
                 subItem.Text = text;
+            }
+        }
+
+        public void FormKeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Escape) {
+                this.Close();
             }
         }
 

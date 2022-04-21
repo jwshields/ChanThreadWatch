@@ -17,7 +17,9 @@ namespace JDP {
                 MessageBox.Show("Another instance of this program is running.", "Already Running", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            Application.Run(new frmChanThreadWatch());
+            frmChanThreadWatch MainForm = new frmChanThreadWatch();
+            Application.Run(MainForm);
+            MainForm.Dispose();
         }
 
         public static bool ObtainMutex() {
@@ -28,7 +30,6 @@ namespace JDP {
             SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
             MutexSecurity security = new MutexSecurity();
             bool useDefaultSecurity = false;
-            bool createdNew;
             try {
                 security.AddAccessRule(new MutexAccessRule(sid, MutexRights.FullControl, AccessControlType.Allow));
                 security.AddAccessRule(new MutexAccessRule(sid, MutexRights.ChangePermissions, AccessControlType.Deny));
@@ -46,7 +47,7 @@ namespace JDP {
             string name = @"Global\ChanThreadWatch_" + General.Calculate64BitMD5(Encoding.UTF8.GetBytes(
                 settingsFolder.ToUpperInvariant())).ToString("X16");
             Mutex mutex = !useDefaultSecurity ?
-                new Mutex(false, name, out createdNew, security) :
+                new Mutex(false, name, out _, security) :
                 new Mutex(false, name);
             try {
                 if (!mutex.WaitOne(0, false)) {

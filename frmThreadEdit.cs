@@ -178,8 +178,7 @@ namespace JDP {
         }
 
         private void txtCheckEvery_TextChanged(object sender, EventArgs e) {
-            int checkEvery;
-            if (Int32.TryParse(txtCheckEvery.Text, out checkEvery)) {
+            if (Int32.TryParse(txtCheckEvery.Text, out _)) {
                 cboCheckEvery.SelectedIndex = -1;
                 cboCheckEvery.Enabled = false;
             }

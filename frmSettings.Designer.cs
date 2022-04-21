@@ -56,6 +56,7 @@
             this.pnlParentThreadDescriptionFormat = new System.Windows.Forms.Panel();
             this.grpNamingStructure = new System.Windows.Forms.GroupBox();
             this.grpGeneral = new System.Windows.Forms.GroupBox();
+            this.chkSlowLoadThreads = new System.Windows.Forms.CheckBox();
             this.chkSaveURLsEncountered = new System.Windows.Forms.CheckBox();
             this.grpThreadStatus = new System.Windows.Forms.GroupBox();
             this.chkThreadStatus = new System.Windows.Forms.CheckBox();
@@ -84,7 +85,6 @@
             this.chkCompletedFolder = new System.Windows.Forms.CheckBox();
             this.chkCompletedFolderRelative = new System.Windows.Forms.CheckBox();
             this.frmSettingsToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.chkSlowLoadThreads = new System.Windows.Forms.CheckBox();
             this.pnlSlug.SuspendLayout();
             this.grpThreadFolderNaming.SuspendLayout();
             this.pnlParentThreadDescriptionFormat.SuspendLayout();
@@ -229,7 +229,7 @@
             // chkVerifyImageHashes
             // 
             this.chkVerifyImageHashes.AutoSize = true;
-            this.chkVerifyImageHashes.Location = new System.Drawing.Point(6, 55);
+            this.chkVerifyImageHashes.Location = new System.Drawing.Point(6, 42);
             this.chkVerifyImageHashes.Name = "chkVerifyImageHashes";
             this.chkVerifyImageHashes.Size = new System.Drawing.Size(127, 17);
             this.chkVerifyImageHashes.TabIndex = 1;
@@ -240,7 +240,7 @@
             // chkCheckForUpdates
             // 
             this.chkCheckForUpdates.AutoSize = true;
-            this.chkCheckForUpdates.Location = new System.Drawing.Point(206, 42);
+            this.chkCheckForUpdates.Location = new System.Drawing.Point(215, 19);
             this.chkCheckForUpdates.Name = "chkCheckForUpdates";
             this.chkCheckForUpdates.Size = new System.Drawing.Size(197, 30);
             this.chkCheckForUpdates.TabIndex = 4;
@@ -252,10 +252,12 @@
             this.chkSaveThumbnails.AutoSize = true;
             this.chkSaveThumbnails.Location = new System.Drawing.Point(6, 19);
             this.chkSaveThumbnails.Name = "chkSaveThumbnails";
-            this.chkSaveThumbnails.Size = new System.Drawing.Size(190, 30);
+            this.chkSaveThumbnails.Size = new System.Drawing.Size(209, 17);
             this.chkSaveThumbnails.TabIndex = 0;
-            this.chkSaveThumbnails.Text = "Save thumbnails and Post-Process\r\nHTML";
+            this.chkSaveThumbnails.Text = "Save thumbnails + post-process HTML";
+            this.chkSaveThumbnails.ThreeState = true;
             this.chkSaveThumbnails.UseVisualStyleBackColor = true;
+            this.chkSaveThumbnails.CheckStateChanged += new System.EventHandler(this.chkSaveThumbnails_CheckedChanged);
             // 
             // chkRenameDownloadFolderWithDescription
             // 
@@ -437,10 +439,22 @@
             this.grpGeneral.TabStop = false;
             this.grpGeneral.Text = "General";
             // 
+            // chkSlowLoadThreads
+            // 
+            this.chkSlowLoadThreads.AutoCheck = false;
+            this.chkSlowLoadThreads.AutoSize = true;
+            this.chkSlowLoadThreads.Location = new System.Drawing.Point(215, 101);
+            this.chkSlowLoadThreads.Name = "chkSlowLoadThreads";
+            this.chkSlowLoadThreads.Size = new System.Drawing.Size(180, 17);
+            this.chkSlowLoadThreads.TabIndex = 7;
+            this.chkSlowLoadThreads.Text = "On Startup, Slowly Start Threads";
+            this.frmSettingsToolTip.SetToolTip(this.chkSlowLoadThreads, resources.GetString("chkSlowLoadThreads.ToolTip"));
+            this.chkSlowLoadThreads.UseVisualStyleBackColor = true;
+            // 
             // chkSaveURLsEncountered
             // 
             this.chkSaveURLsEncountered.AutoSize = true;
-            this.chkSaveURLsEncountered.Location = new System.Drawing.Point(206, 101);
+            this.chkSaveURLsEncountered.Location = new System.Drawing.Point(215, 78);
             this.chkSaveURLsEncountered.Name = "chkSaveURLsEncountered";
             this.chkSaveURLsEncountered.Size = new System.Drawing.Size(198, 17);
             this.chkSaveURLsEncountered.TabIndex = 6;
@@ -453,7 +467,7 @@
             // 
             this.grpThreadStatus.Controls.Add(this.chkThreadStatus);
             this.grpThreadStatus.Controls.Add(this.txtThreadStatusBoxThreshold);
-            this.grpThreadStatus.Location = new System.Drawing.Point(6, 114);
+            this.grpThreadStatus.Location = new System.Drawing.Point(6, 126);
             this.grpThreadStatus.Name = "grpThreadStatus";
             this.grpThreadStatus.Size = new System.Drawing.Size(172, 52);
             this.grpThreadStatus.TabIndex = 8;
@@ -504,7 +518,7 @@
             // chkBlacklistWildcards
             // 
             this.chkBlacklistWildcards.AutoSize = true;
-            this.chkBlacklistWildcards.Location = new System.Drawing.Point(206, 78);
+            this.chkBlacklistWildcards.Location = new System.Drawing.Point(215, 55);
             this.chkBlacklistWildcards.Name = "chkBlacklistWildcards";
             this.chkBlacklistWildcards.Size = new System.Drawing.Size(147, 17);
             this.chkBlacklistWildcards.TabIndex = 5;
@@ -524,7 +538,7 @@
             // chkInterBoardAutoFollow
             // 
             this.chkInterBoardAutoFollow.AutoSize = true;
-            this.chkInterBoardAutoFollow.Location = new System.Drawing.Point(6, 78);
+            this.chkInterBoardAutoFollow.Location = new System.Drawing.Point(6, 65);
             this.chkInterBoardAutoFollow.Name = "chkInterBoardAutoFollow";
             this.chkInterBoardAutoFollow.Size = new System.Drawing.Size(161, 30);
             this.chkInterBoardAutoFollow.TabIndex = 2;
@@ -535,7 +549,7 @@
             // chkRecursiveAutoFollow
             // 
             this.chkRecursiveAutoFollow.AutoSize = true;
-            this.chkRecursiveAutoFollow.Location = new System.Drawing.Point(206, 19);
+            this.chkRecursiveAutoFollow.Location = new System.Drawing.Point(6, 101);
             this.chkRecursiveAutoFollow.Name = "chkRecursiveAutoFollow";
             this.chkRecursiveAutoFollow.Size = new System.Drawing.Size(205, 17);
             this.chkRecursiveAutoFollow.TabIndex = 3;
@@ -714,17 +728,6 @@
             this.chkCompletedFolderRelative.Text = "Relative path";
             this.chkCompletedFolderRelative.UseVisualStyleBackColor = true;
             this.chkCompletedFolderRelative.CheckedChanged += new System.EventHandler(this.chkCompletedFolderRelative_CheckedChanged);
-            // 
-            // chkSlowLoadThreads
-            // 
-            this.chkSlowLoadThreads.AutoSize = true;
-            this.chkSlowLoadThreads.Location = new System.Drawing.Point(206, 124);
-            this.chkSlowLoadThreads.Name = "chkSlowLoadThreads";
-            this.chkSlowLoadThreads.Size = new System.Drawing.Size(180, 17);
-            this.chkSlowLoadThreads.TabIndex = 7;
-            this.chkSlowLoadThreads.Text = "On Startup, Slowly Start Threads";
-            this.frmSettingsToolTip.SetToolTip(this.chkSlowLoadThreads, resources.GetString("chkSlowLoadThreads.ToolTip"));
-            this.chkSlowLoadThreads.UseVisualStyleBackColor = true;
             // 
             // frmSettings
             // 

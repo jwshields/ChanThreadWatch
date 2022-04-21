@@ -130,9 +130,9 @@ namespace JDP {
             set { SetBool("InterBoardAutoFollow", value); }
         }
 
-        public static bool? SaveThumbnails {
-            get { return GetBool("SaveThumbnails"); }
-            set { SetBool("SaveThumbnails", value); }
+        public static int? SaveThumbnails {
+            get { return GetInt("SaveThumbnails"); }
+            set { SetInt("SaveThumbnails", (int)value); }
         }
 
         public static bool? UseOriginalFileNames {
@@ -394,8 +394,7 @@ namespace JDP {
 
         private static string Get(string name) {
             lock (_settings) {
-                string value;
-                return _settings.TryGetValue(name, out value) ? value : null;
+                return _settings.TryGetValue(name, out string value) ? value : null;
             }
         }
 
@@ -408,23 +407,20 @@ namespace JDP {
         private static int? GetInt(string name) {
             string value = Get(name);
             if (value == null) return null;
-            int x;
-            return Int32.TryParse(value, out x) ? x : (int?)null;
+            return Int32.TryParse(value, out int x) ? x : (int?)null;
         }
 
         private static long? GetLong(string name) {
             string value = Get(name);
             if (value == null) return null;
-            long x;
-            return Int64.TryParse(value, out x) ? x : (long?)null;
+            return Int64.TryParse(value, out long x) ? x : (long?)null;
         }
 
         private static DateTime? GetDate(string name) {
             string value = Get(name);
             if (value == null) return null;
-            DateTime x;
             return DateTime.TryParseExact(value, "yyyyMMdd", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out x) ? x : (DateTime?)null;
+                DateTimeStyles.None, out DateTime x) ? x : (DateTime?)null;
         }
 
         private static int[] GetIntArray(string name) {
@@ -471,7 +467,7 @@ namespace JDP {
 
         public static void Load() {
             string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
-            bool needsConversion = false;
+            bool needsConversion;
             _settings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             if (!File.Exists(path)) {
@@ -486,8 +482,9 @@ namespace JDP {
             }
 
             try {
-                XmlTextReader xmlSettingsReader = new(path) { WhitespaceHandling = WhitespaceHandling.All };
-                XmlDocument settingsDoc = new XmlDocument() { XmlResolver = null };
+                XmlReaderSettings xmlReaderSettings = new XmlReaderSettings() {XmlResolver = null, IgnoreWhitespace = false};
+                XmlReader xmlSettingsReader = XmlReader.Create(path, xmlReaderSettings);
+                XmlDocument settingsDoc = new XmlDocument() {XmlResolver = null};
                 settingsDoc.Load(xmlSettingsReader);
                 xmlSettingsReader.Close();
                 foreach (XmlNode childNode in settingsDoc.SelectSingleNode("Settings")) {
@@ -505,7 +502,7 @@ namespace JDP {
 
         public static void Save() {
             string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
-            XmlDocument tempsettingsDoc = new XmlDocument { XmlResolver = null };
+            XmlDocument tempsettingsDoc = new XmlDocument() {XmlResolver = null};
             XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
             foreach (KeyValuePair<string, string> kvp in _settings) {
                 XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
@@ -515,7 +512,7 @@ namespace JDP {
             }
             tempsettingsDoc.AppendChild(settingsElement);
             try {
-                XmlWriterSettings _tmpSettingsDocSettings = new() { Indent = true };
+                XmlWriterSettings _tmpSettingsDocSettings = new XmlWriterSettings() {Indent = true};
                 XmlWriter writer = XmlWriter.Create(path, _tmpSettingsDocSettings);
                 tempsettingsDoc.Save(writer);
                 writer.Flush();
@@ -543,7 +540,7 @@ namespace JDP {
                         }
                     }
                 }
-                XmlDocument tempsettingsDoc = new XmlDocument();
+                XmlDocument tempsettingsDoc = new XmlDocument() {XmlResolver = null};
                 XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
                 foreach (KeyValuePair<string, string> kvp in _tempSettings) {
                     XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
