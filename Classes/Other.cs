@@ -83,7 +83,7 @@ namespace JDP {
     public class HTTP304Exception : Exception { }
 
     public static class TickCount {
-        private static readonly object _sync = new object();
+        private static readonly object _sync = new();
         private static int _lastTickCount;
         private static long _correction;
 
@@ -104,10 +104,10 @@ namespace JDP {
     public class ConnectionManager {
         private const int _maxConnectionsPerHost = 10;
 
-        private static Dictionary<string, ConnectionManager> _connectionManagers = new Dictionary<string, ConnectionManager>(StringComparer.OrdinalIgnoreCase);
+        private static Dictionary<string, ConnectionManager> _connectionManagers = new(StringComparer.OrdinalIgnoreCase);
 
-        private FIFOSemaphore _semaphore = new FIFOSemaphore(_maxConnectionsPerHost, _maxConnectionsPerHost);
-        private Stack<string> _groupNames = new Stack<string>();
+        private FIFOSemaphore _semaphore = new(_maxConnectionsPerHost, _maxConnectionsPerHost);
+        private Stack<string> _groupNames = new();
 
         public static ConnectionManager GetInstance(string url) {
             string host = (new Uri(url)).Host;
@@ -154,8 +154,8 @@ namespace JDP {
     public class FIFOSemaphore {
         private int _currentCount;
         private int _maximumCount;
-        private object _mainSync = new object();
-        private Queue<QueueSync> _queueSyncs = new Queue<QueueSync>();
+        private object _mainSync = new();
+        private Queue<QueueSync> _queueSyncs = new();
 
         public FIFOSemaphore(int initialCount, int maximumCount) {
             if (initialCount > maximumCount) {
@@ -229,9 +229,9 @@ namespace JDP {
     public class WorkScheduler {
         private const int _maxThreadIdleTime = 15000;
 
-        private object _sync = new object();
-        private LinkedList<WorkItem> _workItems = new LinkedList<WorkItem>();
-        private ManualResetEvent _scheduleChanged = new ManualResetEvent(false);
+        private object _sync = new();
+        private LinkedList<WorkItem> _workItems = new();
+        private ManualResetEvent _scheduleChanged = new(false);
         private Thread _schedulerThread;
 
         public WorkItem AddItem(long runAtTicks, Action action) {
@@ -239,7 +239,7 @@ namespace JDP {
         }
 
         public WorkItem AddItem(long runAtTicks, Action action, string group) {
-            WorkItem item = new WorkItem(this, runAtTicks, action, group);
+            WorkItem item = new(this, runAtTicks, action, group);
             AddItem(item);
             return item;
         }
@@ -374,12 +374,12 @@ namespace JDP {
         private const int _threadCreationDelay = 500;
         private const int _maxThreadIdleTime = 15000;
 
-        private static Dictionary<string, ThreadPoolManager> _threadPoolManagers = new Dictionary<string, ThreadPoolManager>(StringComparer.OrdinalIgnoreCase);
+        private static Dictionary<string, ThreadPoolManager> _threadPoolManagers = new(StringComparer.OrdinalIgnoreCase);
 
-        private object _sync = new object();
-        private FIFOSemaphore _semaphore = new FIFOSemaphore(0, Int32.MaxValue);
-        private Stack<ThreadPoolThread> _idleThreads = new Stack<ThreadPoolThread>();
-        private ThreadPoolThread _schedulerThread = new ThreadPoolThread(null);
+        private object _sync = new();
+        private FIFOSemaphore _semaphore = new(0, Int32.MaxValue);
+        private Stack<ThreadPoolThread> _idleThreads = new();
+        private ThreadPoolThread _schedulerThread = new(null);
 
         public ThreadPoolManager() {
             lock (_sync) {
@@ -425,7 +425,7 @@ namespace JDP {
         private void OnThreadPoolThreadExit(ThreadPoolThread exitedThread) {
             lock (_sync) {
                 if (_idleThreads.Count <= _minThreadCount) return;
-                Stack<ThreadPoolThread> threads = new Stack<ThreadPoolThread>();
+                Stack<ThreadPoolThread> threads = new();
                 while (_idleThreads.Count != 0) {
                     ThreadPoolThread thread = _idleThreads.Pop();
                     if (thread == exitedThread) {
@@ -443,11 +443,11 @@ namespace JDP {
         }
 
         private class ThreadPoolThread {
-            private readonly object _sync = new object();
+            private readonly object _sync = new();
             private readonly ThreadPoolManager _manager;
             private Thread _thread;
             private ManualResetEvent _newWorkItem;
-            private readonly Queue<Action> _workItems = new Queue<Action>();
+            private readonly Queue<Action> _workItems = new();
 
             internal ThreadPoolThread(ThreadPoolManager manager) {
                 _manager = manager;
@@ -633,14 +633,14 @@ namespace JDP {
         public const long Infinite = 0;
 
         private static int _concurrentDownloads;
-        private static readonly object _downloadsSync = new object();
+        private static readonly object _downloadsSync = new();
 
         private readonly Stream _baseStream;
         private long _maximumBytesPerSecond;
         private long _byteCount;
         private long _start;
         private bool _hasStarted;
-        private readonly object _throttleSync = new object();
+        private readonly object _throttleSync = new();
 
         protected static long CurrentMilliseconds {
             get { return Environment.TickCount; }

@@ -183,7 +183,7 @@ namespace JDP {
         }
 
         private void btnDownloadFolder_Click(object sender, EventArgs e) {
-            using (FolderBrowserDialog dialog = new FolderBrowserDialog()) {
+            using (FolderBrowserDialog dialog = new()) {
                 dialog.Description = "Select the download location.";
                 dialog.ShowNewFolderButton = true;
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
@@ -193,7 +193,7 @@ namespace JDP {
         }
 
         private void btnCompletedFolder_Click(object sender, EventArgs e) {
-            using (FolderBrowserDialog dialog = new FolderBrowserDialog()) {
+            using (FolderBrowserDialog dialog = new()) {
                 dialog.Description = "Select the download location.";
                 dialog.ShowNewFolderButton = true;
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
@@ -227,7 +227,7 @@ namespace JDP {
         }
         
         private void chkSaveThumbnails_CheckedChanged(object sender, EventArgs e) {
-            string chkSaveThumbnails_Text = "";
+            string chkSaveThumbnails_Text;
             switch (chkSaveThumbnails.CheckState) {
                 case CheckState.Indeterminate:
                     chkSaveThumbnails_Text = "Only post-process HTML";

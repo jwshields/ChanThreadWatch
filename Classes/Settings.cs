@@ -482,9 +482,9 @@ namespace JDP {
             }
 
             try {
-                XmlReaderSettings xmlReaderSettings = new XmlReaderSettings() {XmlResolver = null, IgnoreWhitespace = false};
+                XmlReaderSettings xmlReaderSettings = new() {XmlResolver = null, IgnoreWhitespace = false};
                 XmlReader xmlSettingsReader = XmlReader.Create(path, xmlReaderSettings);
-                XmlDocument settingsDoc = new XmlDocument() {XmlResolver = null};
+                XmlDocument settingsDoc = new() {XmlResolver = null};
                 settingsDoc.Load(xmlSettingsReader);
                 xmlSettingsReader.Close();
                 foreach (XmlNode childNode in settingsDoc.SelectSingleNode("Settings")) {
@@ -502,7 +502,7 @@ namespace JDP {
 
         public static void Save() {
             string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
-            XmlDocument tempsettingsDoc = new XmlDocument() {XmlResolver = null};
+            XmlDocument tempsettingsDoc = new() {XmlResolver = null};
             XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
             foreach (KeyValuePair<string, string> kvp in _settings) {
                 XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
@@ -512,7 +512,7 @@ namespace JDP {
             }
             tempsettingsDoc.AppendChild(settingsElement);
             try {
-                XmlWriterSettings _tmpSettingsDocSettings = new XmlWriterSettings() {Indent = true};
+                XmlWriterSettings _tmpSettingsDocSettings = new() {Indent = true};
                 XmlWriter writer = XmlWriter.Create(path, _tmpSettingsDocSettings);
                 tempsettingsDoc.Save(writer);
                 writer.Flush();
@@ -526,7 +526,7 @@ namespace JDP {
         private static void ConvertTxttoXML() {
             string oldPath = Path.Combine(GetSettingsDirectory(), "settings.txt");
             if (File.Exists(oldPath)) {
-                Dictionary<string, string> _tempSettings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                Dictionary<string, string> _tempSettings = new(StringComparer.OrdinalIgnoreCase);
                 using (StreamReader sr = File.OpenText(oldPath)) {
                     string line;
                     while ((line = sr.ReadLine()) != null) {
@@ -540,7 +540,7 @@ namespace JDP {
                         }
                     }
                 }
-                XmlDocument tempsettingsDoc = new XmlDocument() {XmlResolver = null};
+                XmlDocument tempsettingsDoc = new() {XmlResolver = null};
                 XmlElement settingsElement = tempsettingsDoc.CreateElement(string.Empty, "Settings", string.Empty);
                 foreach (KeyValuePair<string, string> kvp in _tempSettings) {
                     XmlElement xmlElement = tempsettingsDoc.CreateElement(kvp.Key);
@@ -551,7 +551,7 @@ namespace JDP {
                 tempsettingsDoc.AppendChild(settingsElement);
                 string path = Path.Combine(GetSettingsDirectory(), SettingsFileName);
                 try {
-                    using (XmlTextWriter writer = new XmlTextWriter(path, null)) {
+                    using (XmlTextWriter writer = new(path, null)) {
                         writer.Formatting = Formatting.Indented;
                         tempsettingsDoc.Save(writer);
                         writer.Flush();

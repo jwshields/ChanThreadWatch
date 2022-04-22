@@ -5,7 +5,7 @@ namespace JDP {
     public class HTMLParser {
         private string _preprocessedHTML;
         private List<HTMLTag> _tags;
-        private Dictionary<int, int> _offsetToIndex = new Dictionary<int, int>();
+        private Dictionary<int, int> _offsetToIndex = new();
 
         public HTMLParser(string html) {
             _preprocessedHTML = Preprocess(html);
@@ -198,12 +198,12 @@ namespace JDP {
             return new string(dst, 0, iDst);
         }
 
-        private static IEnumerable<HTMLTag> ParseTags(string html, int htmlStart, int htmlEnd) {
+        public static IEnumerable<HTMLTag> ParseTags(string html, int htmlStart, int htmlEnd) {
             while (htmlStart < htmlEnd) {
                 int pos = IndexOf(html, htmlStart, htmlEnd, '<');
                 if (pos == -1) yield break;
 
-                HTMLTag tag = new HTMLTag();
+                HTMLTag tag = new();
                 tag.Offset = pos;
                 htmlStart = pos + 1;
                 tag.IsEnd = StartsWith(html, htmlStart, htmlEnd, '/');
@@ -227,7 +227,7 @@ namespace JDP {
                         }
                         else if (tag.IsSelfClosing) { }
                         else {
-                            HTMLAttribute attribute = new HTMLAttribute();
+                            HTMLAttribute attribute = new();
                             attribute.Offset = htmlStart;
 
                             // Parse attribute name

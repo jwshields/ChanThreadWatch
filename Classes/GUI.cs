@@ -107,7 +107,7 @@ namespace JDP {
             int formX = ((parent.Left * 2) + parent.Width - child.Width) / 2;
             int formY = ((parent.Top * 2) + parent.Height - child.Height) / 2;
 
-            Rectangle formRect = new Rectangle(formX, formY, child.Width, child.Height);
+            Rectangle formRect = new(formX, formY, child.Width, child.Height);
             Rectangle maxRect = Screen.GetWorkingArea(new Point(centerX, centerY));
 
             if (formRect.Right > maxRect.Right) {

@@ -9,7 +9,7 @@ using System.Web;
 
 namespace JDP {
     public static class SiteHelpers {
-        private static readonly Dictionary<string, Type> _siteHelpers = new Dictionary<string, Type> {
+        private static readonly Dictionary<string, Type> _siteHelpers = new() {
             { "4chan.org", typeof(FourChanSiteHelper) },
             { "4channel.org", typeof(FourChanSiteHelper) },
 
@@ -140,9 +140,9 @@ namespace JDP {
         }
 
         public virtual List<ImageInfo> GetImages(List<ReplaceInfo> replaceList, List<ThumbnailInfo> thumbnailList, bool local = false) {
-            HashSet<string> imageFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            HashSet<string> thumbnailFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            List<ImageInfo> imageList = new List<ImageInfo>();
+            HashSet<string> imageFileNames = new(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> thumbnailFileNames = new(StringComparer.OrdinalIgnoreCase);
+            List<ImageInfo> imageList = new();
             HTMLAttribute attribute;
             string url;
             int pos;
@@ -156,7 +156,7 @@ namespace JDP {
                 HTMLTag linkEndTag = _htmlParser.FindCorrespondingEndTag(linkTag);
                 if (linkEndTag == null) continue;
 
-                ImageInfo image = new ImageInfo { Poster = String.Empty };
+                ImageInfo image = new() {Poster = String.Empty};
                 ThumbnailInfo thumb = null;
 
                 image.URL = url;
@@ -248,7 +248,7 @@ namespace JDP {
             }
             if (Settings.UseSlug == true) {
                 try {
-                    HTMLParser parser = new HTMLParser(General.DownloadPageToString(_url));
+                    HTMLParser parser = new(General.DownloadPageToString(_url));
                     HTMLTag canonicalLinkTag = Enumerable.FirstOrDefault(Enumerable.Where(parser.FindStartTags(parser.CreateTagRange(parser.FindStartTag("head")), "link"), t => t.GetAttributeValueOrEmpty("rel").Equals("canonical")));
                     return GetThreadName(canonicalLinkTag.GetAttributeValueOrEmpty("href"), Settings.SlugType);
                 }
@@ -284,7 +284,7 @@ namespace JDP {
         }
 
         public override HashSet<string> GetCrossLinks(List<ReplaceInfo> replaceList, bool interBoardAutoFollow) {
-            HashSet<string> crossLinks = new HashSet<string>();
+            HashSet<string> crossLinks = new();
 
             foreach (HTMLTagRange postMessageTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("blockquote"),
                 t => HTMLParser.ClassAttributeValueHas(t, "postMessage")), t => _htmlParser.CreateTagRange(t)), r => r != null))
@@ -340,8 +340,8 @@ namespace JDP {
         }
 
         public override HashSet<string> GetURLs() {
-            HashSet<string> urlList = new HashSet<string>();
-            Regex reg = new Regex(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            HashSet<string> urlList = new();
+            Regex reg = new(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (HTMLTagRange postMessageTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("blockquote"),
                 t => HTMLParser.ClassAttributeValueHas(t, "postMessage")), t => _htmlParser.CreateTagRange(t)), r => r != null)) {
                 string tempval = _htmlParser.GetInnerHTML(postMessageTagRange).Replace("<wbr>", "");
@@ -355,9 +355,9 @@ namespace JDP {
 
         public override void ResurrectDeadPosts(HTMLParser previousParser, List<ReplaceInfo> replaceList) {
             if (previousParser == null) return;
-            List<ReplaceInfo> tempReplaceList = new List<ReplaceInfo>();
-            Dictionary<string, HTMLTagRange> newPostContainers = new Dictionary<string, HTMLTagRange>();
-            Dictionary<string, HTMLTagRange> resurrectedPostContainers = new Dictionary<string, HTMLTagRange>();
+            List<ReplaceInfo> tempReplaceList = new();
+            Dictionary<string, HTMLTagRange> newPostContainers = new();
+            Dictionary<string, HTMLTagRange> resurrectedPostContainers = new();
             foreach (HTMLTagRange postContainerTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
                 t => HTMLParser.ClassAttributeValueHas(t, "postContainer")), t => _htmlParser.CreateTagRange(t)), r => r != null))
             {
@@ -392,8 +392,8 @@ namespace JDP {
                 }
             }
 
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb)) {
+            StringBuilder sb = new();
+            using (StringWriter sw = new(sb)) {
                 General.WriteReplacedString(_htmlParser.PreprocessedHTML, tempReplaceList, sw);
             }
             _htmlParser = new HTMLParser(sb.ToString());
@@ -418,7 +418,7 @@ namespace JDP {
             }
 
             sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb)) {
+            using (StringWriter sw = new(sb)) {
                 General.WriteReplacedString(_htmlParser.PreprocessedHTML, tempReplaceList, sw);
             }
             _htmlParser = new HTMLParser(sb.ToString());
@@ -482,14 +482,14 @@ namespace JDP {
         }
 
         public override bool IsBoardHighTurnover() {
-            List<string> highTurnoveBoards = new List<string> { "b", "pol" };
+            List<string> highTurnoveBoards = new() { "b", "pol" };
             return highTurnoveBoards.Contains(GetBoardName().ToLower());
         }
     }
 
     public class FourChanLookAlikeSiteHelper : SiteHelper {
         public override List<ImageInfo> GetImages(List<ReplaceInfo> replaceList, List<ThumbnailInfo> thumbnailList, bool local = false) {
-            List<ImageInfo> imageList = new List<ImageInfo>();
+            List<ImageInfo> imageList = new();
             bool seenSpoiler = false;
 
             foreach (HTMLTagRange postTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
@@ -555,7 +555,7 @@ namespace JDP {
                     }
                 }
 
-                ImageInfo image = new ImageInfo {
+                ImageInfo image = new() {
                     URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(imageURL)),
                     Referer = _url,
                     HashType = imageMD5 != null ? HashType.MD5 : HashType.None,
@@ -565,10 +565,7 @@ namespace JDP {
                 };
                 if (image.URL.Length == 0 || image.FileName.Length == 0 || (image.HashType != HashType.None && image.Hash == null)) continue;
 
-                ThumbnailInfo thumb = new ThumbnailInfo {
-                    URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)),
-                    Referer = _url
-                };
+                ThumbnailInfo thumb = new() {URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)), Referer = _url};
                 if (thumb.URL == null || thumb.FileName.Length == 0) continue;
 
                 if (replaceList != null) {
@@ -622,7 +619,7 @@ namespace JDP {
 
     public class InfinitechanSiteHelper : SiteHelper {
         public override List<ImageInfo> GetImages(List<ReplaceInfo> replaceList, List<ThumbnailInfo> thumbnailList, bool local = false) {
-            List<ImageInfo> imageList = new List<ImageInfo>();
+            List<ImageInfo> imageList = new();
             bool seenSpoiler = false;
 
             foreach (HTMLTagRange postTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
@@ -685,7 +682,7 @@ namespace JDP {
                     string imageMD5 = fileThumbImageTag.GetAttributeValue("data-md5");
                     if (imageMD5 == null) continue;
                 
-                    ImageInfo image = new ImageInfo {
+                    ImageInfo image = new() {
                         URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(imageURL)),
                         Referer = _url,
                         OriginalFileName = General.CleanFileName(HttpUtility.HtmlDecode(originalFileName)),
@@ -695,7 +692,7 @@ namespace JDP {
                     };
                     if (image.URL.Length == 0 || image.FileName.Length == 0 || image.Hash == null) continue;
 
-                    ThumbnailInfo thumb = new ThumbnailInfo {
+                    ThumbnailInfo thumb = new() {
                         URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)),
                         Referer = _url
                     };
@@ -751,7 +748,7 @@ namespace JDP {
         }
 
         public override HashSet<string> GetCrossLinks(List<ReplaceInfo> replaceList, bool interBoardAutoFollow) {
-            HashSet<string> crossLinks = new HashSet<string>();
+            HashSet<string> crossLinks = new();
 
             foreach (HTMLTagRange bodyDivTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
                 t => HTMLParser.ClassAttributeValueHas(t, "body")), t => _htmlParser.CreateTagRange(t)), r => r != null))
@@ -780,8 +777,8 @@ namespace JDP {
         }
 
         public override HashSet<string> GetURLs() {
-            HashSet<string> urlList = new HashSet<string>();
-            Regex reg = new Regex(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            HashSet<string> urlList = new();
+            Regex reg = new(@"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s<>""]|/)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (HTMLTagRange bodyDivTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
                 t => HTMLParser.ClassAttributeValueHas(t, "body")), t => _htmlParser.CreateTagRange(t)), r => r != null)) {
                 foreach (HTMLTag quoteLinkTag in Enumerable.Where(_htmlParser.FindStartTags(bodyDivTagRange, "a"),
@@ -795,9 +792,9 @@ namespace JDP {
 
         public override void ResurrectDeadPosts(HTMLParser previousParser, List<ReplaceInfo> replaceList) {
             if (previousParser == null) return;
-            List<ReplaceInfo> tempReplaceList = new List<ReplaceInfo>();
-            Dictionary<string, HTMLTagRange> newPosts = new Dictionary<string, HTMLTagRange>();
-            Dictionary<string, HTMLTagRange> resurrectedPosts = new Dictionary<string, HTMLTagRange>();
+            List<ReplaceInfo> tempReplaceList = new();
+            Dictionary<string, HTMLTagRange> newPosts = new();
+            Dictionary<string, HTMLTagRange> resurrectedPosts = new();
             foreach (HTMLTagRange postTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
                 t => HTMLParser.ClassAttributeValueHas(t, "post")), t => _htmlParser.CreateTagRange(t)), r => r != null))
             {
@@ -832,8 +829,8 @@ namespace JDP {
                 }
             }
 
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb)) {
+            StringBuilder sb = new();
+            using (StringWriter sw = new(sb)) {
                 General.WriteReplacedString(_htmlParser.PreprocessedHTML, tempReplaceList, sw);
             }
             _htmlParser = new HTMLParser(sb.ToString());
@@ -935,7 +932,7 @@ namespace JDP {
         }
 
         public override List<ImageInfo> GetImages(List<ReplaceInfo> replaceList, List<ThumbnailInfo> thumbnailList, bool local = false) {
-            List<ImageInfo> imageList = new List<ImageInfo>();
+            List<ImageInfo> imageList = new();
 
             foreach (HTMLTagRange postTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("td", "div"),
                 t => new Regex("^p\\d+$").IsMatch(t.GetAttributeValueOrEmpty("id"))), t => _htmlParser.CreateTagRange(t)), r => r != null))
@@ -997,7 +994,7 @@ namespace JDP {
                     }
                 }
 
-                ImageInfo image = new ImageInfo {
+                ImageInfo image = new() {
                     URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(imageURL)),
                     Referer = _url,
                     OriginalFileName = General.CleanFileName(HttpUtility.HtmlDecode(originalFileName)),
@@ -1007,10 +1004,7 @@ namespace JDP {
                 };
                 if (image.URL.Length == 0 || image.FileName.Length == 0) continue;
 
-                ThumbnailInfo thumb = new ThumbnailInfo {
-                    URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)),
-                    Referer = _url
-                };
+                ThumbnailInfo thumb = new() {URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)), Referer = _url};
                 if (thumb.URL == null || thumb.FileName.Length == 0) continue;
 
                 if (replaceList != null) {
@@ -1049,7 +1043,7 @@ namespace JDP {
     
     public class FoolFuukaSiteHelper : SiteHelper {
         public override List<ImageInfo> GetImages(List<ReplaceInfo> replaceList, List<ThumbnailInfo> thumbnailList, bool local = false) {
-            List<ImageInfo> imageList = new List<ImageInfo>();
+            List<ImageInfo> imageList = new();
 
             foreach (HTMLTagRange postTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("article"),
                 t => HTMLParser.ClassAttributeValueHas(t, "has_image") || (HTMLParser.ClassAttributeValueHas(t, "thread") && t.GetAttribute("id") != null)), t => _htmlParser.CreateTagRange(t)), r => r != null))
@@ -1130,7 +1124,7 @@ namespace JDP {
                     }
                 }
                 
-                ImageInfo image = new ImageInfo {
+                ImageInfo image = new() {
                     URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(imageURL)),
                     Referer = _url,
                     OriginalFileName = General.CleanFileName(HttpUtility.HtmlDecode(originalFileName)),
@@ -1140,10 +1134,7 @@ namespace JDP {
                 };
                 if (image.URL.Length == 0 || image.FileName.Length == 0 || image.Hash == null) continue;
 
-                ThumbnailInfo thumb = new ThumbnailInfo {
-                    URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)),
-                    Referer = _url
-                };
+                ThumbnailInfo thumb = new() {URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)), Referer = _url};
                 if (thumb.URL == null || thumb.FileName.Length == 0) continue;
 
                 if (replaceList != null) {
@@ -1195,7 +1186,7 @@ namespace JDP {
     
     public class LynxChanSiteHelper : SiteHelper {
         public override List<ImageInfo> GetImages(List<ReplaceInfo> replaceList, List<ThumbnailInfo> thumbnailList, bool local = false) {
-            List<ImageInfo> imageList = new List<ImageInfo>();
+            List<ImageInfo> imageList = new();
             bool seenSpoiler = false;
 
             foreach (HTMLTagRange postTagRange in Enumerable.Where(Enumerable.Select(Enumerable.Where(_htmlParser.FindStartTags("div"),
@@ -1247,7 +1238,7 @@ namespace JDP {
 
                     string originalFileName = postFileNameLinkTagRange.StartTag.GetAttributeValue("title") ?? _htmlParser.GetInnerHTML(postFileNameLinkTagRange);
                 
-                    ImageInfo image = new ImageInfo {
+                    ImageInfo image = new() {
                         URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(imageURL)),
                         Referer = _url,
                         OriginalFileName = General.CleanFileName(HttpUtility.HtmlDecode(originalFileName)),
@@ -1255,10 +1246,7 @@ namespace JDP {
                     };
                     if (image.URL.Length == 0 || image.FileName.Length == 0) continue;
 
-                    ThumbnailInfo thumb = new ThumbnailInfo {
-                        URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)),
-                        Referer = _url
-                    };
+                    ThumbnailInfo thumb = new() {URL = General.GetAbsoluteURL(_url, HttpUtility.HtmlDecode(thumbURL)), Referer = _url};
                     if (thumb.URL == null || thumb.FileName.Length == 0) continue;
 
                     if (replaceList != null) {

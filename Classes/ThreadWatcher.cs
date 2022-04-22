@@ -10,17 +10,17 @@ namespace JDP {
     public class ThreadWatcher {
         private const int _maxDownloadTries = 3;
 
-        private static WorkScheduler _workScheduler = new WorkScheduler();
+        private static WorkScheduler _workScheduler = new();
 
         private WorkScheduler.WorkItem _nextCheckWorkItem;
-        private object _settingsSync = new object();
+        private object _settingsSync = new();
         private bool _isStopping;
         private StopReason _stopReason;
-        private Dictionary<long, Action> _downloadAborters = new Dictionary<long, Action>();
+        private Dictionary<long, Action> _downloadAborters = new();
         private bool _hasRun;
         private bool _hasInitialized;
-        private ManualResetEvent _checkFinishedEvent = new ManualResetEvent(true);
-        private ManualResetEvent _reparseFinishedEvent = new ManualResetEvent(true);
+        private ManualResetEvent _checkFinishedEvent = new(true);
+        private ManualResetEvent _reparseFinishedEvent = new(true);
         private bool _isWaiting;
         private string _pageURL;
         private string _pageAuth;
@@ -37,7 +37,7 @@ namespace JDP {
         private string _description = String.Empty;
         private object _tag;
         private SiteHelper _siteHelper;
-        private Dictionary<string, ThreadWatcher> _childThreads = new Dictionary<string, ThreadWatcher>();
+        private Dictionary<string, ThreadWatcher> _childThreads = new();
         private PageIDObject _pageID;
         private string _category = String.Empty;
         private bool _autoFollow;
@@ -248,7 +248,7 @@ namespace JDP {
 
         public Dictionary<string, ThreadWatcher> DescendantThreads {
             get {
-                Dictionary<string, ThreadWatcher> dictionary = new Dictionary<string, ThreadWatcher>();
+                Dictionary<string, ThreadWatcher> dictionary = new();
                 foreach (ThreadWatcher childThread in ChildThreads.Values) {
                     if (!dictionary.ContainsKey(childThread.PageID)) dictionary.Add(childThread.PageID, childThread);
                 }
@@ -360,7 +360,7 @@ namespace JDP {
                 _reparseFinishedEvent.Reset();
             }
 
-            List<PageInfo> pageList = new List<PageInfo> {
+            List<PageInfo> pageList = new() {
                 new PageInfo {
                     URL = _pageURL
                 }
@@ -395,12 +395,12 @@ namespace JDP {
                 OnReparseStatus(new ReparseStatusEventArgs(ReparseType.Page, pageIndex + 1, pageList.Count));
 
                 pageInfo.ReplaceList = new List<ReplaceInfo>();
-                List<ThumbnailInfo> thumbs = new List<ThumbnailInfo>();
+                List<ThumbnailInfo> thumbs = new();
                 List<ImageInfo> images = siteHelper.GetImages(pageInfo.ReplaceList, thumbs, true);
                 if (images.Count == 0) continue;
 
-                Dictionary<string, DownloadInfo> completedImages = new Dictionary<string, DownloadInfo>(StringComparer.OrdinalIgnoreCase);
-                Dictionary<string, DownloadInfo> completedThumbs = new Dictionary<string, DownloadInfo>(StringComparer.OrdinalIgnoreCase);
+                Dictionary<string, DownloadInfo> completedImages = new(StringComparer.OrdinalIgnoreCase);
+                Dictionary<string, DownloadInfo> completedThumbs = new(StringComparer.OrdinalIgnoreCase);
 
                 if (!Directory.Exists(thumbDir)) {
                     try {
@@ -683,8 +683,8 @@ namespace JDP {
                 string imageDir = ThreadDownloadDirectory;
                 string thumbDir = Path.Combine(ThreadDownloadDirectory, "thumbs");
 
-                Queue<ImageInfo> pendingImages = new Queue<ImageInfo>();
-                Queue<ThumbnailInfo> pendingThumbs = new Queue<ThumbnailInfo>();
+                Queue<ImageInfo> pendingImages = new();
+                Queue<ThumbnailInfo> pendingThumbs = new();
 
                 foreach (PageInfo pageInfo in _pageList) {
                     // Reset the fresh flag on all of the pages before downloading starts so that
@@ -709,7 +709,7 @@ namespace JDP {
                         previousParser = !String.IsNullOrEmpty(previousText) ? new HTMLParser(previousText) : null;
                     }
 
-                    ManualResetEvent downloadEndEvent = new ManualResetEvent(false);
+                    ManualResetEvent downloadEndEvent = new(false);
                     DownloadPageEndCallback downloadEnd = (result, content, lastModifiedTime, encoding) => {
                         if (result == DownloadResult.Completed) {
                             pageInfo.IsFresh = true;
@@ -740,7 +740,7 @@ namespace JDP {
 
                         if (Settings.SaveURLs == true) {
                             string urlListFile = Path.Combine(threadDir, "urls.txt");
-                            HashSet<string> threadURLs = new HashSet<string>();
+                            HashSet<string> threadURLs = new();
                             if (File.Exists(urlListFile)) {
                                 try {
                                     string[] tempURLsFile = File.ReadAllLines(urlListFile);
@@ -752,7 +752,7 @@ namespace JDP {
                                 threadURLs.Add(urlFound);
                             }
                             if (threadURLs.Count > 0) {
-                                List<string> urlOutList = new List<string>();
+                                List<string> urlOutList = new();
                                 foreach (string url in threadURLs) {
                                     urlOutList.Add(url);
                                 }
@@ -766,7 +766,7 @@ namespace JDP {
                             else { }
                         }
 
-                        List<ThumbnailInfo> thumbs = new List<ThumbnailInfo>();
+                        List<ThumbnailInfo> thumbs = new();
                         List<ImageInfo> images = siteHelper.GetImages(pageInfo.ReplaceList, thumbs);
                         if (_completedImages.Count == 0) {
                             foreach (ImageInfo image in images) {
@@ -816,7 +816,7 @@ namespace JDP {
 
                         string nextPageURL = siteHelper.GetNextPageURL();
                         if (!String.IsNullOrEmpty(nextPageURL)) {
-                            PageInfo nextPageInfo = new PageInfo {
+                            PageInfo nextPageInfo = new() {
                                 URL = nextPageURL
                             };
                             if (pageIndex == _pageList.Count - 1) {
@@ -840,7 +840,7 @@ namespace JDP {
                         _maxFileNameLengthBaseDir = General.GetMaximumFileNameLength(imageDir);
                     }
 
-                    List<ManualResetEvent> downloadEndEvents = new List<ManualResetEvent>();
+                    List<ManualResetEvent> downloadEndEvents = new();
                     int completedImageCount = 0;
                     foreach (KeyValuePair<string, DownloadInfo> item in _completedImages) {
                         if (!item.Value.Skipped) completedImageCount++;
@@ -896,7 +896,7 @@ namespace JDP {
                         _imageDiskFileNames.Add(saveFileName);
 
                         HashType hashType = (Settings.VerifyImageHashes != false) ? image.HashType : HashType.None;
-                        ManualResetEvent downloadEndEvent = new ManualResetEvent(false);
+                        ManualResetEvent downloadEndEvent = new(false);
                         DownloadFileEndCallback onDownloadEnd = (result) => {
                             if (result == DownloadResult.Completed || result == DownloadResult.Skipped) {
                                 lock (_completedImages) {
@@ -937,7 +937,7 @@ namespace JDP {
                             }
                         }
 
-                        List<ManualResetEvent> downloadEndEvents = new List<ManualResetEvent>();
+                        List<ManualResetEvent> downloadEndEvents = new();
                         int completedThumbCount = 0;
                         foreach (KeyValuePair<string, DownloadInfo> item in _completedThumbs) {
                             if (!item.Value.Skipped) completedThumbCount++;
@@ -948,7 +948,7 @@ namespace JDP {
                             ThumbnailInfo thumb = pendingThumbs.Dequeue();
                             string savePath = Path.Combine(thumbDir, thumb.FileName);
 
-                            ManualResetEvent downloadEndEvent = new ManualResetEvent(false);
+                            ManualResetEvent downloadEndEvent = new(false);
                             DownloadFileEndCallback onDownloadEnd = (result) => {
                                 if (result == DownloadResult.Completed || result == DownloadResult.Skipped) {
                                     lock (_completedThumbs) {
@@ -1047,7 +1047,7 @@ namespace JDP {
                 }
             }
             General.AddOtherReplaces(htmlParser, pageInfo.URL, pageInfo.ReplaceList);
-            using (StreamWriter sw = new StreamWriter(pageInfo.Path, false, pageInfo.Encoding)) {
+            using (StreamWriter sw = new(pageInfo.Path, false, pageInfo.Encoding)) {
                 General.WriteReplacedString(htmlParser.PreprocessedHTML, pageInfo.ReplaceList, sw);
             }
             if (htmlParser.FindEndTag("html") != null && File.Exists(pageInfo.Path + ".bak")) {

@@ -11,10 +11,10 @@ using JDP.Properties;
 
 namespace JDP {
     public partial class frmChanThreadWatch : Form {
-        private Dictionary<long, DownloadProgressInfo> _downloadProgresses = new Dictionary<long, DownloadProgressInfo>();
+        private Dictionary<long, DownloadProgressInfo> _downloadProgresses = new();
         private frmDownloads _downloadForm;
         private frmCTWAbout _frmCTWAbout;
-        private object _startupPromptSync = new object();
+        private object _startupPromptSync = new();
         private bool _isExiting;
         private bool _saveThreadList;
         private int _itemAreaY;
@@ -24,11 +24,11 @@ namespace JDP {
         private bool _isResizing;
         private static bool _unsafeShutdown;
         private bool _isMinimized;
-        private static Dictionary<string, int> _categories = new Dictionary<string, int>();
-        private static Dictionary<string, ThreadWatcher> _watchers = new Dictionary<string, ThreadWatcher>();
-        private static HashSet<string> _blacklist = new HashSet<string>();
+        private static Dictionary<string, int> _categories = new();
+        private static Dictionary<string, ThreadWatcher> _watchers = new();
+        private static HashSet<string> _blacklist = new();
 
-        // ReleaseDate property and version in AssemblyInfo.cs should be updated for each release.
+        // In the file `General.cs` - the variables `Version` and `ReleaseDate` must be updated on each build/release.
 
         public frmChanThreadWatch() {
             InitializeComponent();
@@ -172,7 +172,7 @@ namespace JDP {
             _itemAreaY = lvThreads.GetItemRect(0).Y;
             lvThreads.Items.RemoveAt(0);
 
-            Thread thread = new Thread(() => {
+            Thread thread = new(() => {
                 LoadThreadList();
                 LoadBlacklist();
 
@@ -258,7 +258,6 @@ namespace JDP {
             }
 
             SaveThreadList();
-            Program.ReleaseMutex();
         }
 
         private void frmChanThreadWatch_DragEnter(object sender, DragEventArgs e) {
@@ -446,7 +445,7 @@ namespace JDP {
             var selectedThreadWatchers = new List<ThreadWatcher>(SelectedThreadWatchers);
             if (selectedThreadWatchers.Count == 0) return;
 
-            using (frmThreadEdit editForm = new frmThreadEdit(selectedThreadWatchers, _categories)) {
+            using (frmThreadEdit editForm = new(selectedThreadWatchers, _categories)) {
                 if (editForm.ShowDialog(this) == DialogResult.OK && editForm.IsDirty) {
                     foreach (ThreadWatcher watcher in selectedThreadWatchers) {
                         if (editForm.Description.IsDirty) {
@@ -530,7 +529,7 @@ namespace JDP {
         }
 
         private void miCopyURL_Click(object sender, EventArgs e) {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (ThreadWatcher watcher in SelectedThreadWatchers) {
                 if (sb.Length != 0) sb.Append(Environment.NewLine);
                 sb.Append(watcher.PageURL);
@@ -565,11 +564,11 @@ namespace JDP {
 
         private void miBlacklist_Click(object sender, EventArgs e) {
             if (_isExiting) return;
-            List<string> lines = new List<string>();
+            List<string> lines = new();
             foreach (string rule in _blacklist) {
                 lines.Add(rule);
             }
-            HashSet<string> blacklist = new HashSet<string>();
+            HashSet<string> blacklist = new();
             foreach (ThreadWatcher watcher in SelectedThreadWatchers) {
                 if (!_blacklist.Contains(watcher.PageID) && blacklist.Add(watcher.PageID)) {
                     lines.Add(watcher.PageID);
@@ -628,7 +627,7 @@ namespace JDP {
 
         private void btnSettings_Click(object sender, EventArgs e) {
             if (_isExiting) return;
-            using (frmSettings settingsForm = new frmSettings()) {
+            using (frmSettings settingsForm = new()) {
                 GUI.CenterChildForm(this, settingsForm);
                 settingsForm.ShowDialog(this);
             }
@@ -643,7 +642,7 @@ namespace JDP {
                 _frmCTWAbout.ShowDialog(this);
             }
             else {
-                _frmCTWAbout = new frmCTWAbout();
+                _frmCTWAbout = new();
                 GUI.CenterChildForm(this, _frmCTWAbout);
                 _frmCTWAbout.ShowDialog(this);
 
@@ -830,7 +829,7 @@ namespace JDP {
         private void tmrMaintenance_Tick(object sender, EventArgs e) {
             lock (_downloadProgresses) {
                 if (_downloadProgresses.Count == 0) return;
-                List<long> oldDownloadIDs = new List<long>();
+                List<long> oldDownloadIDs = new();
                 long ticksNow = TickCount.Now;
                 foreach (DownloadProgressInfo info in _downloadProgresses.Values) {
                     if (info.EndTicks != null && ticksNow - info.EndTicks.Value > 5000) {
@@ -931,7 +930,7 @@ namespace JDP {
         }
 
         private void ThreadWatcher_DownloadStart(ThreadWatcher watcher, DownloadStartEventArgs args) {
-            DownloadProgressInfo info = new DownloadProgressInfo {
+            DownloadProgressInfo info = new() {
                 DownloadID = args.DownloadID,
                 URL = args.URL,
                 TryNumber = args.TryNumber,
@@ -963,7 +962,7 @@ namespace JDP {
 
         private void ThreadWatcher_AddThread(ThreadWatcher watcher, AddThreadEventArgs args) {
             BeginInvoke(() => {
-                ThreadInfo thread = new ThreadInfo {
+                ThreadInfo thread = new() {
                     URL = args.PageURL,
                     PageAuth = watcher.PageAuth,
                     ImageAuth = watcher.ImageAuth,
@@ -989,7 +988,7 @@ namespace JDP {
         }
 
         private bool AddThread(string pageURL) {
-            ThreadInfo thread = new ThreadInfo {
+            ThreadInfo thread = new() {
                 URL = pageURL,
                 PageAuth = (chkPageAuth.Checked && (txtPageAuth.Text.IndexOf(':') != -1)) ? txtPageAuth.Text : String.Empty,
                 ImageAuth = (chkImageAuth.Checked && (txtImageAuth.Text.IndexOf(':') != -1)) ? txtImageAuth.Text : String.Empty,
@@ -1128,7 +1127,7 @@ namespace JDP {
         private void BuildCheckEverySubMenu() {
             for (int i = 0; i < cboCheckEvery.Items.Count; i++) {
                 int minutes = ((ListItemInt32)cboCheckEvery.Items[i]).Value;
-                MenuItem menuItem = new MenuItem() {
+                MenuItem menuItem = new() {
                     Index = i,
                     Tag = minutes,
                     Text = minutes > 0 ? minutes + " Minutes" : "1 Minute or <"
@@ -1139,14 +1138,14 @@ namespace JDP {
         }
 
         private void BuildColumnHeaderMenu() {
-            ContextMenu contextMenu = new ContextMenu();
+            ContextMenu contextMenu = new();
             contextMenu.Popup += (s, e) => {
                 for (int i = 0; i < lvThreads.Columns.Count; i++) {
                     contextMenu.MenuItems[i].Checked = lvThreads.Columns[i].Width != 0;
                 }
             };
             for (int i = 0; i < lvThreads.Columns.Count; i++) {
-                MenuItem menuItem = new MenuItem {
+                MenuItem menuItem = new() {
                     Index = i,
                     Tag = i,
                     Text = lvThreads.Columns[i].Text
@@ -1164,7 +1163,7 @@ namespace JDP {
                 };
                 contextMenu.MenuItems.Add(menuItem);
             }
-            ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+            ContextMenuStrip contextMenuStrip = new();
             contextMenuStrip.Opening += (s, e) => {
                 e.Cancel = true;
                 Point pos = lvThreads.PointToClient(Control.MousePosition);
@@ -1357,7 +1356,7 @@ namespace JDP {
         private void SaveThreadList() {
             if (_isLoadingThreadsFromFile) return;
             try {
-                XmlDocument _tmpThreadsDoc = new XmlDocument() {XmlResolver = null};
+                XmlDocument _tmpThreadsDoc = new() {XmlResolver = null};
                 XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
                 _tmpThreadsDoc.AppendChild(rootElem);
                 XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1378,7 +1377,7 @@ namespace JDP {
                 _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
                 string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
                 try {
-                    XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings() {Indent = true};
+                    XmlWriterSettings _tmpThreadsDocSettings = new() {Indent = true};
                     XmlWriter writer = XmlWriter.Create(path, _tmpThreadsDocSettings);
                     _tmpThreadsDoc.Save(writer);
                     writer.Flush();
@@ -1413,15 +1412,15 @@ namespace JDP {
                     UpdateCategories(String.Empty);
                 });
                 try {
-                    XmlReaderSettings xmlThreadsReadersettings = new XmlReaderSettings() {XmlResolver = null};
+                    XmlReaderSettings xmlThreadsReadersettings = new() {XmlResolver = null};
                     XmlReader xmlThreadsReader = XmlReader.Create(path, xmlThreadsReadersettings);
-                    XmlDocument xmlThreadsDoc = new XmlDocument() {XmlResolver = null};
+                    XmlDocument xmlThreadsDoc = new() {XmlResolver = null};
                     xmlThreadsDoc.Load(xmlThreadsReader);
                     xmlThreadsReader.Close();
                     int fileVersion = Int32.Parse(xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("FileVersion").InnerText);
                     foreach (XmlNode childNode in xmlThreadsDoc.SelectSingleNode("WatchedThreads").SelectSingleNode("Threads")) {
                         if (childNode.Name != "Thread") continue;
-                        ThreadInfo thread = new ThreadInfo() {ExtraData = new WatcherExtraData()};
+                        ThreadInfo thread = new() {ExtraData = new WatcherExtraData()};
                         XmlNode URLLine = childNode.SelectSingleNode("PageURL");
                         if (URLLine != null) {
                             thread.URL = URLLine.InnerText;
@@ -1460,7 +1459,7 @@ namespace JDP {
                 catch (Exception ex) {
                     Logger.Log(ex.ToString());
                 }
-                List<StopReason> _stopReasons = new List<StopReason> { StopReason.PageNotFound, StopReason.UserRequest, StopReason.DirtyShutdown };
+                List<StopReason> _stopReasons = new() { StopReason.PageNotFound, StopReason.UserRequest, StopReason.DirtyShutdown };
                 foreach (ThreadWatcher threadWatcher in ThreadWatchers) {
                     _watchers.TryGetValue(((WatcherExtraData)threadWatcher.Tag).AddedFrom, out ThreadWatcher parentThread);
                     threadWatcher.ParentThread = parentThread;
@@ -1535,9 +1534,9 @@ namespace JDP {
             }
             if (lines.Length < (1 + linesPerThread)) return false;
             int i = 1;
-            List<Dictionary<string, string>> _tmpthreads = new List<System.Collections.Generic.Dictionary<string, string>>();
+            List<Dictionary<string, string>> _tmpthreads = new();
             while (i <= lines.Length - linesPerThread) {
-                Dictionary<string, string> _tmpThreadDict = new Dictionary<string, string>();
+                Dictionary<string, string> _tmpThreadDict = new();
                 _tmpThreadDict.Add("PageURL", lines[i++]);
                 _tmpThreadDict.Add("PageAuth", lines[i++]);
                 _tmpThreadDict.Add("ImageAuth", lines[i++]);
@@ -1581,7 +1580,7 @@ namespace JDP {
                 }
                 _tmpthreads.Add(_tmpThreadDict);
             }
-            XmlDocument _tmpThreadsDoc = new XmlDocument() {XmlResolver = null};
+            XmlDocument _tmpThreadsDoc = new() {XmlResolver = null};
             XmlElement rootElem = _tmpThreadsDoc.CreateElement(String.Empty, "WatchedThreads", String.Empty);
             _tmpThreadsDoc.AppendChild(rootElem);
             XmlElement fileVersionElement = _tmpThreadsDoc.CreateElement(String.Empty, "FileVersion", String.Empty);
@@ -1602,7 +1601,7 @@ namespace JDP {
             _tmpThreadsDoc.DocumentElement.AppendChild(threadsElement);
             string path = Path.Combine(Settings.GetSettingsDirectory(), Settings.ThreadsFileName);
             try {
-                XmlWriterSettings _tmpThreadsDocSettings = new XmlWriterSettings() {Indent = true};
+                XmlWriterSettings _tmpThreadsDocSettings = new() {Indent = true};
                 XmlWriter writer = XmlWriter.Create(path, _tmpThreadsDocSettings);
                 _tmpThreadsDoc.Save(writer);
                 writer.Flush();
@@ -1645,7 +1644,7 @@ namespace JDP {
         }
 
         private void CheckForUpdates() {
-            Thread thread = new Thread(CheckForUpdateThread) {IsBackground = true};
+            Thread thread = new(CheckForUpdateThread) {IsBackground = true};
             thread.Start();
         }
 
@@ -1659,23 +1658,40 @@ namespace JDP {
             }
             Settings.LastUpdateCheck = DateTime.Now.Date;
             var htmlParser = new HTMLParser(html);
-            HTMLTagRange labelLatestDivTagRange = htmlParser.CreateTagRange(Enumerable.FirstOrDefault(Enumerable.Where(
-                htmlParser.FindStartTags("div"), t => HTMLParser.ClassAttributeValueHas(t, "label-latest"))));
-            if (labelLatestDivTagRange == null) return;
-            HTMLTagRange versionSpanTagRange = htmlParser.CreateTagRange(Enumerable.FirstOrDefault(Enumerable.Where(
-                htmlParser.FindStartTags(labelLatestDivTagRange, "span"), t => HTMLParser.ClassAttributeValueHas(t, "css-truncate-target"))));
-            if (versionSpanTagRange == null) return;
-            string latestStr = htmlParser.GetInnerHTML(versionSpanTagRange).Replace("v", "");
-            int latest = General.ParseVersionNumber(latestStr);
+            List<string> latestVersions = new();
+            foreach (HTMLTag repoContentDivTagStart in Enumerable.Where(htmlParser.FindStartTags("div"), t => HTMLParser.ClassAttributeValueHas(t, "css-truncate-target"))) {
+                HTMLTag repoContentDivTagEnd = htmlParser.FindCorrespondingEndTag(repoContentDivTagStart);
+                string repoDivInnerHtml = htmlParser.GetInnerHTML(repoContentDivTagStart, repoContentDivTagEnd);
+                if (repoDivInnerHtml.Contains("span")) {
+                    HTMLTag innerSpanStart = null;
+                    HTMLTag innerSpanEnd = null;
+                    HTMLParser spanHtmlParser = new(repoDivInnerHtml);
+                    foreach (HTMLTag tempTag in spanHtmlParser.Tags) {
+                        if (tempTag.Name == "span" && tempTag.IsEnd == false) { innerSpanStart = tempTag; }
+                        else if (tempTag.Name == "span" && tempTag.IsEnd == true) { innerSpanEnd = tempTag; }
+                    }
+                    string spanInnerText = spanHtmlParser.GetInnerHTML(innerSpanStart, innerSpanEnd);
+                    latestVersions.Add(spanInnerText.Trim(HTMLParser.GetWhiteSpaceChars()).Replace("v", ""));
+                }
+            }
+            Version newestVersion = new("0.0");
+            foreach (string incomingVersions in latestVersions) {
+                Version incomingVersion = new(incomingVersions);
+                var res = newestVersion.CompareTo(incomingVersion);
+                if (res < 0) { newestVersion = incomingVersion; }
+            }
+            int latest = General.ParseVersionNumber(newestVersion.ToString());
+            Console.WriteLine(latest);
             if (latest == -1) return;
             int current = General.ParseVersionNumber(General.Version);
+            Console.WriteLine(current);
             if (!String.IsNullOrEmpty(Settings.LatestUpdateVersion)) {
                 current = Math.Max(current, General.ParseVersionNumber(Settings.LatestUpdateVersion));
             }
             if (latest > current) {
                 lock (_startupPromptSync) {
                     if (IsDisposed) return;
-                    Settings.LatestUpdateVersion = latestStr;
+                    Settings.LatestUpdateVersion = newestVersion.ToString();
                     Invoke(() => {
                         if (MessageBox.Show(this, "A newer version of Chan Thread Watch is available.  Would you like to open the Chan Thread Watch website?",
                             "Newer Version Found", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) {

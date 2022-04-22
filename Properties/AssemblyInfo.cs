@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using JDP;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -10,8 +11,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Chan Thread Watch")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
+[assembly: AssemblyCompany("NoodleNet/SuperGouge/J.D. Purcell")]
+[assembly: AssemblyProduct("Chan Thread Watch")]
 [assembly: AssemblyCopyright("Copyright 2022 JDP/SuperGouge/Noodle")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -34,6 +35,6 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 
-[assembly: AssemblyVersion("1.19.5.0")]
-[assembly: AssemblyFileVersion("1.19.5.0")]
+[assembly: AssemblyVersion(General.Version)]
+[assembly: AssemblyFileVersion(General.Version)]
 [assembly: NeutralResourcesLanguage("en-US")]

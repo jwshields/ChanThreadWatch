@@ -4,7 +4,7 @@ using System.IO;
 namespace JDP {
     public static class Logger {
         private static readonly TextWriter tw;
-        private static readonly object _logSync = new object();
+        private static readonly object _logSync = new();
         private static readonly string _logPath = Path.Combine(Settings.GetSettingsDirectory(), Settings.LogFileName);
 
         static Logger() {

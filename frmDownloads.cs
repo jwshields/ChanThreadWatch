@@ -5,8 +5,8 @@ using System.Windows.Forms;
 namespace JDP {
     public partial class frmDownloads : Form {
         private readonly frmChanThreadWatch _parentForm;
-        private Dictionary<long, ListViewItem> _items = new Dictionary<long, ListViewItem>();
-        private Dictionary<long, List<DownloadedSizeSnapshot>> _snapshotLists = new Dictionary<long, List<DownloadedSizeSnapshot>>();
+        private Dictionary<long, ListViewItem> _items = new();
+        private Dictionary<long, List<DownloadedSizeSnapshot>> _snapshotLists = new();
 
         public frmDownloads(frmChanThreadWatch parentForm) {
             InitializeComponent();
@@ -15,8 +15,12 @@ namespace JDP {
             _parentForm = parentForm;
         }
 
+		private void frmDownloads_Shown(object sender, EventArgs e) {
+            this.lvDownloads.Scrollable = true;
+		}
+
         private void tmrUpdateList_Tick(object sender, EventArgs e) {
-            HashSet<long> oldDownloadIDs = new HashSet<long>(_items.Keys);
+            HashSet<long> oldDownloadIDs = new(_items.Keys);
             List<DownloadProgressInfo> downloadProgresses;
             lock (_parentForm.DownloadProgresses) {
                 downloadProgresses = new List<DownloadProgressInfo>(_parentForm.DownloadProgresses.Values);

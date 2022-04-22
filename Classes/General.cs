@@ -11,14 +11,8 @@ using System.Web;
 
 namespace JDP {
     public static class General {
-        public static string Version {
-            get {
-                Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-                return string.Format("{0}.{1}.{2}", ver.Major, ver.Minor, ver.Build);
-            }
-        }
-
-        public static string ReleaseDate => "2022-04-20";
+		public const string Version = "1.19.5.1";
+        public const string ReleaseDate = "2022-04-22";
 
         public static string ProgramURL {
             get { return "https://github.com/jwshields/ChanThreadWatch/releases"; }
@@ -32,7 +26,7 @@ namespace JDP {
             const int readBufferSize = 8192;
             const int requestTimeoutMS = 60000;
             const int readTimeoutMS = 60000;
-            object sync = new object();
+            object sync = new();
             bool aborting = false;
             HttpWebRequest request = null;
             HttpWebResponse response = null;
@@ -162,7 +156,7 @@ namespace JDP {
 
         public static string GetRedirectUrl(string html, string currentPage) {
             try {
-                HTMLParser parser = new HTMLParser(html);
+                HTMLParser parser = new(html);
                 foreach (HTMLTag metaTag in parser.FindStartTags(parser.CreateTagRange(parser.FindStartTag("head")), "meta")) {
                     if (!string.Equals(metaTag.GetAttributeValueOrEmpty("http-equiv"), "Refresh", StringComparison.OrdinalIgnoreCase)) {
                         continue;
@@ -173,7 +167,7 @@ namespace JDP {
                     }
                     int currentPosition = 0;
                     currentPosition = GetNextNonWhiteSpaceCharacterPosition(metaContent, currentPosition);
-                    StringBuilder timeString = new StringBuilder();
+                    StringBuilder timeString = new();
                     while (metaContent.Length > currentPosition && (metaContent[currentPosition] >= 48 && metaContent[currentPosition] <= 57 || metaContent[currentPosition] == 46)) {
                         timeString.Append(metaContent[currentPosition++]);
                     }
@@ -200,7 +194,7 @@ namespace JDP {
                         return null;
                     }
                     currentPosition = GetNextNonWhiteSpaceCharacterPosition(metaContent, currentPosition);
-                    char quote = new char();
+                    char quote = new();
                     if (IsCharacterMatch(metaContent[currentPosition], '\u0027') || IsCharacterMatch(metaContent[currentPosition], '\u0022')) {
                         quote = metaContent[currentPosition++];
                     }
@@ -338,7 +332,7 @@ namespace JDP {
 
         private static string DetectCharacterSetFromContent(byte[] bytes, string httpContentType) {
             string text = UnknownEncodingToString(bytes, 4096);
-            HTMLParser htmlParser = new HTMLParser(text);
+            HTMLParser htmlParser = new(text);
             string mimeType = GetMIMETypeFromContentType(httpContentType) ?? String.Empty;
             string charSet;
 
@@ -348,7 +342,7 @@ namespace JDP {
             {
                 if (text.StartsWith("<?xml", StringComparison.OrdinalIgnoreCase)) {
                     // XML declaration
-                    HTMLParser xmlParser = new HTMLParser("<" + text.Substring(2));
+                    HTMLParser xmlParser = new("<" + text.Substring(2));
                     HTMLTag xmlTag = xmlParser.Tags.Count >= 1 ? xmlParser.Tags[0] : null;
                     if (xmlTag != null && xmlTag.NameEquals("xml") && xmlTag.Offset == 0) {
                         charSet = xmlTag.GetAttributeValue("encoding");
@@ -451,16 +445,11 @@ namespace JDP {
         }
 
         public static string GetAbsoluteURL(string baseURL, string relativeURL) {
+            // AbsoluteUri can throw undocumented Exception (e.g. for "mailto:+")
             try {
-                if (!Uri.TryCreate(new Uri(baseURL), relativeURL, out Uri uri)) {
-                    return null;
-                }
-                // AbsoluteUri can throw undocumented Exception (e.g. for "mailto:+")
-                return uri.AbsoluteUri;
-            }
-            catch {
-                return null;
-            }
+                return Uri.TryCreate(new Uri(baseURL), relativeURL, out Uri uri) ? uri.AbsoluteUri : null;
+			}
+            catch { return null; }
         }
 
         public static string StripFragmentFromURL(string url) {
@@ -489,8 +478,8 @@ namespace JDP {
 
         public static string GetRelativeDirectoryPath(string dir, string baseDir) {
             if (dir.Length != 0 && Path.IsPathRooted(dir)) {
-                Uri baseDirUri = new Uri(Path.Combine(baseDir, "dummy.txt"));
-                Uri targetDirUri = new Uri(Path.Combine(dir, "dummy.txt"));
+                Uri baseDirUri = new(Path.Combine(baseDir, "dummy.txt"));
+                Uri targetDirUri = new(Path.Combine(dir, "dummy.txt"));
                 try {
                     dir = Uri.UnescapeDataString(baseDirUri.MakeRelativeUri(targetDirUri).ToString());
                 }
@@ -615,7 +604,7 @@ namespace JDP {
         }
 
         public static ulong Calculate64BitMD5(byte[] bytes) {
-            using (MD5CryptoServiceProvider hashAlgo = new MD5CryptoServiceProvider()) {
+            using (MD5CryptoServiceProvider hashAlgo = new()) {
                 return BytesTo64BitXor(hashAlgo.ComputeHash(bytes));
             }
         }
@@ -649,7 +638,7 @@ namespace JDP {
         }
 
         public static void AddOtherReplaces(HTMLParser htmlParser, string pageURL, List<ReplaceInfo> replaceList) {
-            HashSet<int> existingOffsets = new HashSet<int>();
+            HashSet<int> existingOffsets = new();
 
             foreach (ReplaceInfo replace in replaceList) {
                 existingOffsets.Add(replace.Offset);
